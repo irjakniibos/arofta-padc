@@ -83,6 +83,22 @@ Akun dummy (password `Password123`): `admin@arofta.id`, `psikolog1@arofta.id`, `
 7. Kalender (KF-27) = kalender internal, bukan sinkronisasi Google Calendar.
 8. Tema: ungu `#7C51A1` dan merah centang `#ED1B23` (merah hanya untuk centang/psikogram dan peringatan). Tampilan web psikolog profesional, tidak bergaya AI: tanpa pemisah titik tengah/em-dash dekoratif, tanpa label kapital semua, tanpa deretan kartu SaaS seragam. Font Plus Jakarta Sans + Newsreader (Fontsource), ikon lucide-react. Elemen khas beranda: psikogram dengan centang yang tergambar.
 
+## Keputusan baru hasil diskusi 10 Oktober 2026 (belum diimplementasikan)
+
+Keputusan ini menggantikan poin 1 di atas bila bertentangan.
+
+1. Akun: Admin 1 akun (`arofta.padc@gmail.com`). Super Admin = Irza + anggota tim capstone (pemantau/maintenance), email masing-masing.
+2. Login dua cara: Google (OAuth/OpenID Connect) dan email + password. Register form tetap ada. Hanya klien yang bisa daftar sendiri (termasuk lewat Google pertama kali). Psikolog didaftarkan Admin; Admin/Super Admin didaftarkan Super Admin. Login Google: `email_verified` wajib, akun nonaktif ditolak, role dari database, akun lama dengan email sama otomatis tertaut.
+3. Booking online paling lambat 3 jam sebelum jadwal (Pengaturan). Batas bayar = lebih dulu antara 24 jam setelah booking atau 1 jam sebelum sesi (memperbaiki bug batas bayar langsung lewat). Maksimal 5 booking belum dibayar per akun (Pengaturan).
+4. Pembayaran: Google Form dihapus. Halaman pembayaran menampilkan nominal, batas bayar, rekening (tombol salin), lalu bagian Konfirmasi Pembayaran dengan satu tombol "Konfirmasi via WhatsApp": membuka `wa.me` ke nomor WA AROFTA (Pengaturan) dengan pesan terisi (kode booking, nama, layanan, nominal) DAN mengubah status jadi Menunggu Verifikasi + notifikasi admin. Klien melampirkan bukti di WA. Admin verifikasi Lunas/Ditolak di web. Setting link Google Form dihapus. Peringatan ke admin bila <1 jam sebelum sesi pembayaran belum diverifikasi.
+5. Booking oleh Admin (kasus mendesak/walk-in): tidak terkena batas 3 jam, langsung Lunas, metode Tunai/Transfer. Klien bisa: akun yang sudah ada, profil tanpa akun login, atau dibuatkan akun (klien atur password lewat email). Formulir intake menyusul (pengingat saja). Nominal default harga layanan, bisa diubah admin dengan alasan + konfirmasi; fee psikolog tetap.
+6. Privasi (UU PDP 27/2022): centang Kebijakan Privasi saat daftar (termasuk Google pertama kali) + halaman publik Kebijakan Privasi; informed consent saat booking (orang tua/wali untuk profil anak); waktu dan versi persetujuan disimpan. Draf teks dibuat Claude, dicek psikolog AROFTA. Info darurat (IGD, 112/119) dan kontak WA untuk kebutuhan hari yang sama.
+7. UI: konfirmasi "Yakin?" untuk aksi penting (hapus, ubah nominal, verifikasi/tolak, batal sesi, finalisasi laporan, nonaktifkan akun) dan notifikasi berhasil/gagal di setiap simpan, di semua halaman.
+8. Email pengirim sementara Gmail Irza, nanti `arofta.padc@gmail.com` (cukup ubah `.env`).
+9. Dampak laporan: KF-22 jadi "rekening + nomor WA konfirmasi"; usulan KF-28 login Google, KF-29 booking oleh Admin, KF-30 persetujuan privasi/informed consent; revisi Tabel User, Klien, Sesi, Pembayaran, use case Klien/Admin, daftar revisi no. 11 dan 34.
+
+Urutan kerja: (1) yang tidak butuh apa pun dari Irza: aturan booking/bayar, batas 5, konfirmasi WA, booking admin, privasi, audit konfirmasi/notifikasi, test celah; (2) login Google (Irza buat OAuth Client ID) dan SMTP (Irza buat App Password); (3) dokumen.
+
 ## Kepatuhan SOP Capstone (wajib dijaga)
 
 - Keamanan: rate limit login 10 gagal/15 menit per IP + akun terkunci 15 menit setelah 5x gagal, anti SQL injection (ORM/replacements), validasi frontend dan backend (express-validator, `req.validated` = matchedData), sanitizer global, password ter-masking, upload .docx saja maks 2 MB 1 file, file sensitif hanya lewat endpoint berotorisasi.
