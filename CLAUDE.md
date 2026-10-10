@@ -138,6 +138,15 @@ Urutan kerja: (1) yang tidak butuh apa pun dari Irza: aturan booking/bayar, bata
 - Black-box: `Dokumen_Pengujian_BlackBox_AROFTA_PADC.docx`, 77 kasus di 12 modul (AUT, PUB, PRF, BKG, SES, LAP, ULS, KAL, ADM, TPL, SUP, KEA), belum ada kolom nomor KF.
 - Celah pengujian yang ditemukan: pengingat jadwal otomatis (KF-08/09/17), kedaluwarsa tagihan otomatis, alokasi/jadwal ulang sesi oleh Admin (KF-03), buka kembali laporan Final, email sungguhan (KF-16, SMTP kosong), KN-02/06/08 (butuh hosting).
 
+## Daftar tugas saat deploy/hosting (setelah Irza selesai menguji aplikasi)
+
+- Google Auth Platform: Audience, Publish app (In production). Jangan unggah logo agar tidak perlu verifikasi.
+- OAuth Client: tambah Authorized JavaScript origin dan redirect URI domain hosting (HTTPS), mis. `https://domain/api/v1/auth/google/callback`.
+- `.env` produksi: FRONTEND_URL domain, COOKIE_SECURE=true, SMTP & MAIL_FROM ke `arofta.padc@gmail.com` (App Password akun itu), GOOGLE_*.
+- Pengaturan: nomor WhatsApp kembali ke nomor AROFTA (sementara 085706043234 milik Irza), rekening asli.
+- Jadwalkan `npm run backup` lewat cron server.
+- Jangan jalankan `db:reset` di database yang sudah berisi data; perubahan skema hanya lewat `db:migrate`.
+
 ## Catatan kerja
 
 - Setelah mengubah backend: `npm run lint` dan `npm test`. Setelah mengubah frontend: `npx next lint` dan `npm run build`.
