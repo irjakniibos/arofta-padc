@@ -11,6 +11,11 @@ const ROLES = Object.freeze({
 
 const STAFF_ROLES = [ROLES.ADMIN, ROLES.SUPER_ADMIN];
 
+// Halaman awal frontend per role (dipakai setelah login Google)
+const HOME_ROLE = Object.freeze({
+  [ROLES.KLIEN]: '/klien', [ROLES.PSIKOLOG]: '/psikolog', [ROLES.ADMIN]: '/admin', [ROLES.SUPER_ADMIN]: '/admin',
+});
+
 const STATUS_SESI = Object.freeze({
   TERDAFTAR: 'Terdaftar',
   BERJALAN: 'Berjalan',
@@ -107,6 +112,7 @@ const UPLOAD = Object.freeze({
 module.exports = {
   ROLES,
   STAFF_ROLES,
+  HOME_ROLE,
   STATUS_SESI,
   TRANSISI_SESI,
   STATUS_BAYAR,

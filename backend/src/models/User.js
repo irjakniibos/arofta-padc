@@ -4,7 +4,8 @@ const { ROLES } = require('../config/constants');
 module.exports = (sequelize) => sequelize.define('User', {
   id_user: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   email: { type: DataTypes.STRING(255), allowNull: false, unique: true },
-  password: { type: DataTypes.STRING(255), allowNull: false },
+  password: { type: DataTypes.STRING(255), allowNull: true }, // NULL = hanya masuk dengan Google
+  google_id: { type: DataTypes.STRING(255), allowNull: true, unique: true },
   role: { type: DataTypes.ENUM(...Object.values(ROLES)), allowNull: false },
   is_active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
   failed_login_attempts: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
@@ -14,6 +15,6 @@ module.exports = (sequelize) => sequelize.define('User', {
   privasi_versi: { type: DataTypes.STRING(20), allowNull: true },
 }, {
   tableName: 'users',
-  defaultScope: { attributes: { exclude: ['password'] } },
-  scopes: { withPassword: { attributes: { include: ['password'] } } },
+  defaultScope: { attributes: { exclude: ['password', 'google_id'] } },
+  scopes: { withPassword: { attributes: { include: ['password', 'google_id'] } } },
 });

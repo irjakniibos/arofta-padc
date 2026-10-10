@@ -53,7 +53,7 @@ async function getById(id) {
 async function create(data) {
   if (await User.findOne({ where: { email: data.email }, attributes: ['id_user'] })) throw AppError.conflict('Email sudah terdaftar');
   return sequelize.transaction(async (t) => {
-    const user = await User.create({ email: data.email, password: await hashPassword(data.password), role: ROLES.PSIKOLOG }, { transaction: t });
+    const user = await User.create({ email: data.email, password: data.password ? await hashPassword(data.password) : null, role: ROLES.PSIKOLOG }, { transaction: t });
     const p = await Psikolog.create({ id_user: user.id_user, ...pick(data, PROFILE_FIELDS) }, { transaction: t });
     return { id_psikolog: p.id_psikolog, id_user: user.id_user, email: user.email };
   });

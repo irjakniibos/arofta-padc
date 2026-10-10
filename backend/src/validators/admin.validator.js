@@ -29,7 +29,7 @@ module.exports = {
     v.money('nominal_default', { optional: !isCreate }), v.text('keterangan', 1000), v.bool('is_active'),
   ],
   psikologCreate: [
-    v.email(), v.password(), v.str('nama_lengkap', 150).notEmpty().withMessage('Nama lengkap wajib diisi'),
+    v.email(), v.password().optional({ values: 'falsy' }), v.str('nama_lengkap', 150).notEmpty().withMessage('Nama lengkap wajib diisi'),
     v.str('sipp', 50), v.str('str', 50), v.str('spesialisasi', 150),
     body('pengalaman_tahun').optional({ values: 'null' }).isInt({ min: 0, max: 60 }).toInt(), v.text('profil_singkat', 2000), v.noHp('no_hp'),
   ],
@@ -113,7 +113,7 @@ module.exports = {
     v.str('opsi', 500), v.bool('wajib'), v.bool('is_active'),
   ],
   // Super Admin
-  userCreate: [v.email(), v.password(), v.oneOf('role', ['Admin', 'Super Admin'], { optional: false })],
+  userCreate: [v.email(), v.password().optional({ values: 'falsy' }), v.oneOf('role', ['Admin', 'Super Admin'], { optional: false })],
   role: [v.oneOf('role', ['Admin', 'Super Admin'], { optional: false })],
   resetPassword: [v.password('password_baru')],
 };

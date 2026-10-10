@@ -6,10 +6,13 @@ import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import { useFormSubmit } from '@/components/form/useForm';
 import { api } from '@/lib/api';
+import { useAuth } from '@/lib/auth-context';
+import Link from 'next/link';
 
 const HINT = 'Minimal 8 karakter, berisi huruf besar, huruf kecil, dan angka.';
 
 export default function GantiPassword() {
+  const { user } = useAuth();
   const f = useFormSubmit({ password_lama: '', password_baru: '', konfirmasi_password: '' });
   const set = (k) => (e) => f.setValue({ ...f.value, [k]: e.target.value });
   const onSubmit = async (e) => {
@@ -17,6 +20,17 @@ export default function GantiPassword() {
     const ok = await f.submit(() => api.put('/auth/password', f.value), 'Password berhasil diubah');
     if (ok) f.setValue({ password_lama: '', password_baru: '', konfirmasi_password: '' });
   };
+  if (user && user.punya_password === false) {
+    return (
+      <>
+        <PageHeader title="Ubah password" description="Akun Anda masuk dengan Google." />
+        <Alert type="info" className="max-w-xl" title="Akun ini belum memiliki password">
+          Anda dapat terus masuk dengan Google. Bila ingin juga bisa masuk dengan email dan password, buat password melalui{' '}
+          <Link href="/lupa-password" className="font-semibold underline">Lupa password</Link> dengan email {user.email}.
+        </Alert>
+      </>
+    );
+  }
   return (
     <>
       <PageHeader title="Ubah password" description="Gunakan password yang belum pernah dipakai di layanan lain." />

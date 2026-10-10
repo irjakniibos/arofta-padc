@@ -57,6 +57,18 @@ const env = {
     resetTokenMinutes: Number(process.env.RESET_TOKEN_MINUTES || 30),
   },
 
+  // Login dengan Google (OpenID Connect). Kosongkan GOOGLE_CLIENT_ID untuk menonaktifkan tombol Google.
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID || '',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    // Default: callback lewat proxy frontend agar cookie login satu origin dengan aplikasi
+    redirectUri: process.env.GOOGLE_REDIRECT_URI
+      || `${(process.env.FRONTEND_URL || '').replace(/\/+$/, '')}${normalizeBasePath(process.env.API_BASE_PATH || '/api/v1')}/auth/google/callback`,
+    authUrl: process.env.GOOGLE_AUTH_URL || 'https://accounts.google.com/o/oauth2/v2/auth',
+    tokenUrl: process.env.GOOGLE_TOKEN_URL || 'https://oauth2.googleapis.com/token',
+    issuers: ['https://accounts.google.com', 'accounts.google.com'],
+  },
+
   mail: {
     host: process.env.SMTP_HOST || '',
     port: Number(process.env.SMTP_PORT || 587),

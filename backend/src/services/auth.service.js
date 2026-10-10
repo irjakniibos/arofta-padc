@@ -59,7 +59,8 @@ async function login(email, password) {
     throw new AppError(`Akun terkunci sementara karena terlalu banyak percobaan login. Coba lagi setelah ${env.auth.lockMinutes} menit`, 423);
   }
 
-  const match = await bcrypt.compare(password, user.password);
+  // Akun yang hanya masuk dengan Google belum punya password: perlakukan sebagai password salah (tanpa membocorkan info akun)
+  const match = await bcrypt.compare(password, user.password || DUMMY_HASH) && Boolean(user.password);
   if (!match) {
     const attempts = user.failed_login_attempts + 1;
     const update = { failed_login_attempts: attempts };
@@ -82,6 +83,9 @@ async function profile(idUser) {
   if (!user) throw AppError.notFound('User tidak ditemukan');
   const data = user.toJSON();
   data.perlu_persetujuan_privasi = user.privasi_versi !== VERSI_PERSETUJUAN.PRIVASI;
+  const kredensial = await User.scope('withPassword').findByPk(idUser, { attributes: ['password', 'google_id'] });
+  data.punya_password = Boolean(kredensial.password);
+  data.google_terhubung = Boolean(kredensial.google_id);
   if (user.role === ROLES.KLIEN) {
     data.profil_klien = await Klien.findAll({
       where: { id_user: idUser },
@@ -105,6 +109,9 @@ async function setujuiPrivasi(idUser) {
 
 async function changePassword(idUser, oldPassword, newPassword) {
   const user = await User.scope('withPassword').findByPk(idUser);
+  if (user && !user.password) {
+    throw AppError.badRequest('Akun Anda masuk dengan Google dan belum memiliki password. Buat password melalui menu Lupa password');
+  }
   if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
     throw AppError.badRequest('Password lama tidak sesuai');
   }
@@ -170,5 +177,5 @@ async function resetPassword(token, newPassword) {
 }
 
 module.exports = {
-  register, login, profile, setujuiPrivasi, changePassword, forgotPassword, resetPassword, hashPassword, buatTautanPassword, kirimUndangan, UNDANGAN_JAM,
+  register, login, signToken, profile, setujuiPrivasi, changePassword, forgotPassword, resetPassword, hashPassword, buatTautanPassword, kirimUndangan, UNDANGAN_JAM,
 };

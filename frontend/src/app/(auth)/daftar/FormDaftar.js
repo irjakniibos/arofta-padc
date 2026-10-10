@@ -7,6 +7,7 @@ import { Input, Checkbox } from '@/components/ui/Field';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import { api } from '@/lib/api';
+import TombolGoogle from '@/components/auth/TombolGoogle';
 
 const PASSWORD_HINT = 'Minimal 8 karakter, berisi huruf besar, huruf kecil, dan angka.';
 
@@ -48,7 +49,10 @@ export default function FormDaftar() {
         Untuk pemeriksaan anak, daftarkan akun atas nama orang tua atau wali. Profil anak ditambahkan setelah masuk.
       </p>
       {error && <Alert type="error" className="mt-6">{error}</Alert>}
-      <form onSubmit={onSubmit} className="mt-8 space-y-5">
+      <div className="mt-8">
+        <TombolGoogle label="Daftar dengan Google" />
+      </div>
+      <form onSubmit={onSubmit} className="space-y-5">
         <Input label="Nama lengkap" required maxLength={150} autoComplete="name" pattern="[A-Za-zÀ-ɏ .,'’\-]+" title="Hanya huruf dan tanda baca nama"
           value={form.nama_lengkap} onChange={set('nama_lengkap')} error={fieldErr.nama_lengkap} />
         <Input label="Email" type="email" required maxLength={255} autoComplete="email" value={form.email} onChange={set('email')} error={fieldErr.email} />

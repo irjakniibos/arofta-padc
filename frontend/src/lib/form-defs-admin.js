@@ -3,7 +3,7 @@
 export const AKUN_PSIKOLOG = [
   { judul: 'Akun login', fields: [
     { name: 'email', label: 'Email', type: 'email', required: true, max: 255 },
-    { name: 'password', label: 'Password awal', type: 'password', required: true, max: 72, hint: 'Minimal 8 karakter, huruf besar, huruf kecil, dan angka. Minta psikolog menggantinya setelah login.' },
+    { name: 'password', label: 'Password awal (opsional)', type: 'password', max: 72, hint: 'Kosongkan bila psikolog masuk dengan akun Google dari email di atas. Bila diisi: minimal 8 karakter, huruf besar, huruf kecil, dan angka.' },
   ] },
 ];
 export const PROFIL_PSIKOLOG = [

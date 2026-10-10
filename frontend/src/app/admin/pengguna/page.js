@@ -34,14 +34,14 @@ function AkunBaru({ open, onClose, onSaved }) {
   const [saving, setSaving] = useState(false);
   const simpan = async (e) => {
     e.preventDefault(); setSaving(true); setErrors({});
-    try { await api.post('/superadmin/users', v); toast('Akun dibuat'); setV({ email: '', password: '', role: ROLES.ADMIN }); onSaved(); onClose(); } catch (err) { setErrors(err.fieldErrors?.() || {}); toast(err.message, 'error'); } finally { setSaving(false); }
+    try { await api.post('/superadmin/users', { ...v, password: v.password || undefined }); toast('Akun dibuat'); setV({ email: '', password: '', role: ROLES.ADMIN }); onSaved(); onClose(); } catch (err) { setErrors(err.fieldErrors?.() || {}); toast(err.message, 'error'); } finally { setSaving(false); }
   };
   return (
     <Modal open={open} onClose={onClose} title="Akun Admin baru">
       <form onSubmit={simpan} className="space-y-4">
         <p className="text-sm text-ink-soft">Akun psikolog dibuat dari menu Psikolog, sedangkan klien mendaftar sendiri.</p>
         <Input label="Email" type="email" required maxLength={150} autoComplete="off" value={v.email} error={errors.email} onChange={(e) => setV({ ...v, email: e.target.value })} />
-        <Input label="Password awal" type="password" required autoComplete="new-password" pattern={PASSWORD_PATTERN} title={PASSWORD_HINT} hint={PASSWORD_HINT} value={v.password} error={errors.password} onChange={(e) => setV({ ...v, password: e.target.value })} />
+        <Input label="Password awal (opsional)" type="password" autoComplete="new-password" pattern={PASSWORD_PATTERN} title={PASSWORD_HINT} hint={`Kosongkan bila pemilik akun masuk dengan akun Google dari email di atas. ${PASSWORD_HINT}`} value={v.password} error={errors.password} onChange={(e) => setV({ ...v, password: e.target.value })} />
         <Select label="Role" required value={v.role} options={STAF} onChange={(e) => setV({ ...v, role: e.target.value })} />
         <div className="flex justify-end gap-2 pt-2"><Button type="button" variant="secondary" onClick={onClose}>Batal</Button><Button type="submit" loading={saving}>Buat akun</Button></div>
       </form>

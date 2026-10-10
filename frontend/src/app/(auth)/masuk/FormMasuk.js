@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import { useAuth } from '@/lib/auth-context';
 import { HOME_BY_ROLE } from '@/lib/config';
+import TombolGoogle, { PESAN_GOOGLE } from '@/components/auth/TombolGoogle';
 
 /** Hanya izinkan pengalihan ke path internal (mencegah open redirect). */
 function amanLanjut(path) {
@@ -45,8 +46,10 @@ export default function FormMasuk() {
       <p className="mt-2 text-[15px] text-ink-soft">Belum punya akun? <Link href="/daftar" className="font-semibold text-violet-deep hover:underline">Daftar sebagai klien</Link></p>
       {params.get('reset') === 'ok' && <Alert type="success" className="mt-6">Password berhasil diatur ulang. Silakan masuk dengan password baru.</Alert>}
       {params.get('daftar') === 'ok' && <Alert type="success" className="mt-6">Akun berhasil dibuat. Silakan masuk.</Alert>}
+      {PESAN_GOOGLE[params.get('google')] && <Alert type="error" className="mt-6">{PESAN_GOOGLE[params.get('google')]}</Alert>}
       {error && <Alert type="error" className="mt-6">{error}</Alert>}
-      <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate={false}>
+      <div className="mt-8"><TombolGoogle lanjut={amanLanjut(params.get('lanjut')) || undefined} /></div>
+      <form onSubmit={onSubmit} className="space-y-5" noValidate={false}>
         <Input label="Email" type="email" autoComplete="email" required maxLength={255}
           value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} error={fieldErr.email} />
         <div>

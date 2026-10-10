@@ -24,7 +24,8 @@ async function list(query) {
 async function createStaff({ email, password, role }) {
   if (![ROLES.ADMIN, ROLES.SUPER_ADMIN].includes(role)) throw AppError.badRequest('Akun yang dapat dibuat di menu ini hanya Admin atau Super Admin');
   if (await User.findOne({ where: { email }, attributes: ['id_user'] })) throw AppError.conflict('Email sudah terdaftar');
-  const u = await User.create({ email, password: await hashPassword(password), role });
+  // Tanpa password: akun masuk dengan Google (email yang sama) atau membuat password lewat lupa password
+  const u = await User.create({ email, password: password ? await hashPassword(password) : null, role });
   return { id_user: u.id_user, email: u.email, role: u.role };
 }
 
