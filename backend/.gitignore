@@ -1,0 +1,9 @@
+node_modules/
+.env
+storage/laporan/*
+storage/tmp/*
+storage/template/*
+!storage/**/.gitkeep
+coverage/
+*.log
+storage/backup/

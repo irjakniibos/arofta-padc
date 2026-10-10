@@ -1,0 +1,3527 @@
+{
+  "info": {
+    "name": "API SIM Layanan Psikologi AROFTA PADC",
+    "description": "Koleksi otomatis dari route backend. Login dulu (Auth > POST /auth/login); Postman menyimpan cookie sesi secara otomatis. Akun dummy: superadmin dari .env, admin@arofta.id, psikolog1@arofta.id, klien1@mail.com (password: Password123).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1"
+    },
+    {
+      "key": "id",
+      "value": "1"
+    },
+    {
+      "key": "idKlien",
+      "value": "1"
+    },
+    {
+      "key": "idItem",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /auth/register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_lengkap\": \"Budi Santoso\",\n  \"email\": \"budi@mail.com\",\n  \"password\": \"Rahasia123\",\n  \"konfirmasi_password\": \"Rahasia123\",\n  \"no_hp\": \"081234567890\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /auth/login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"klien1@mail.com\",\n  \"password\": \"Password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /auth/logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /auth/forgot-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"klien1@mail.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /auth/reset-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<token-dari-email>\",\n  \"password_baru\": \"PasswordBaru123\",\n  \"konfirmasi_password\": \"PasswordBaru123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /auth/me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /auth/password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password_lama\": \"Password123\",\n  \"password_baru\": \"PasswordBaru123\",\n  \"konfirmasi_password\": \"PasswordBaru123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Publik & Umum",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /layanan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/layanan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "layanan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /layanan/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/layanan/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "layanan",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /jadwal/kalender",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/jadwal/kalender",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "jadwal",
+                "kalender"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /jadwal/tersedia",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/jadwal/tersedia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "jadwal",
+                "tersedia"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /info-pembayaran",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/info-pembayaran",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "info-pembayaran"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /info-lembaga",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/info-lembaga",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "info-lembaga"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /notifikasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifikasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifikasi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /notifikasi/baca-semua",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifikasi/baca-semua",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifikasi",
+                "baca-semua"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /notifikasi/:id/baca",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifikasi/{{id}}/baca",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifikasi",
+                "{{id}}",
+                "baca"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /laporan/:id/unduh",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/laporan/{{id}}/unduh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "laporan",
+                "{{id}}",
+                "unduh"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Klien",
+      "item": [
+        {
+          "name": "GET /klien/dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /klien/profil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /klien/profil",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hubungan_akun\": \"Anak\",\n  \"nama_lengkap\": \"Nama Anak\",\n  \"jenis_kelamin\": \"Perempuan\",\n  \"tempat_lahir\": \"Sukoharjo\",\n  \"tanggal_lahir\": \"2017-03-20\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /klien/profil/:idKlien",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /klien/profil/:idKlien",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alamat_rumah\": \"Kartasura\",\n  \"pendidikan_terakhir\": \"S1\",\n  \"status_pernikahan\": \"Menikah\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE /klien/profil/:idKlien",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /klien/profil/:idKlien/keluarga",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/keluarga",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "keluarga"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /klien/profil/:idKlien/keluarga",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/keluarga",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "keluarga"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kategori\": \"Ayah\",\n  \"status_hubungan\": \"Kandung\",\n  \"nama\": \"Nama Ayah\",\n  \"pendidikan\": \"S1\",\n  \"pekerjaan\": \"Wiraswasta\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT /klien/profil/:idKlien/keluarga/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/keluarga/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "keluarga",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /klien/profil/:idKlien/keluarga/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/keluarga/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "keluarga",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /klien/profil/:idKlien/organisasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/organisasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "organisasi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /klien/profil/:idKlien/organisasi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/organisasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "organisasi"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_organisasi\": \"OSIS\",\n  \"jenis_organisasi\": \"Sekolah\",\n  \"tahun\": \"2015\",\n  \"jabatan\": \"Ketua\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT /klien/profil/:idKlien/organisasi/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/organisasi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "organisasi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /klien/profil/:idKlien/organisasi/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/organisasi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "organisasi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /klien/profil/:idKlien/referensi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/referensi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "referensi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /klien/profil/:idKlien/referensi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/referensi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "referensi"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Nama Referensi\",\n  \"alamat_telepon\": \"Solo / 0812...\",\n  \"jabatan\": \"Manajer\",\n  \"hubungan\": \"Atasan\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT /klien/profil/:idKlien/referensi/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/referensi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "referensi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /klien/profil/:idKlien/referensi/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/referensi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "referensi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /klien/profil/:idKlien/intake-dewasa",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/intake-dewasa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "intake-dewasa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /klien/profil/:idKlien/intake-dewasa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/intake-dewasa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "intake-dewasa"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kegemaran_hobi\": \"Membaca\",\n  \"kelebihan\": \"Teliti\\nDisiplin\",\n  \"kekurangan\": \"Pemalu\",\n  \"keluhan_saat_ini\": \"...\",\n  \"harapan_pemeriksaan\": \"...\",\n  \"pernah_sakit_berat\": false,\n  \"pernah_psikotes\": false,\n  \"pernyataan_benar\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /klien/profil/:idKlien/intake-anak",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/intake-anak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "intake-anak"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /klien/profil/:idKlien/intake-anak",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/profil/{{idKlien}}/intake-anak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "profil",
+                "{{idKlien}}",
+                "intake-anak"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_sekolah\": \"SD N 1\",\n  \"kelas\": \"3\",\n  \"berat_badan_kg\": 28,\n  \"tinggi_badan_cm\": 130,\n  \"kelahiran\": {\n    \"keguguran_sebelumnya\": \"Tidak\",\n    \"anak_diinginkan\": \"Ya\",\n    \"kualitas_makanan\": \"Baik\"\n  },\n  \"perkembangan\": {\n    \"duduk_bulan\": \"6\",\n    \"berjalan_bulan\": \"12\"\n  },\n  \"pendidikan_sosial\": {\n    \"masuk_sd_umur\": \"6\",\n    \"pernah_tinggal_kelas\": \"Tidak\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /klien/booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/booking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "booking"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_klien\": 1,\n  \"id_layanan\": 5,\n  \"id_jadwal\": 1,\n  \"tipe_sesi\": \"Online\",\n  \"catatan_klien\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /klien/sesi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/sesi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "sesi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /klien/sesi/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/sesi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "sesi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /klien/sesi/:id/konfirmasi-pembayaran",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/sesi/{{id}}/konfirmasi-pembayaran",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "sesi",
+                "{{id}}",
+                "konfirmasi-pembayaran"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /klien/sesi/:id/ulasan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/sesi/{{id}}/ulasan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "sesi",
+                "{{id}}",
+                "ulasan"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"komentar\": \"Psikolog sangat membantu.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /klien/sesi/:id/batal",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/sesi/{{id}}/batal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "sesi",
+                "{{id}}",
+                "batal"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alasan\": \"Berhalangan hadir\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /klien/laporan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/klien/laporan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "klien",
+                "laporan"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Psikolog",
+      "item": [
+        {
+          "name": "GET /psikolog",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/:id(d+)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/{{id}}(d+)",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "{{id}}(d+)"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/:id(d+)/ulasan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/{{id}}(d+)/ulasan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "{{id}}(d+)",
+                "ulasan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/profil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/profil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "profil"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /psikolog/profil",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/profil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "profil"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"spesialisasi\": \"Psikologi Klinis Anak\",\n  \"profil_singkat\": \"...\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/jadwal",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/jadwal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "jadwal"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /psikolog/jadwal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/jadwal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "jadwal"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tanggal\": \"2026-10-13\",\n  \"jam_mulai\": \"09:00\",\n  \"jam_selesai\": \"11:00\",\n  \"tipe_sesi\": \"Keduanya\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /psikolog/jadwal/bulk",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/jadwal/bulk",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "jadwal",
+                "bulk"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tanggal_mulai\": \"2026-10-11\",\n  \"tanggal_selesai\": \"2026-11-09\",\n  \"hari\": [\n    1,\n    3,\n    5\n  ],\n  \"slot\": [\n    {\n      \"jam_mulai\": \"09:00\",\n      \"jam_selesai\": \"11:00\"\n    },\n    {\n      \"jam_mulai\": \"13:00\",\n      \"jam_selesai\": \"15:00\"\n    }\n  ],\n  \"tipe_sesi\": \"Keduanya\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT /psikolog/jadwal/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/jadwal/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "jadwal",
+                "{{id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status_slot\": \"Ditutup\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE /psikolog/jadwal/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/jadwal/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "jadwal",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/sesi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/sesi/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /psikolog/sesi/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Berjalan\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/sesi/:id/anamnesis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/anamnesis",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "anamnesis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /psikolog/sesi/:id/anamnesis",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/anamnesis",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "anamnesis"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rujukan\": \"Orang tua\",\n  \"keluhan_utama\": \"...\",\n  \"faktor_pencetus\": \"...\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/sesi/:id/observasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/observasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "observasi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /psikolog/sesi/:id/observasi",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/observasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "observasi"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"penampilan_umum\": \"Rapi\",\n  \"mood\": \"Eutimia\",\n  \"afek\": \"Luas\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/sesi/:id/soap",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/soap",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "soap"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /psikolog/sesi/:id/soap",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/soap",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "soap"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subjective\": \"...\",\n  \"objective\": \"...\",\n  \"diagnosis_hipotesis\": \"...\",\n  \"intervensi\": [\n    \"Psikoedukasi\",\n    \"Relaksasi\"\n  ],\n  \"rencana_tindak_lanjut\": \"...\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/sesi/:id/laporan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/laporan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "laporan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /psikolog/sesi/:id/laporan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/laporan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "laporan"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jawaban\": [\n    {\n      \"id_item\": 1,\n      \"nilai_skala\": 4\n    },\n    {\n      \"id_item\": 15,\n      \"jawaban_teks\": \"105\"\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/sesi/:id/laporan/pratinjau",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/laporan/pratinjau",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "laporan",
+                "pratinjau"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /psikolog/sesi/:id/laporan/finalisasi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/sesi/{{id}}/laporan/finalisasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "sesi",
+                "{{id}}",
+                "laporan",
+                "finalisasi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/template-laporan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/template-laporan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "template-laporan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/laporan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/laporan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "laporan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/kalender",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/kalender",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "kalender"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/ulasan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/ulasan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "ulasan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /psikolog/fee",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/psikolog/fee",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "psikolog",
+                "fee"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin (Direksi)",
+      "item": [
+        {
+          "name": "GET /admin/dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/monitoring",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/monitoring",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "monitoring"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/layanan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/layanan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "layanan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/layanan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/layanan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "layanan"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_layanan\": \"Layanan Baru\",\n  \"kategori\": \"Masyarakat Umum\",\n  \"harga\": 250000,\n  \"durasi_menit\": 60,\n  \"jenis_intake\": \"Dewasa\",\n  \"id_template\": 4\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/layanan/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/layanan/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "layanan",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/layanan/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/layanan/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "layanan",
+                "{{id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"harga\": 275000,\n  \"is_active\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/layanan/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/layanan/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "layanan",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/layanan/:id/fee",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/layanan/{{id}}/fee",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "layanan",
+                "{{id}}",
+                "fee"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"id_kategori_fee\": 2,\n      \"nominal\": 50000\n    },\n    {\n      \"id_kategori_fee\": 5,\n      \"nominal\": 50000\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/kategori-fee",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/kategori-fee",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "kategori-fee"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/kategori-fee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/kategori-fee",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "kategori-fee"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_kategori\": \"Kategori Baru\",\n  \"nominal_default\": 50000\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/kategori-fee/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/kategori-fee/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "kategori-fee",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/kategori-fee/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/kategori-fee/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "kategori-fee",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/psikolog",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/psikolog",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "psikolog"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/psikolog",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/psikolog",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "psikolog"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"psikolog.baru@arofta.id\",\n  \"password\": \"Psikolog123\",\n  \"nama_lengkap\": \"Nama, M.Psi., Psikolog\",\n  \"sipp\": \"0000-00-0-0\",\n  \"spesialisasi\": \"Klinis\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/psikolog/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/psikolog/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "psikolog",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/psikolog/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/psikolog/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "psikolog",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/psikolog/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/psikolog/{{id}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "psikolog",
+                "{{id}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/psikolog/:id/jadwal",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/psikolog/{{id}}/jadwal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "psikolog",
+                "{{id}}",
+                "jadwal"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/psikolog/:id/jadwal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/psikolog/{{id}}/jadwal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "psikolog",
+                "{{id}}",
+                "jadwal"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/psikolog/:id/jadwal/bulk",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/psikolog/{{id}}/jadwal/bulk",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "psikolog",
+                "{{id}}",
+                "jadwal",
+                "bulk"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/jadwal/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/jadwal/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "jadwal",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/jadwal/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/jadwal/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "jadwal",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/klien",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/klien/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/sesi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sesi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sesi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/sesi/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sesi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sesi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/sesi/:id/alokasi",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sesi/{{id}}/alokasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sesi",
+                "{{id}}",
+                "alokasi"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_jadwal\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/sesi/:id/tautan",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sesi/{{id}}/tautan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sesi",
+                "{{id}}",
+                "tautan"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tautan_zoom\": \"https://zoom.us/j/1234567890\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/sesi/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sesi/{{id}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sesi",
+                "{{id}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Selesai\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/sesi/:id/batal",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sesi/{{id}}/batal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sesi",
+                "{{id}}",
+                "batal"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alasan\": \"Psikolog berhalangan\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/pembayaran",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pembayaran",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pembayaran"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/pembayaran/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pembayaran/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pembayaran",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/pembayaran/:id/verifikasi",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pembayaran/{{id}}/verifikasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pembayaran",
+                "{{id}}",
+                "verifikasi"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Lunas\",\n  \"catatan_admin\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/fee",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/fee",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "fee"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/fee/psikolog/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/fee/psikolog/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "fee",
+                "psikolog",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/fee/bayar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/fee/bayar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "fee",
+                "bayar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_fee\": [\n    1,\n    2,\n    3\n  ],\n  \"catatan\": \"Transfer BSI\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/pengeluaran",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pengeluaran",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pengeluaran"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/pengeluaran",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pengeluaran",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pengeluaran"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tanggal\": \"2026-10-10\",\n  \"kategori\": \"Alat Tes\",\n  \"nominal\": 150000,\n  \"keterangan\": \"Lembar jawaban\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/pengeluaran/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pengeluaran/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pengeluaran",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/pengeluaran/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pengeluaran/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pengeluaran",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/laporan-keuangan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/laporan-keuangan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "laporan-keuangan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/laporan-keuangan/tahunan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/laporan-keuangan/tahunan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "laporan-keuangan",
+                "tahunan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/laporan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/laporan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "laporan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/laporan/:id/buka-kembali",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/laporan/{{id}}/buka-kembali",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "laporan",
+                "{{id}}",
+                "buka-kembali"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/template-laporan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/template-laporan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kode\": \"TEMPLATE_BARU\",\n  \"nama_template\": \"Template Baru\",\n  \"skala_min\": 1,\n  \"skala_max\": 5\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/template-laporan/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/template-laporan/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/template-laporan/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/template-laporan/:id/panduan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}/panduan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}",
+                "panduan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/template-laporan/:id/file",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}/file",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}",
+                "file"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/template-laporan/:id/file",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}/file",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}",
+                "file"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/template-laporan/:id/item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}/item",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}",
+                "item"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kode\": \"aspek_baru\",\n  \"kelompok\": \"KEPRIBADIAN\",\n  \"urutan\": 30,\n  \"label\": \"Aspek Baru\",\n  \"deskripsi\": \"...\",\n  \"tipe\": \"skala\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/template-laporan/:id/item/:idItem",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}/item/{{idItem}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}",
+                "item",
+                "{{idItem}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/template-laporan/:id/item/:idItem",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/template-laporan/{{id}}/item/{{idItem}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "template-laporan",
+                "{{id}}",
+                "item",
+                "{{idItem}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/kalender",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/kalender",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "kalender"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/ulasan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/ulasan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "ulasan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/ulasan/:id/tampil",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/ulasan/{{id}}/tampil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "ulasan",
+                "{{id}}",
+                "tampil"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_tampil\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /admin/pengaturan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pengaturan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pengaturan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/pengaturan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pengaturan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pengaturan"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"kunci\": \"bank_nama\",\n      \"nilai\": \"BSI\"\n    },\n    {\n      \"kunci\": \"bank_no_rekening\",\n      \"nilai\": \"1234567890\"\n    },\n    {\n      \"kunci\": \"bank_atas_nama\",\n      \"nilai\": \"AROFTA PADC\"\n    },\n    {\n      \"kunci\": \"link_form_bukti_bayar\",\n      \"nilai\": \"https://forms.gle/xxxx\"\n    }\n  ]\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Super Admin",
+      "item": [
+        {
+          "name": "GET /superadmin/users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/superadmin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "superadmin",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /superadmin/users",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/superadmin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "superadmin",
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin2@arofta.id\",\n  \"password\": \"AdminDua123\",\n  \"role\": \"Admin\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /superadmin/users/:id/role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/superadmin/users/{{id}}/role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "superadmin",
+                "users",
+                "{{id}}",
+                "role"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"Super Admin\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /superadmin/users/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/superadmin/users/{{id}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "superadmin",
+                "users",
+                "{{id}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /superadmin/users/:id/password",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/superadmin/users/{{id}}/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "superadmin",
+                "users",
+                "{{id}}",
+                "password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password_baru\": \"PasswordBaru123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /superadmin/audit-log",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/superadmin/audit-log",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "superadmin",
+                "audit-log"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /superadmin/backup",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/superadmin/backup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "superadmin",
+                "backup"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

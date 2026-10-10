@@ -1,0 +1,59 @@
+{
+  "name": "arofta-padc-backend",
+  "version": "1.0.0",
+  "description": "REST API Sistem Informasi Manajemen Layanan Psikologi AROFTA PADC",
+  "main": "src/server.js",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo:all",
+    "db:seed": "sequelize-cli db:seed:all",
+    "db:reset": "sequelize-cli db:migrate:undo:all && sequelize-cli db:migrate && sequelize-cli db:seed:all",
+    "template:check": "node scripts/check-templates.js",
+    "backup": "node scripts/backup-db.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "lint": "eslint src tests"
+  },
+  "author": "Tim Capstone AROFTA PADC - Informatika UMY",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "compression": "^1.8.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "docxtemplater": "^3.71.0",
+    "dotenv": "^18.0.6",
+    "express": "^4.22.3",
+    "express-rate-limit": "^8.7.1",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.3.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.12.1",
+    "multer": "^2.4.0",
+    "mysql2": "^3.24.5",
+    "node-cron": "^4.6.0",
+    "nodemailer": "^10.0.16",
+    "pizzip": "^3.3.0",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "eslint": "^8.57.1",
+    "jest": "^30.5.2",
+    "nodemon": "^3.1.14",
+    "sequelize-cli": "^6.6.5",
+    "supertest": "^7.3.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "globalSetup": "./tests/globalSetup.js",
+    "testTimeout": 120000,
+    "verbose": true
+  }
+}

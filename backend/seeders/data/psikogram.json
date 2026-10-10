@@ -1,0 +1,530 @@
+{
+ "TES_ANAK": [
+  {
+   "kode": "kecerdasan_umum",
+   "kelompok": "KEMAMPUAN UMUM",
+   "urutan": 1,
+   "label": "Kecerdasan Umum",
+   "deskripsi": "Kapasitas berpikir yang dimiliki dalam menerima dan mengolah informasi",
+   "tipe": "skala"
+  },
+  {
+   "kode": "wawasan_pengetahuan",
+   "kelompok": "KEMAMPUAN UMUM",
+   "urutan": 2,
+   "label": "Wawasan Pengetahuan",
+   "deskripsi": "Pengetahuan umum yang dimiliki",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kemampuan_verbal",
+   "kelompok": "KEMAMPUAN UMUM",
+   "urutan": 3,
+   "label": "Kemampuan Verbal",
+   "deskripsi": "Kemampuan merespon informasi yang bersifat verbal atau kata-kata",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kemampuan_non_verbal",
+   "kelompok": "KEMAMPUAN UMUM",
+   "urutan": 4,
+   "label": "Kemampuan Non-Verbal",
+   "deskripsi": "Kemampuan merespon informasi yang bersifat non verbal seperti simbol, gambar, diagram",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kemampuan_logika_berpikir",
+   "kelompok": "KEMAMPUAN UMUM",
+   "urutan": 5,
+   "label": "Kemampuan Logika Berpikir",
+   "deskripsi": "Kemampuan memahami dan menangkap hubungan antara dua hal sehingga memungkinkan untuk menemukan alternatif solusi pemecahan masalah",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kemampuan_numerik",
+   "kelompok": "KEMAMPUAN UMUM",
+   "urutan": 6,
+   "label": "Kemampuan Numerik",
+   "deskripsi": "Kemampuan dalam merespon informasi yang bersifat angka dan hitungan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "daya_ingat",
+   "kelompok": "POTENSI BELAJAR",
+   "urutan": 7,
+   "label": "Daya Ingat",
+   "deskripsi": "Kemampuan menyimpan informasi & memprosesnya kembali untuk digunakan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "konsentrasi",
+   "kelompok": "POTENSI BELAJAR",
+   "urutan": 8,
+   "label": "Konsentrasi",
+   "deskripsi": "Kemampuan dalam mempertahankan perhatian (fokus) saat mengerjakan tugas",
+   "tipe": "skala"
+  },
+  {
+   "kode": "sistematika",
+   "kelompok": "POTENSI BELAJAR",
+   "urutan": 9,
+   "label": "Sistematika",
+   "deskripsi": "Kemampuan menyelesaikan tugas secara teratur dan terencana",
+   "tipe": "skala"
+  },
+  {
+   "kode": "stabilitas_emosi",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 10,
+   "label": "Stabilitas Emosi",
+   "deskripsi": "Kemampuan untuk mengontrol emosi dalam menghadapi tekanan baik dari dalam maupun dari luar dirinya",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kepercayaan_diri",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 11,
+   "label": "Kepercayaan Diri",
+   "deskripsi": "Kepercayaan akan potensi dan kemampuan yang dimiliki",
+   "tipe": "skala"
+  },
+  {
+   "kode": "hubungan_interpersonal",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 12,
+   "label": "Hubungan Interpersonal",
+   "deskripsi": "Kemampuan dalam berinteraksi dengan lingkungan baru dan menjalin relasi sosial",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kerjasama",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 13,
+   "label": "Kerjasama",
+   "deskripsi": "Kemampuan dalam mematuhi aturan dan bekerjasama dengan lingkungan untuk tujuan bersama",
+   "tipe": "skala"
+  },
+  {
+   "kode": "hasrat_berprestasi",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 14,
+   "label": "Hasrat Berprestasi",
+   "deskripsi": "Semangat / dorongan untuk terus meraih prestasi maksimal sesuai kemampuan",
+   "tipe": "skala"
+  }
+ ],
+ "MINAT_BAKAT": [
+  {
+   "kode": "kecerdasan_umum",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 1,
+   "label": "Kecerdasan Umum",
+   "deskripsi": "Kemampuan untuk memahami dan memberikan alternatif solusi terhadap suatu permasalahan secara tepat",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kemampuan_penalaran",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 2,
+   "label": "Kemampuan Penalaran",
+   "deskripsi": "Kemampuan khusus untuk berpikir secara logis sistematis dan melakukan penalaran secara rasional",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kemampuan_berhitung",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 3,
+   "label": "Kemampuan Berhitung",
+   "deskripsi": "Kemampuan khusus untuk menyelesaikan persoalan-persoalan yang disajikan dalam bentuk angka-angka dan hitungan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "kemampuan_verbal",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 4,
+   "label": "Kemampuan Verbal",
+   "deskripsi": "Kemampuan khusus untuk memahami persoalan-persoalan yang disajikan secara verbal atau bahasa",
+   "tipe": "skala"
+  },
+  {
+   "kode": "daya_ingat",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 5,
+   "label": "Daya Ingat",
+   "deskripsi": "Kemampuan mengingat kembali informasi dan memunculkannya kembali secara cepat dan akurat",
+   "tipe": "skala"
+  },
+  {
+   "kode": "daya_analisa_sintesa",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 6,
+   "label": "Daya Analisa Sintesa",
+   "deskripsi": "Kemampuan menguraikan masalah menjadi bagian-bagian, serta kemampuan mengintegrasikan data-data untuk memecahkan suatu persoalan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "cara_berpikir_fleksibel",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 7,
+   "label": "Cara Berpikir Fleksibel",
+   "deskripsi": "Kemampuan berpikir secara fleksibel dan menemukan alternatif pemecahan masalah",
+   "tipe": "skala"
+  },
+  {
+   "kode": "cara_berpikir_eksak",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 8,
+   "label": "Cara Berpikir Eksak",
+   "deskripsi": "Kemampuan untuk menyelesaikan tugas-tugas yang memiliki penyelesaian baku",
+   "tipe": "skala"
+  }
+ ],
+ "REKRUTMEN": [
+  {
+   "kode": "excellence",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 1,
+   "label": "Excellence",
+   "deskripsi": "Usaha dalam mencapai prestasi terbaik disertai penjagaan kualitas melalui suatu sistem yang terpadu dan berkesinambungan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "team_work",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 2,
+   "label": "Team work",
+   "deskripsi": "Mengembangkan lingkungan kerja yang sehat dan saling bersinergi antar seluruh jajaran",
+   "tipe": "skala"
+  },
+  {
+   "kode": "appearance",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 3,
+   "label": "Appearance",
+   "deskripsi": "Menampilkan diri dengan sikap dan perilaku yang santun",
+   "tipe": "skala"
+  },
+  {
+   "kode": "verbal_communication",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 4,
+   "label": "Verbal Communication",
+   "deskripsi": "Keterampilan menyampaikan pesan secara efektif",
+   "tipe": "skala"
+  },
+  {
+   "kode": "achievement_motivation",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 5,
+   "label": "Achievement Motivation",
+   "deskripsi": "Dorongan untuk mencapai suatu tujuan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "accuracy_and_attention_to_detail",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 6,
+   "label": "Accuracy and Attention to Detail",
+   "deskripsi": "Kemampuan untuk bekerja dengan teliti dan detil",
+   "tipe": "skala"
+  },
+  {
+   "kode": "stress_tolerance",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 7,
+   "label": "Stress Tolerance",
+   "deskripsi": "Kemampuan mempertahankan kinerja dalam berbagai situasi",
+   "tipe": "skala"
+  },
+  {
+   "kode": "emotional_stability",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 8,
+   "label": "Emotional Stability",
+   "deskripsi": "Kemampuan mengelola emosi yang dimiliki untuk menunjang kinerja",
+   "tipe": "skala"
+  },
+  {
+   "kode": "initiative",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 9,
+   "label": "Initiative",
+   "deskripsi": "Kemampuan mengambil tindakan yang diperlukan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "self_confidence",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 10,
+   "label": "Self Confidence",
+   "deskripsi": "Kepercayaan terhadap kemampuan diri sendiri",
+   "tipe": "skala"
+  },
+  {
+   "kode": "adaptability",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 11,
+   "label": "Adaptability",
+   "deskripsi": "Kemampuan menyesuaikan diri dengan tuntutan kerja dalam berbagai situasi",
+   "tipe": "skala"
+  },
+  {
+   "kode": "interpersonal_relationship",
+   "kelompok": "ASPEK PSIKOLOGIS",
+   "urutan": 12,
+   "label": "Interpersonal Relationship",
+   "deskripsi": "Kemampuan membangun & menjalin relasi dengan orang lain",
+   "tipe": "skala"
+  },
+  {
+   "kode": "strategic_influence",
+   "kelompok": "KOMPETENSI MANAJERIAL",
+   "urutan": 13,
+   "label": "Strategic Influence",
+   "deskripsi": "Strategi berpikir dalam menyelesaikan pekerjaan termasuk cara mengatasi hambatan secara efektif dan efisien",
+   "tipe": "skala"
+  },
+  {
+   "kode": "analythical_thinking",
+   "kelompok": "KOMPETENSI MANAJERIAL",
+   "urutan": 14,
+   "label": "Analytical Thinking",
+   "deskripsi": "Kemampuan untuk memahami situasi dengan cara menguraikan masalah dan memetakannya menjadi bagian-bagian yang lebih rinci",
+   "tipe": "skala"
+  },
+  {
+   "kode": "decisiveness",
+   "kelompok": "KOMPETENSI MANAJERIAL",
+   "urutan": 15,
+   "label": "Decisiveness",
+   "deskripsi": "Kemampuan dalam menentukan sikap dan mengambil suatu keputusan secara tegas, cepat dan tepat",
+   "tipe": "skala"
+  },
+  {
+   "kode": "team_leadership",
+   "kelompok": "KOMPETENSI MANAJERIAL",
+   "urutan": 16,
+   "label": "Team Leadership",
+   "deskripsi": "Kemampuan mengelola dan memimpin kelompok untuk mencapai visi dan misi perusahaan",
+   "tipe": "skala"
+  }
+ ],
+ "PSIKOLOGI_UMUM": [
+  {
+   "kode": "general_intelligence",
+   "kelompok": "INTELEKTUAL",
+   "urutan": 1,
+   "label": "General Intelligence",
+   "deskripsi": "Kemampuan untuk memahami dan memberikan alternatif solusi terhadap suatu permasalahan secara tepat",
+   "tipe": "teks"
+  },
+  {
+   "kode": "initiative",
+   "kelompok": "SIKAP KERJA",
+   "urutan": 2,
+   "label": "Initiative",
+   "deskripsi": "Kemampuan seseorang untuk memulai tindakan secara mandiri tanpa harus menunggu perintah atau dorongan dari orang lain",
+   "tipe": "skala"
+  },
+  {
+   "kode": "work_speed",
+   "kelompok": "SIKAP KERJA",
+   "urutan": 3,
+   "label": "Work Speed",
+   "deskripsi": "Kemampuan bekerja secara cepat sesuai dengan target yang telah ditentukan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "work_accuracy",
+   "kelompok": "SIKAP KERJA",
+   "urutan": 4,
+   "label": "Work Accuracy",
+   "deskripsi": "Kemampuan bekerja secara tepat dan akurat sesuai dengan data empiris",
+   "tipe": "skala"
+  },
+  {
+   "kode": "work_diligence",
+   "kelompok": "SIKAP KERJA",
+   "urutan": 5,
+   "label": "Work Diligence",
+   "deskripsi": "Kemampuan seseorang untuk terus berusaha secara konsisten dalam mencapai tujuan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "work_endurance",
+   "kelompok": "SIKAP KERJA",
+   "urutan": 6,
+   "label": "Work Endurance",
+   "deskripsi": "Kemampuan individu untuk mempertahankan kinerja, energi, dan konsentrasi secara konsisten dalam jangka waktu yang relatif lama, terutama ketika menghadapi tuntutan pekerjaan yang tinggi, berulang, atau melelahkan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "emotional_stability",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 7,
+   "label": "Emotional Stability",
+   "deskripsi": "Kemampuan untuk mengontrol emosi dalam menghadapi tekanan baik dari dalam maupun dari luar dirinya",
+   "tipe": "skala"
+  },
+  {
+   "kode": "self_confidence",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 8,
+   "label": "Self Confidence",
+   "deskripsi": "Kepercayaan akan potensi dan kemampuan yang dimiliki",
+   "tipe": "skala"
+  },
+  {
+   "kode": "social_adaptation",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 9,
+   "label": "Social Adaptation",
+   "deskripsi": "Kemampuan untuk menyesuaikan diri dengan lingkungan sekitar",
+   "tipe": "skala"
+  },
+  {
+   "kode": "hubungan_interpersonal",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 10,
+   "label": "Hubungan Interpersonal",
+   "deskripsi": "Kemampuan menjalin hubungan yang positif dengan orang lain",
+   "tipe": "skala"
+  },
+  {
+   "kode": "work_collaboration",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 11,
+   "label": "Work Collaboration",
+   "deskripsi": "Kemampuan bekerjasama dengan semua lini",
+   "tipe": "skala"
+  },
+  {
+   "kode": "communication_skill",
+   "kelompok": "KEPRIBADIAN",
+   "urutan": 12,
+   "label": "Communication Skill",
+   "deskripsi": "Kemampuan menyampaikan ide dan pendapatnya baik secara lisan maupun tulisan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_achievement",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 13,
+   "label": "Need Of Achievement",
+   "deskripsi": "Semangat / dorongan untuk terus meraih prestasi maksimal sesuai kemampuan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_deference",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 14,
+   "label": "Need Of Deference",
+   "deskripsi": "Kebutuhan akan dihargai dan menghargai orang lain",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_order",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 15,
+   "label": "Need Of Order",
+   "deskripsi": "Melakukan segala sesuatu secara teratur dan terencana",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_exhibition",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 16,
+   "label": "Need Of Exhibition",
+   "deskripsi": "Kebutuhan untuk menonjolkan diri",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_autonomy",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 17,
+   "label": "Need Of Autonomy",
+   "deskripsi": "Kebutuhan untuk bebas dan mandiri",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_affiliation",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 18,
+   "label": "Need Of Affiliation",
+   "deskripsi": "Kebutuhan untuk berinteraksi dengan orang lain dan lingkungan baru",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_interception",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 19,
+   "label": "Need Of Interception",
+   "deskripsi": "Kebutuhan/keinginan untuk memahami orang lain",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_succorance",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 20,
+   "label": "Need Of Succorance",
+   "deskripsi": "Mencari perhatian dan simpati",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_dominance",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 21,
+   "label": "Need Of Dominance",
+   "deskripsi": "Keinginan untuk mendominasi dan mengarahkan orang lain",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_abasement",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 22,
+   "label": "Need Of Abasement",
+   "deskripsi": "Merasa rendah diri dan merasa sangat bersalah ketika melakukan kesalahan",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_nurturance",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 23,
+   "label": "Need Of Nurturance",
+   "deskripsi": "Keinginan untuk berbuat baik dan membantu orang lain",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_change",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 24,
+   "label": "Need Of Change",
+   "deskripsi": "Kebutuhan untuk berubah, menerima tantangan dan kebiasaan baru",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_endurance",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 25,
+   "label": "Need Of Endurance",
+   "deskripsi": "Bertahan untuk menyelesaikan tugas hingga tuntas",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_heterosexuality",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 26,
+   "label": "Need Of Heterosexuality",
+   "deskripsi": "Kebutuhan untuk memperhatikan dan diperhatikan oleh lawan jenis",
+   "tipe": "skala"
+  },
+  {
+   "kode": "need_of_aggression",
+   "kelompok": "KEBUTUHAN",
+   "urutan": 27,
+   "label": "Need Of Aggression",
+   "deskripsi": "Kebutuhan akan menyatakan pendapat/pandangan yang berbeda, mengecam orang lain",
+   "tipe": "skala"
+  }
+ ]
+}

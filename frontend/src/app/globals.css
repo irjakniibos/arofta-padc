@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/*
+ * Token desain AROFTA PADC
+ * Warna diambil dari logo resmi: ungu #7C51A1 dan merah centang #ED1B23.
+ * Merah hanya dipakai untuk tanda centang/psikogram dan peringatan, bukan dekorasi.
+ */
+@theme {
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader Variable", ui-serif, Georgia, serif;
+
+  --color-ink: #241c2c;          /* teks utama, ungu sangat gelap */
+  --color-ink-soft: #5d5466;     /* teks sekunder */
+  --color-ink-faint: #8a8193;    /* keterangan kecil */
+  --color-violet: #7c51a1;       /* warna brand */
+  --color-violet-deep: #573679;  /* hover, tautan aktif */
+  --color-violet-tint: #f2edf7;  /* latar lembut */
+  --color-violet-line: #ddd2ea;  /* garis bertema */
+  --color-mist: #f7f6f9;         /* latar halaman dashboard */
+  --color-line: #e6e2ea;         /* garis netral */
+  --color-check: #ed1b23;        /* centang merah dari logo */
+  --color-danger: #b4232a;
+  --color-danger-tint: #fcecec;
+  --color-success: #2e7457;
+  --color-success-tint: #e8f3ee;
+  --color-warning: #8a5a00;
+  --color-warning-tint: #fbf1dd;
+  --color-info: #33608c;
+  --color-info-tint: #e8f0f8;
+
+  --radius-control: 6px;
+  --radius-panel: 10px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+    font-feature-settings: "ss01" 0;
+  }
+  h1, h2, h3, h4 {
+    @apply text-ink;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: var(--color-violet-line);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-violet);
+    outline-offset: 2px;
+  }
+  /* angka sejajar untuk tabel & nominal */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Satu-satunya animasi otomatis: centang psikogram di beranda tergambar berurutan */
+@keyframes draw-check {
+  from { stroke-dashoffset: 24; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+.check-draw {
+  stroke-dasharray: 24;
+  animation: draw-check 420ms ease-out both;
+}
