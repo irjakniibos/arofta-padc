@@ -5,12 +5,13 @@
  * Dipakai klien untuk profilnya sendiri dan Admin untuk melengkapi data klien (mis. klien walk-in tanpa akun).
  * `apiBase`: /klien/profil/:id (klien) atau /admin/klien/:id (admin).
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Tabs from '@/components/ui/Tabs';
 import Alert from '@/components/ui/Alert';
 import DynamicForm from '@/components/form/DynamicForm';
 import SaveBar from '@/components/form/SaveBar';
 import ChildList from '@/components/klien/ChildList';
+import Spinner from '@/components/ui/Spinner';
 import { useFormSubmit } from '@/components/form/useForm';
 import { api } from '@/lib/api';
 import { PROFIL_KLIEN, INTAKE_DEWASA, INTAKE_ANAK, KELUARGA, KELUARGA_LABEL, ORGANISASI, REFERENSI, pickFields } from '@/lib/form-defs';
@@ -21,14 +22,49 @@ export function normalisasiProfil(d) {
   return d;
 }
 
-function FormSection({ sections, initial, save, note, label }) {
+const jamSekarang = () => new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+/**
+ * Satu formulir dengan umpan balik simpan yang jelas: data dimuat ulang dari server setelah tersimpan,
+ * lalu tampil penanda waktu simpan. Bila ada kolom wajib kosong, halaman bergulir ke kolom tersebut.
+ */
+function FormSection({ sections, initial, save, onReload, label }) {
   const f = useFormSubmit(initial || {});
+  const ref = useRef(null);
+  const [memuat, setMemuat] = useState(false);
+  const [tersimpan, setTersimpan] = useState(null);
+  const [berubah, setBerubah] = useState(false);
   useEffect(() => { f.setValue(initial || {}); }, [initial]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!Object.keys(f.errors).length) return;
+    const el = ref.current?.querySelector('[aria-invalid="true"]');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el?.focus({ preventScroll: true });
+  }, [f.errors]);
+
+  const kirim = async (e) => {
+    e.preventDefault();
+    const ok = await f.submit(() => save(pickFields(sections, f.value)), 'Data berhasil disimpan');
+    if (!ok) return;
+    setMemuat(true);
+    try { await onReload?.(); } finally { setMemuat(false); }
+    setTersimpan(jamSekarang()); setBerubah(false);
+    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
-    <form onSubmit={async (e) => { e.preventDefault(); await f.submit(() => save(pickFields(sections, f.value)), 'Data tersimpan'); }}
-      className="rounded-panel border border-line bg-white px-5 pt-6">
-      <DynamicForm sections={sections} value={f.value} onChange={f.setValue} errors={f.errors} />
-      <SaveBar saving={f.saving} note={note} label={label} />
+    <form ref={ref} onSubmit={kirim} className="relative scroll-mt-24 rounded-panel border border-line bg-white px-5 pt-6">
+      {tersimpan && !berubah && <Alert type="success" className="mb-6" title={`Data tersimpan pukul ${tersimpan}`}>Isian di bawah adalah data terbaru yang tersimpan di sistem.</Alert>}
+      {tersimpan && berubah && <Alert type="warning" className="mb-6">Ada perubahan yang belum disimpan.</Alert>}
+      {f.error && <Alert type="error" className="mb-6">{f.error}</Alert>}
+      <DynamicForm sections={sections} value={f.value} onChange={(v) => { f.setValue(v); setBerubah(true); }} errors={f.errors} />
+      <SaveBar saving={f.saving || memuat} note="Kolom bertanda * wajib diisi." label={label} />
+      {memuat && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center rounded-panel bg-white/70">
+          <Spinner label="Memuat ulang data tersimpan" />
+        </div>
+      )}
     </form>
   );
 }
@@ -43,7 +79,7 @@ export default function ProfilEditor({ data, apiBase, tabAwal = 'data', onSaved,
     { value: 'keluarga', label: 'Susunan keluarga' },
     ...(!isAnak ? [{ value: 'lainnya', label: 'Organisasi & referensi' }] : []),
   ];
-  const simpan = (path) => async (body) => { const r = await api.put(path, body); onSaved?.(); return r; };
+  const simpan = (path) => (body) => api.put(path, body);
 
   return (
     <>
@@ -51,7 +87,7 @@ export default function ProfilEditor({ data, apiBase, tabAwal = 'data', onSaved,
 
       {tab === 'data' && (
         <FormSection sections={PROFIL_KLIEN} initial={data} label="Simpan data diri"
-          save={(body) => { const { hubungan_akun: _h, ...rest } = body; return simpan(apiBase)(rest); }} />
+          onReload={onSaved} save={(body) => { const { hubungan_akun: _h, ...rest } = body; return simpan(apiBase)(rest); }} />
       )}
       {tab === 'dewasa' && (
         <>
@@ -60,13 +96,13 @@ export default function ProfilEditor({ data, apiBase, tabAwal = 'data', onSaved,
             Wajib diisi untuk layanan dewasa (psikotes umum, minat bakat, rekrutmen, konseling). Centang pernyataan di bagian akhir agar
             {staf ? ' formulir dianggap lengkap.' : ' dapat memesan layanan.'}
           </Alert>
-          <FormSection sections={INTAKE_DEWASA} initial={data.intakeDewasa} label="Simpan formulir" save={simpan(`${apiBase}/intake-dewasa`)} />
+          <FormSection sections={INTAKE_DEWASA} initial={data.intakeDewasa} label="Simpan formulir" onReload={onSaved} save={simpan(`${apiBase}/intake-dewasa`)} />
         </>
       )}
       {tab === 'anak' && (
         <>
           <Alert type="info" className="mb-4">Diisi oleh orang tua/wali untuk layanan tes psikologi anak. Data orang tua dan saudara diisi di tab Susunan keluarga.</Alert>
-          <FormSection sections={INTAKE_ANAK} initial={data.intakeAnak} label="Simpan formulir" save={simpan(`${apiBase}/intake-anak`)} />
+          <FormSection sections={INTAKE_ANAK} initial={data.intakeAnak} label="Simpan formulir" onReload={onSaved} save={simpan(`${apiBase}/intake-anak`)} />
         </>
       )}
       {tab === 'keluarga' && (

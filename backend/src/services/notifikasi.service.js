@@ -25,7 +25,8 @@ async function kirim({ idUser, idSesi = null, tipe, judul, pesan, email = true, 
   return notif;
 }
 
-async function kirimKeAdmin({ idSesi = null, tipe, judul, pesan, email = false, transaction = null }) {
+/** Notifikasi ke semua Admin aktif (dashboard + email ke email akun Admin). */
+async function kirimKeAdmin({ idSesi = null, tipe, judul, pesan, email = true, transaction = null }) {
   const admins = await User.findAll({ where: { role: ROLES.ADMIN, is_active: true }, attributes: ['id_user'] });
   for (const a of admins) {
     await kirim({ idUser: a.id_user, idSesi, tipe, judul, pesan, email, transaction });

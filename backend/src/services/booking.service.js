@@ -359,6 +359,11 @@ async function batalOlehKlien(idUser, idSesi, alasan) {
       throw AppError.conflict('Pembayaran sudah dikirim/terverifikasi. Hubungi admin untuk pembatalan dan pengembalian dana');
     }
     await batalkan(sesi, alasan || 'Dibatalkan oleh klien', t);
+    await notif.kirimKeAdmin({
+      idSesi: sesi.id_sesi, tipe: TIPE_NOTIF.JADWAL, transaction: t,
+      judul: `Booking ${sesi.kode_booking} dibatalkan klien`,
+      pesan: `${sesi.klien.nama_lengkap} membatalkan booking jadwal ${formatTanggalIndo(sesi.tanggal)} pukul ${jam(sesi.waktu)}. Alasan: ${alasan || '-'}. Slot jadwal dibuka kembali.`,
+    });
   });
   return detailMilik(idUser, idSesi);
 }

@@ -24,9 +24,9 @@ export default function ProfilDetailPage({ params }) {
 
   const load = () => {
     setError(null);
-    api.get(`/klien/profil/${id}`).then((r) => setData(normalisasiProfil(r.data))).catch((e) => setError(e.message));
+    return api.get(`/klien/profil/${id}`).then((r) => setData(normalisasiProfil(r.data))).catch((e) => setError(e.message));
   };
-  useEffect(load, [id]);
+  useEffect(() => { load(); }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (error) return <ErrorState message={error} onRetry={load} />;
   if (!data) return <Loading />;
@@ -37,7 +37,7 @@ export default function ProfilDetailPage({ params }) {
       <PageHeader title={data.nama_lengkap} description={`No. rekam psikologi ${data.nomor_rekam_psikologi || '-'}`}
         action={data.hubungan_akun !== 'Anak' ? null : <Button variant="ghost" size="sm" onClick={() => setHapus(true)}>Hapus profil</Button>} />
 
-      <ProfilEditor data={data} apiBase={`/klien/profil/${id}`} tabAwal={search.get('tab') || 'data'} onSaved={() => { refresh(); load(); }} />
+      <ProfilEditor data={data} apiBase={`/klien/profil/${id}`} tabAwal={search.get('tab') || 'data'} onSaved={() => { refresh(); return load(); }} />
 
       <ConfirmDialog open={hapus} onClose={() => setHapus(false)} title="Hapus profil ini?" variant="danger" confirmLabel="Hapus profil"
         onConfirm={async () => {

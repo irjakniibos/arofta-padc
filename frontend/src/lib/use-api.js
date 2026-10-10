@@ -10,12 +10,13 @@ export function useApi(path, params) {
   const ctrlRef = useRef(null);
 
   const load = useCallback(() => {
-    if (!path) return;
+    if (!path) return Promise.resolve();
     ctrlRef.current?.abort();
     const ctrl = new AbortController();
     ctrlRef.current = ctrl;
     setState((s) => ({ ...s, loading: true, error: null }));
-    api.get(path, JSON.parse(key), { signal: ctrl.signal })
+    // Mengembalikan promise agar pemanggil bisa menunggu data terbaru (mis. setelah simpan)
+    return api.get(path, JSON.parse(key), { signal: ctrl.signal })
       .then((r) => setState({ data: r.data, meta: r.meta || null, error: null, loading: false }))
       .catch((e) => { if (e.name !== 'AbortError') setState({ data: null, meta: null, error: e.message, loading: false }); });
   }, [path, key]);

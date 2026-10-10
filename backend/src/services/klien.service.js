@@ -13,6 +13,7 @@ const pick = require('../utils/pick');
 const { generateNomorRekam } = require('../utils/codes');
 const { getPagination, buildMeta } = require('../utils/pagination');
 const { JENIS_INTAKE } = require('../config/constants');
+const wajib = require('./formWajib.service');
 
 const PROFIL_FIELDS = ['nama_lengkap', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat_rumah', 'no_hp', 'agama',
   'kewarganegaraan', 'suku_bangsa', 'pendidikan_terakhir', 'pekerjaan', 'status_pernikahan', 'tahun_menikah'];
@@ -40,6 +41,7 @@ async function listProfil(idUser) {
 async function createProfil(idUser, data) {
   const count = await Klien.count({ where: { id_user: idUser } });
   if (count >= 10) throw AppError.badRequest('Maksimal 10 profil per akun');
+  wajib.profilBaru(data);
   return sequelize.transaction(async (t) => {
     const k = await Klien.create({ id_user: idUser, hubungan_akun: data.hubungan_akun || 'Anak', ...pick(data, PROFIL_FIELDS) }, { transaction: t });
     await k.update({ nomor_rekam_psikologi: generateNomorRekam(k.id_klien) }, { transaction: t });
@@ -49,7 +51,9 @@ async function createProfil(idUser, data) {
 
 async function updateProfil(idUser, idKlien, data) {
   const k = await assertOwner(idUser, idKlien);
-  return k.update(pick(data, PROFIL_FIELDS));
+  const values = pick(data, PROFIL_FIELDS);
+  wajib.profil({ ...k.toJSON(), ...values });
+  return k.update(values);
 }
 
 async function deleteProfil(idUser, idKlien) {
@@ -97,6 +101,7 @@ async function saveIntakeDewasa(idUser, idKlien, data) {
   await assertOwner(idUser, idKlien);
   const values = pick(data, Object.keys(F.INTAKE_DEWASA));
   const existing = await IntakeDewasa.findOne({ where: { id_klien: idKlien } });
+  wajib.intakeDewasa({ ...(existing ? existing.toJSON() : {}), ...values });
   if (existing) return existing.update(values);
   return IntakeDewasa.create({ id_klien: idKlien, ...values });
 }
@@ -114,6 +119,14 @@ async function getIntakeAnak(idKlien) {
 
 async function saveIntakeAnak(idUser, idKlien, data) {
   await assertOwner(idUser, idKlien);
+  const lama = (await getIntakeAnak(idKlien))?.toJSON() || {};
+  const gabung = (bagian, sumber) => ({ ...(lama[sumber] || {}), ...(data[bagian] || {}) });
+  wajib.intakeAnak({
+    ...lama, ...pick(data, Object.keys(F.INTAKE_ANAK)),
+    kelahiran: gabung('kelahiran', 'kelahiran'),
+    perkembangan: gabung('perkembangan', 'perkembangan'),
+    pendidikan_sosial: gabung('pendidikan_sosial', 'pendidikanSosial'),
+  });
   await sequelize.transaction(async (t) => {
     let intake = await IntakeAnak.findOne({ where: { id_klien: idKlien }, transaction: t });
     const main = pick(data, Object.keys(F.INTAKE_ANAK));

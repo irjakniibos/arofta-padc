@@ -136,7 +136,7 @@ async function ubahStatus(idSesi, statusBaru, scope = {}, alasan = null) {
         judul: `Sesi ${sesi.kode_booking} dibatalkan`,
         pesan: `Sesi ${sesi.layanan.nama_layanan} dibatalkan. Alasan: ${alasan || '-'}. Hubungi admin untuk penjadwalan ulang atau pengembalian dana.`,
       });
-      await notif.kirim({ idUser: sesi.psikolog.id_user, idSesi, tipe: TIPE_NOTIF.JADWAL, transaction: t, email: false, judul: `Sesi ${sesi.kode_booking} dibatalkan`, pesan: `Alasan: ${alasan || '-'}` });
+      await notif.kirim({ idUser: sesi.psikolog.id_user, idSesi, tipe: TIPE_NOTIF.JADWAL, transaction: t, judul: `Sesi ${sesi.kode_booking} dibatalkan`, pesan: `Alasan: ${alasan || '-'}` });
       return { status_asesmen: STATUS_SESI.BATAL };
     }
 
@@ -152,7 +152,7 @@ async function ubahStatus(idSesi, statusBaru, scope = {}, alasan = null) {
     if (statusBaru === STATUS_SESI.SELESAI) {
       totalFee = await buatFee(sesi, t);
       await notif.kirim({
-        idUser: sesi.psikolog.id_user, idSesi, tipe: TIPE_NOTIF.FEE, email: false, transaction: t,
+        idUser: sesi.psikolog.id_user, idSesi, tipe: TIPE_NOTIF.FEE, transaction: t,
         judul: `Fee sesi ${sesi.kode_booking} tercatat`,
         pesan: `Fee sebesar ${booking.rupiah(totalFee)} tercatat dan menunggu pencairan oleh Direksi.`,
       });
@@ -185,7 +185,7 @@ async function alokasi(idSesi, { id_jadwal: idJadwal }) {
     await notif.kirim({ idUser: sesi.klien.id_user, idSesi, tipe: TIPE_NOTIF.JADWAL, transaction: t, judul: `Perubahan jadwal sesi ${sesi.kode_booking}`, pesan: `Jadwal sesi Anda menjadi ${jadwal} bersama ${slot.psikolog.nama_lengkap}.` });
     await notif.kirim({ idUser: slot.psikolog.id_user, idSesi, tipe: TIPE_NOTIF.JADWAL, transaction: t, judul: `Penugasan sesi ${sesi.kode_booking}`, pesan: `Anda ditugaskan pada sesi ${jadwal}.` });
     if (psikologLama !== slot.psikolog.id_user) {
-      await notif.kirim({ idUser: psikologLama, idSesi, tipe: TIPE_NOTIF.JADWAL, email: false, transaction: t, judul: `Sesi ${sesi.kode_booking} dialihkan`, pesan: 'Sesi ini dialihkan ke psikolog lain oleh admin.' });
+      await notif.kirim({ idUser: psikologLama, idSesi, tipe: TIPE_NOTIF.JADWAL, transaction: t, judul: `Sesi ${sesi.kode_booking} dialihkan`, pesan: 'Sesi ini dialihkan ke psikolog lain oleh admin.' });
     }
   });
   return detail(idSesi);

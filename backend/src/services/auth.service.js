@@ -7,10 +7,11 @@ const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 const env = require('../config/env');
 const { sequelize, User, Klien, Psikolog, PasswordReset } = require('../models');
-const { ROLES, VERSI_PERSETUJUAN } = require('../config/constants');
+const { ROLES, VERSI_PERSETUJUAN, TIPE_NOTIF } = require('../config/constants');
 const AppError = require('../utils/AppError');
 const { generateNomorRekam, generateToken, hashToken } = require('../utils/codes');
 const mail = require('./mail.service');
+const notif = require('./notifikasi.service');
 
 // Hash dummy agar waktu respons login sama walau email tidak terdaftar (mencegah user enumeration)
 const DUMMY_HASH = bcrypt.hashSync('dummy-password-untuk-timing', 10);
@@ -21,6 +22,15 @@ function hashPassword(plain) {
 
 function signToken(user) {
   return jwt.sign({ sub: user.id_user, role: user.role }, env.auth.jwtSecret, { expiresIn: env.auth.jwtExpiresIn });
+}
+
+/** Admin diberi tahu setiap ada klien baru mendaftar (formulir atau Google). */
+function notifKlienBaru(nama, email, cara, transaction) {
+  return notif.kirimKeAdmin({
+    tipe: TIPE_NOTIF.SISTEM, transaction,
+    judul: `Klien baru mendaftar: ${nama}`,
+    pesan: `${nama} (${email}) membuat akun klien melalui ${cara}.`,
+  });
 }
 
 async function register(data) {
@@ -42,6 +52,7 @@ async function register(data) {
       no_hp: data.no_hp || null,
     }, { transaction: t });
     await klien.update({ nomor_rekam_psikologi: generateNomorRekam(klien.id_klien) }, { transaction: t });
+    await notifKlienBaru(klien.nama_lengkap, user.email, 'formulir pendaftaran', t);
     return { id_user: user.id_user, email: user.email, role: user.role, id_klien: klien.id_klien };
   });
 }
@@ -177,5 +188,5 @@ async function resetPassword(token, newPassword) {
 }
 
 module.exports = {
-  register, login, signToken, profile, setujuiPrivasi, changePassword, forgotPassword, resetPassword, hashPassword, buatTautanPassword, kirimUndangan, UNDANGAN_JAM,
+  register, notifKlienBaru, login, signToken, profile, setujuiPrivasi, changePassword, forgotPassword, resetPassword, hashPassword, buatTautanPassword, kirimUndangan, UNDANGAN_JAM,
 };

@@ -21,8 +21,8 @@ export function setIn(obj, path, val) {
   return out;
 }
 
-function FieldRenderer({ f, value, onChange, error, disabled }) {
-  const common = { label: f.label, hint: f.hint, error, disabled, required: f.required };
+function FieldRenderer({ f, value, onChange, error, disabled, required }) {
+  const common = { label: f.label, hint: f.hint, error, disabled, required };
   const v = value ?? '';
   switch (f.type) {
     case 'textarea':
@@ -35,10 +35,13 @@ function FieldRenderer({ f, value, onChange, error, disabled }) {
       return <Input {...common} type="date" value={v ? String(v).slice(0, 10) : ''} max={f.maxToday ? isoLokal() : undefined} onChange={(e) => onChange(e.target.value || null)} />;
     case 'bool':
       return (
-        <label className={`flex items-start gap-3 rounded-control border border-line px-3 py-2.5 text-sm ${f.wide ? 'sm:col-span-2' : ''}`}>
-          <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--color-violet)]" checked={!!value} disabled={disabled} onChange={(e) => onChange(e.target.checked)} />
-          <span>{f.label}{f.hint && <span className="block text-[13px] text-ink-faint">{f.hint}</span>}</span>
-        </label>
+        <div className={f.wide ? 'sm:col-span-2' : ''}>
+          <label className={`flex items-start gap-3 rounded-control border px-3 py-2.5 text-sm ${error ? 'border-danger' : 'border-line'}`}>
+            <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--color-violet)]" checked={!!value} disabled={disabled} required={required} onChange={(e) => onChange(e.target.checked)} />
+            <span>{f.label}{required && <span className="text-danger"> *</span>}{f.hint && <span className="block text-[13px] text-ink-faint">{f.hint}</span>}</span>
+          </label>
+          {error && <p className="mt-1.5 text-[13px] text-danger">{error}</p>}
+        </div>
       );
     case 'checklist': {
       const arr = Array.isArray(value) ? value : String(value || '').split(';').filter(Boolean);
@@ -71,6 +74,7 @@ export default function DynamicForm({ sections, value, onChange, errors = {}, di
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
             {s.fields.filter((f) => !f.showIf || f.showIf(value)).map((f) => (
               <FieldRenderer key={f.name} f={f} value={getIn(value, f.name)} error={errors[f.name]} disabled={disabled}
+                required={typeof f.required === 'function' ? f.required(value) : !!f.required}
                 onChange={(v) => onChange(setIn(value, f.name, v))} />
             ))}
           </div>

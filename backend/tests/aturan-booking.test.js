@@ -112,6 +112,13 @@ describe('Maksimal booking belum dibayar per akun', () => {
   });
 });
 
+describe('Notifikasi admin atas aksi klien', () => {
+  test('admin diberi tahu saat klien baru mendaftar dan saat klien membatalkan booking', async () => {
+    expect(await notifTerbaru(admin, 'Klien baru mendaftar: Klien Uji Aturan')).toBeDefined();
+    expect(await notifTerbaru(admin, `Booking ${ctx.sesiB.kode_booking} dibatalkan klien`)).toBeDefined();
+  });
+});
+
 describe('Proses otomatis pembayaran', () => {
   test('tagihan lewat batas bayar dibatalkan otomatis dan slot terbuka kembali', async () => {
     await sequelize.query('UPDATE pembayaran SET batas_bayar = ? WHERE id_sesi = ?', { replacements: [new Date(Date.now() - 60000), ctx.sesiA.id_sesi] });
@@ -233,8 +240,23 @@ describe('Booking oleh Admin untuk kebutuhan mendesak', () => {
   test('admin melengkapi profil dan formulir klien walk-in; klien lain tidak bisa', async () => {
     if (!ctx.idKlienWalkIn) return;
     const base = `${BASE}/admin/klien/${ctx.idKlienWalkIn}`;
-    expect((await admin.put(base).send({ pekerjaan: 'Guru', alamat_rumah: 'Kartasura' })).status).toBe(200);
-    expect((await admin.put(`${base}/intake-dewasa`).send({ pernyataan_benar: true })).status).toBe(200);
+    // kolom wajib yang kosong ditolak beserta daftar kolomnya
+    const kurang = await admin.put(base).send({ pekerjaan: 'Guru' });
+    expect(kurang.status).toBe(422);
+    expect(kurang.body.errors.map((e) => e.field)).toEqual(expect.arrayContaining(['jenis_kelamin', 'tempat_lahir', 'agama']));
+    expect((await admin.put(base).send({
+      jenis_kelamin: 'Perempuan', tempat_lahir: 'Sukoharjo', tanggal_lahir: '1990-01-01', alamat_rumah: 'Kartasura',
+      agama: 'Islam', pendidikan_terakhir: 'S1', pekerjaan: 'Guru', status_pernikahan: 'Menikah',
+    })).status).toBe(200);
+    expect((await admin.put(`${base}/intake-dewasa`).send({ pernyataan_benar: true })).status).toBe(422);
+    expect((await admin.put(`${base}/intake-dewasa`).send({
+      kegemaran_hobi: 'Membaca', kelebihan: 'Teliti', kekurangan: 'Mudah cemas', keluhan_saat_ini: 'Sulit tidur',
+      harapan_pemeriksaan: 'Lebih tenang', pernyataan_benar: false,
+    })).status).toBe(422);
+    expect((await admin.put(`${base}/intake-dewasa`).send({
+      kegemaran_hobi: 'Membaca', kelebihan: 'Teliti', kekurangan: 'Mudah cemas', keluhan_saat_ini: 'Sulit tidur',
+      harapan_pemeriksaan: 'Lebih tenang', pernyataan_benar: true,
+    })).status).toBe(200);
     expect((await admin.post(`${base}/keluarga`).send({ kategori: 'Pasangan', nama: 'Bapak Contoh' })).status).toBe(201);
     const detail = await admin.get(base);
     expect(detail.body.data.pekerjaan).toBe('Guru');

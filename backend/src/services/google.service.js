@@ -71,6 +71,7 @@ async function masuk(klaim) {
         id_user: u.id_user, hubungan_akun: 'Diri Sendiri', nama_lengkap: String(klaim.name || email.split('@')[0]).slice(0, 150),
       }, { transaction: t });
       await k.update({ nomor_rekam_psikologi: generateNomorRekam(k.id_klien) }, { transaction: t });
+      await auth.notifKlienBaru(k.nama_lengkap, email, 'akun Google', t);
       return u;
     });
     baru = true;

@@ -19,9 +19,9 @@ import { useAuth } from '@/lib/auth-context';
 const PROFIL_BARU = [{ judul: 'Data anak / anggota keluarga', fields: [
   { name: 'hubungan_akun', label: 'Hubungan dengan Anda', type: 'select', required: true, options: [{ value: 'Anak', label: 'Anak' }, { value: 'Lainnya', label: 'Lainnya' }] },
   { name: 'nama_lengkap', label: 'Nama lengkap', required: true, max: 150 },
-  { name: 'jenis_kelamin', label: 'Jenis kelamin', type: 'select', options: ['Laki-laki', 'Perempuan'] },
-  { name: 'tempat_lahir', label: 'Tempat lahir', max: 100 },
-  { name: 'tanggal_lahir', label: 'Tanggal lahir', type: 'date', maxToday: true },
+  { name: 'jenis_kelamin', label: 'Jenis kelamin', type: 'select', required: true, options: ['Laki-laki', 'Perempuan'] },
+  { name: 'tempat_lahir', label: 'Tempat lahir', required: true, max: 100 },
+  { name: 'tanggal_lahir', label: 'Tanggal lahir', type: 'date', required: true, maxToday: true },
 ] }];
 
 export default function ProfilListPage() {

@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useMemo, useState } from 'react';
 import Link from 'next/link';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
@@ -24,6 +24,7 @@ export default function DetailKlienAdminPage({ params }) {
   const { id } = use(params);
   const { data, error, loading, reload } = useApi(`/admin/klien/${id}`);
   const [ubah, setUbah] = useState(false);
+  const dataForm = useMemo(() => (data ? normalisasiProfil(data) : null), [data]);
   if (loading && !data) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
   return (
@@ -31,7 +32,7 @@ export default function DetailKlienAdminPage({ params }) {
       <Link href="/admin/klien" className="text-sm text-ink-soft hover:text-ink">Klien</Link>
       <PageHeader title={data.nama_lengkap} description={keteranganAkun(data)}
         action={<Button variant={ubah ? 'secondary' : 'primary'} onClick={() => setUbah(!ubah)}>{ubah ? 'Selesai mengubah' : 'Lengkapi data dan formulir'}</Button>} />
-      {ubah ? <ProfilEditor data={normalisasiProfil(data)} apiBase={`/admin/klien/${id}`} onSaved={reload} staf /> : (
+      {ubah ? <ProfilEditor data={dataForm} apiBase={`/admin/klien/${id}`} onSaved={reload} staf /> : (
         <div className="grid gap-6 [&>*]:min-w-0 lg:grid-cols-[1fr_340px]">
           <div className="min-w-0 space-y-6">
             <div className="min-w-0 rounded-panel border border-line bg-white p-5"><DataKlien klien={data} /></div>

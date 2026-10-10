@@ -6,23 +6,25 @@
 
 const JK = ['Laki-laki', 'Perempuan'];
 const YT = ['Ya', 'Tidak'];
+/** Kolom wajib untuk profil dewasa, tidak untuk profil anak. Harus sama dengan backend (formWajib.service.js). */
+const wajibDewasa = (v) => v.hubungan_akun !== 'Anak';
 
 export const PROFIL_KLIEN = [
   {
     judul: 'Data pribadi',
     fields: [
       { name: 'nama_lengkap', label: 'Nama lengkap', required: true, max: 150 },
-      { name: 'jenis_kelamin', label: 'Jenis kelamin', type: 'select', options: JK },
-      { name: 'tempat_lahir', label: 'Tempat lahir', max: 100 },
-      { name: 'tanggal_lahir', label: 'Tanggal lahir', type: 'date', maxToday: true },
-      { name: 'alamat_rumah', label: 'Alamat rumah', type: 'textarea', rows: 2, max: 500 },
-      { name: 'no_hp', label: 'Nomor telepon / HP', type: 'tel', max: 16, placeholder: '081234567890' },
-      { name: 'agama', label: 'Agama / kepercayaan', max: 50 },
+      { name: 'jenis_kelamin', label: 'Jenis kelamin', required: true, type: 'select', options: JK },
+      { name: 'tempat_lahir', label: 'Tempat lahir', required: true, max: 100 },
+      { name: 'tanggal_lahir', label: 'Tanggal lahir', required: true, type: 'date', maxToday: true },
+      { name: 'alamat_rumah', label: 'Alamat rumah', required: wajibDewasa, type: 'textarea', rows: 2, max: 500 },
+      { name: 'no_hp', label: 'Nomor telepon / HP', required: wajibDewasa, type: 'tel', max: 16, placeholder: '081234567890' },
+      { name: 'agama', label: 'Agama / kepercayaan', required: wajibDewasa, max: 50 },
       { name: 'kewarganegaraan', label: 'Kewarganegaraan', max: 50 },
       { name: 'suku_bangsa', label: 'Suku bangsa', max: 50 },
-      { name: 'pendidikan_terakhir', label: 'Pendidikan terakhir', max: 100 },
-      { name: 'pekerjaan', label: 'Pekerjaan', max: 100 },
-      { name: 'status_pernikahan', label: 'Status pernikahan', type: 'select', options: ['Belum Menikah', 'Menikah', 'Bercerai', 'Janda', 'Duda'] },
+      { name: 'pendidikan_terakhir', label: 'Pendidikan terakhir', required: wajibDewasa, max: 100 },
+      { name: 'pekerjaan', label: 'Pekerjaan', required: wajibDewasa, max: 100 },
+      { name: 'status_pernikahan', label: 'Status pernikahan', required: wajibDewasa, type: 'select', options: ['Belum Menikah', 'Menikah', 'Bercerai', 'Janda', 'Duda'] },
       { name: 'tahun_menikah', label: 'Tahun menikah', type: 'number', min: 1900, maxValue: new Date().getFullYear(), showIf: (v) => v.status_pernikahan && v.status_pernikahan !== 'Belum Menikah' },
     ],
   },
@@ -32,26 +34,26 @@ export const INTAKE_DEWASA = [
   {
     judul: 'Kegiatan lainnya',
     fields: [
-      { name: 'kegemaran_hobi', label: 'Kegemaran / hobi', type: 'textarea', rows: 2 },
+      { name: 'kegemaran_hobi', label: 'Kegemaran / hobi', required: true, type: 'textarea', rows: 2 },
       { name: 'kursus_pelatihan_keahlian', label: 'Kursus / pelatihan / keahlian', type: 'textarea', rows: 2 },
     ],
   },
   {
     judul: 'Keterangan lain',
     fields: [
-      { name: 'kelebihan', label: 'Kelebihan yang dimiliki', type: 'textarea', hint: 'Tulis satu poin per baris', wide: false },
-      { name: 'kekurangan', label: 'Kekurangan yang dimiliki', type: 'textarea', hint: 'Tulis satu poin per baris', wide: false },
-      { name: 'keluhan_saat_ini', label: 'Keluhan yang dihadapi saat ini', type: 'textarea' },
-      { name: 'harapan_pemeriksaan', label: 'Harapan setelah melakukan pemeriksaan psikologi', type: 'textarea' },
+      { name: 'kelebihan', label: 'Kelebihan yang dimiliki', required: true, type: 'textarea', hint: 'Tulis satu poin per baris', wide: false },
+      { name: 'kekurangan', label: 'Kekurangan yang dimiliki', required: true, type: 'textarea', hint: 'Tulis satu poin per baris', wide: false },
+      { name: 'keluhan_saat_ini', label: 'Keluhan yang dihadapi saat ini', required: true, type: 'textarea' },
+      { name: 'harapan_pemeriksaan', label: 'Harapan setelah melakukan pemeriksaan psikologi', required: true, type: 'textarea' },
     ],
   },
   {
     judul: 'Riwayat kesehatan',
     fields: [
       { name: 'pernah_sakit_berat', label: 'Pernah menderita penyakit berat hingga dirawat di rumah sakit atau sakit yang lama sembuh', type: 'bool', wide: true },
-      { name: 'sakit_tahun', label: 'Tahun', max: 10, showIf: (v) => v.pernah_sakit_berat },
+      { name: 'sakit_tahun', label: 'Tahun', required: true, max: 10, showIf: (v) => v.pernah_sakit_berat },
       { name: 'sakit_lama', label: 'Berapa lama', max: 50, showIf: (v) => v.pernah_sakit_berat },
-      { name: 'sakit_diagnosa', label: 'Diagnosa', max: 255, showIf: (v) => v.pernah_sakit_berat },
+      { name: 'sakit_diagnosa', label: 'Diagnosa', required: true, max: 255, showIf: (v) => v.pernah_sakit_berat },
       { name: 'sakit_dirawat_di', label: 'Dirawat di mana', max: 150, showIf: (v) => v.pernah_sakit_berat },
     ],
   },
@@ -59,15 +61,15 @@ export const INTAKE_DEWASA = [
     judul: 'Pemeriksaan psikologis sebelumnya',
     fields: [
       { name: 'pernah_psikotes', label: 'Pernah mengikuti pemeriksaan psikologis sebelumnya', type: 'bool', wide: true },
-      { name: 'psikotes_tahun', label: 'Tahun', max: 10, showIf: (v) => v.pernah_psikotes },
+      { name: 'psikotes_tahun', label: 'Tahun', required: true, max: 10, showIf: (v) => v.pernah_psikotes },
       { name: 'psikotes_tempat', label: 'Di mana', max: 150, showIf: (v) => v.pernah_psikotes },
-      { name: 'psikotes_keperluan', label: 'Untuk keperluan', max: 255, showIf: (v) => v.pernah_psikotes },
+      { name: 'psikotes_keperluan', label: 'Untuk keperluan', required: true, max: 255, showIf: (v) => v.pernah_psikotes },
     ],
   },
   {
     judul: 'Pernyataan',
     fields: [
-      { name: 'pernyataan_benar', label: 'Semua keterangan di atas saya buat dengan jujur dan sungguh-sungguh tanpa paksaan dari pihak mana pun.', type: 'bool', wide: true },
+      { name: 'pernyataan_benar', label: 'Semua keterangan di atas saya buat dengan jujur dan sungguh-sungguh tanpa paksaan dari pihak mana pun.', required: true, type: 'bool', wide: true },
     ],
   },
 ];
@@ -78,8 +80,8 @@ export const INTAKE_ANAK = [
     fields: [
       { name: 'nama_sekolah', label: 'Nama sekolah', max: 150 },
       { name: 'kelas', label: 'Kelas', max: 50 },
-      { name: 'berat_badan_kg', label: 'Berat badan saat ini (kg)', type: 'number', step: '0.1' },
-      { name: 'tinggi_badan_cm', label: 'Tinggi badan saat ini (cm)', type: 'number', step: '0.1' },
+      { name: 'berat_badan_kg', label: 'Berat badan saat ini (kg)', required: true, type: 'number', step: '0.1' },
+      { name: 'tinggi_badan_cm', label: 'Tinggi badan saat ini (cm)', required: true, type: 'number', step: '0.1' },
       { name: 'penyakit_pernah_diderita', label: 'Penyakit yang pernah diderita', type: 'textarea', rows: 2, wide: false },
       { name: 'lama_menderita_penyakit', label: 'Lama menderita penyakit', max: 100 },
       { name: 'gangguan_perkembangan_lain', label: 'Gangguan perkembangan lain', type: 'textarea', rows: 2 },
@@ -88,15 +90,15 @@ export const INTAKE_ANAK = [
   {
     judul: 'Riwayat kehamilan dan kelahiran',
     fields: [
-      { name: 'kelahiran.keguguran_sebelumnya', label: 'Mengalami keguguran sebelumnya', type: 'select', options: YT },
-      { name: 'kelahiran.anak_diinginkan', label: 'Tergolong anak yang diinginkan', type: 'select', options: ['Ya', 'Tidak', 'Tidak Tahu'] },
+      { name: 'kelahiran.keguguran_sebelumnya', label: 'Mengalami keguguran sebelumnya', required: true, type: 'select', options: YT },
+      { name: 'kelahiran.anak_diinginkan', label: 'Tergolong anak yang diinginkan', required: true, type: 'select', options: ['Ya', 'Tidak', 'Tidak Tahu'] },
       { name: 'kelahiran.perasaan_waktu_hamil', label: 'Perasaan waktu hamil', type: 'textarea', rows: 2 },
       { name: 'kelahiran.umur_kandungan', label: 'Umur kandungan', max: 50 },
-      { name: 'kelahiran.proses_kelahiran', label: 'Saat kelahiran', type: 'select', options: ['Normal', 'Caesar', 'Mudah', 'Sulit', 'Butuh bantuan'] },
+      { name: 'kelahiran.proses_kelahiran', label: 'Saat kelahiran', required: true, type: 'select', options: ['Normal', 'Caesar', 'Mudah', 'Sulit', 'Butuh bantuan'] },
       { name: 'kelahiran.skor_apgar', label: 'Skor Apgar', max: 20 },
       { name: 'kelahiran.tempat_melahirkan', label: 'Tempat melahirkan', max: 150 },
       { name: 'kelahiran.ditolong_oleh', label: 'Ditolong oleh', max: 100 },
-      { name: 'kelahiran.berat_lahir_kg', label: 'Berat badan bayi (kg)', type: 'number', step: '0.01' },
+      { name: 'kelahiran.berat_lahir_kg', label: 'Berat badan bayi (kg)', required: true, type: 'number', step: '0.01' },
       { name: 'kelahiran.panjang_lahir_cm', label: 'Panjang badan bayi (cm)', type: 'number', step: '0.1' },
     ],
   },
@@ -107,7 +109,7 @@ export const INTAKE_ANAK = [
       { name: 'kelahiran.makanan_tambahan_usia', label: 'Mulai makanan tambahan pada usia', max: 50 },
       { name: 'kelahiran.susu_formula_mulai', label: 'Mulai minum susu formula', max: 50 },
       { name: 'kelahiran.susu_formula_hingga', label: 'Susu formula hingga', max: 50 },
-      { name: 'kelahiran.kualitas_makanan', label: 'Kualitas makanan', type: 'select', options: ['Baik', 'Cukup', 'Kurang'] },
+      { name: 'kelahiran.kualitas_makanan', label: 'Kualitas makanan', required: true, type: 'select', options: ['Baik', 'Cukup', 'Kurang'] },
       { name: 'kelahiran.kesukaran_makan', label: 'Kesukaran pemberian makanan', type: 'textarea', rows: 2 },
     ],
   },
@@ -128,10 +130,10 @@ export const INTAKE_ANAK = [
     fields: [
       { name: 'perkembangan.telungkup_bulan', label: 'Telungkup', max: 20 },
       { name: 'perkembangan.merangkak_bulan', label: 'Merangkak', max: 20 },
-      { name: 'perkembangan.duduk_bulan', label: 'Duduk', max: 20 },
+      { name: 'perkembangan.duduk_bulan', label: 'Duduk', required: true, max: 20 },
       { name: 'perkembangan.berdiri_bulan', label: 'Berdiri', max: 20 },
-      { name: 'perkembangan.berjalan_bulan', label: 'Berjalan', max: 20 },
-      { name: 'perkembangan.kata_pertama_bulan', label: 'Berbicara kata-kata pertama', max: 20 },
+      { name: 'perkembangan.berjalan_bulan', label: 'Berjalan', required: true, max: 20 },
+      { name: 'perkembangan.kata_pertama_bulan', label: 'Berbicara kata-kata pertama', required: true, max: 20 },
       { name: 'perkembangan.kalimat_lengkap_bulan', label: 'Berbicara kalimat lengkap', max: 20 },
       { name: 'perkembangan.kesulitan_gerak', label: 'Kesulitan dalam gerak', type: 'textarea', rows: 2, wide: false },
       { name: 'perkembangan.kesulitan_bahasa', label: 'Kesulitan dalam berbahasa', type: 'textarea', rows: 2, wide: false },
@@ -141,7 +143,7 @@ export const INTAKE_ANAK = [
     judul: 'Faktor sosial dan personal',
     fields: [
       { name: 'pendidikan_sosial.hubungan_dengan_saudara', label: 'Hubungan dengan saudara', type: 'textarea', rows: 2, wide: false },
-      { name: 'pendidikan_sosial.hubungan_dengan_teman', label: 'Hubungan dengan teman', type: 'textarea', rows: 2, wide: false },
+      { name: 'pendidikan_sosial.hubungan_dengan_teman', label: 'Hubungan dengan teman', required: true, type: 'textarea', rows: 2, wide: false },
       { name: 'pendidikan_sosial.hobi', label: 'Hobi', type: 'textarea', rows: 2, wide: false },
       { name: 'pendidikan_sosial.minat', label: 'Minat', type: 'textarea', rows: 2, wide: false },
       { name: 'pendidikan_sosial.aktivitas_rekreasi', label: 'Aktivitas rekreasi', type: 'textarea', rows: 2, wide: false },
@@ -156,8 +158,8 @@ export const INTAKE_ANAK = [
     fields: [
       { name: 'pendidikan_sosial.masuk_tk_umur', label: 'Masuk taman kanak-kanak umur (tahun)', max: 20 },
       { name: 'pendidikan_sosial.masuk_sd_umur', label: 'Masuk SD umur (tahun)', max: 20 },
-      { name: 'pendidikan_sosial.pernah_tinggal_kelas', label: 'Pernah tinggal kelas', type: 'select', options: YT },
-      { name: 'pendidikan_sosial.tinggal_di_kelas', label: 'Di kelas', max: 20, showIf: (v) => v.pendidikan_sosial?.pernah_tinggal_kelas === 'Ya' },
+      { name: 'pendidikan_sosial.pernah_tinggal_kelas', label: 'Pernah tinggal kelas', required: true, type: 'select', options: YT },
+      { name: 'pendidikan_sosial.tinggal_di_kelas', label: 'Di kelas', required: true, max: 20, showIf: (v) => v.pendidikan_sosial?.pernah_tinggal_kelas === 'Ya' },
       { name: 'pendidikan_sosial.kesulitan_membaca', label: 'Kesulitan dalam membaca', type: 'textarea', rows: 2, wide: false },
       { name: 'pendidikan_sosial.kesulitan_menulis', label: 'Kesulitan dalam menulis', type: 'textarea', rows: 2, wide: false },
       { name: 'pendidikan_sosial.kesulitan_berhitung', label: 'Kesulitan dalam berhitung', type: 'textarea', rows: 2, wide: false },

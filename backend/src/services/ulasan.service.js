@@ -3,7 +3,8 @@
  * Nama klien disamarkan di tampilan publik untuk menjaga kerahasiaan klien layanan psikologi.
  */
 const { sequelize, Ulasan, SesiAsesmen, Klien, Psikolog, Layanan, User } = require('../models');
-const { STATUS_SESI } = require('../config/constants');
+const { STATUS_SESI, TIPE_NOTIF } = require('../config/constants');
+const notif = require('./notifikasi.service');
 const AppError = require('../utils/AppError');
 const { getPagination, buildMeta } = require('../utils/pagination');
 
@@ -22,7 +23,12 @@ async function buat(idUser, idSesi, { rating, komentar }) {
   if (!sesi) throw AppError.notFound('Sesi tidak ditemukan');
   if (sesi.status_asesmen !== STATUS_SESI.SELESAI) throw AppError.conflict('Ulasan dapat diberikan setelah sesi selesai');
   if (await Ulasan.count({ where: { id_sesi: idSesi } })) throw AppError.conflict('Sesi ini sudah diberi ulasan');
-  return Ulasan.create({ id_sesi: idSesi, id_klien: sesi.id_klien, id_psikolog: sesi.id_psikolog, rating, komentar: komentar || null });
+  const ulasan = await Ulasan.create({ id_sesi: idSesi, id_klien: sesi.id_klien, id_psikolog: sesi.id_psikolog, rating, komentar: komentar || null });
+  const psikolog = await Psikolog.findByPk(sesi.id_psikolog, { attributes: ['id_user'] });
+  const isi = { idSesi, tipe: TIPE_NOTIF.SISTEM, judul: `Ulasan baru untuk sesi ${sesi.kode_booking}`, pesan: `Rating ${rating} dari 5.${komentar ? ` Komentar: ${komentar}` : ''}` };
+  await notif.kirim({ idUser: psikolog?.id_user, ...isi });
+  await notif.kirimKeAdmin(isi);
+  return ulasan;
 }
 
 async function ringkasanRating(idPsikolog) {
