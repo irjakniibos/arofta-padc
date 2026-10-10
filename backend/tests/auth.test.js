@@ -4,12 +4,18 @@ const { sequelize } = require('../src/models');
 afterAll(() => sequelize.close());
 
 describe('Autentikasi & keamanan', () => {
-  const user = { nama_lengkap: 'Uji Register', email: 'uji.register@mail.com', password: 'Rahasia123', konfirmasi_password: 'Rahasia123', no_hp: '081234567890' };
+  const user = { nama_lengkap: 'Uji Register', email: 'uji.register@mail.com', password: 'Rahasia123', konfirmasi_password: 'Rahasia123', no_hp: '081234567890', setuju_privasi: true };
 
   test('register menolak input tidak valid (validasi backend)', async () => {
     const res = await request(app).post(`${BASE}/auth/register`).send({ email: 'bukan-email', password: '123' });
     expect(res.status).toBe(422);
     expect(res.body.errors.map((e) => e.field)).toEqual(expect.arrayContaining(['nama_lengkap', 'email', 'password']));
+  });
+
+  test('register ditolak bila Kebijakan Privasi tidak disetujui', async () => {
+    const res = await request(app).post(`${BASE}/auth/register`).send({ ...user, setuju_privasi: false });
+    expect(res.status).toBe(422);
+    expect(res.body.errors.map((e) => e.field)).toContain('setuju_privasi');
   });
 
   test('register berhasil & password tersimpan sebagai hash', async () => {
@@ -18,6 +24,9 @@ describe('Autentikasi & keamanan', () => {
     const [[row]] = await sequelize.query('SELECT password FROM users WHERE email = ?', { replacements: [user.email] });
     expect(row.password).not.toBe(user.password);
     expect(row.password.startsWith('$2')).toBe(true);
+    const [[p]] = await sequelize.query('SELECT privasi_disetujui_at, privasi_versi FROM users WHERE email = ?', { replacements: [user.email] });
+    expect(p.privasi_disetujui_at).not.toBeNull();
+    expect(p.privasi_versi).toBe('1.0');
   });
 
   test('register email duplikat ditolak', async () => {

@@ -35,7 +35,7 @@ describe('Alur layanan tes psikologi anak (end-to-end)', () => {
   });
 
   test('booking ditolak bila formulir riwayat anak belum diisi', async () => {
-    const res = await klien.post(`${BASE}/klien/booking`).send({ id_klien: ctx.anak.id_klien, id_layanan: ctx.layanan.id_layanan, id_jadwal: ctx.slot.id_jadwal, tipe_sesi: 'Online' });
+    const res = await klien.post(`${BASE}/klien/booking`).send({ id_klien: ctx.anak.id_klien, id_layanan: ctx.layanan.id_layanan, id_jadwal: ctx.slot.id_jadwal, tipe_sesi: 'Online', setuju_persetujuan: true });
     expect(res.status).toBe(400);
   });
 
@@ -55,18 +55,20 @@ describe('Alur layanan tes psikologi anak (end-to-end)', () => {
   });
 
   test('booking berhasil membuat sesi Terdaftar dan tagihan', async () => {
-    const res = await klien.post(`${BASE}/klien/booking`).send({ id_klien: ctx.anak.id_klien, id_layanan: ctx.layanan.id_layanan, id_jadwal: ctx.slot.id_jadwal, tipe_sesi: 'Online' });
+    const res = await klien.post(`${BASE}/klien/booking`).send({ id_klien: ctx.anak.id_klien, id_layanan: ctx.layanan.id_layanan, id_jadwal: ctx.slot.id_jadwal, tipe_sesi: 'Online', setuju_persetujuan: true });
     expect(res.status).toBe(201);
     ctx.sesi = res.body.data;
     expect(ctx.sesi.status_asesmen).toBe('Terdaftar');
     expect(ctx.sesi.pembayaran.status_pembayaran).toBe('Menunggu Pembayaran');
     expect(Number(ctx.sesi.pembayaran.total_bayar)).toBe(Number(ctx.layanan.harga));
-    expect(ctx.sesi.info_pembayaran).toHaveProperty('link_form_bukti_bayar');
+    expect(ctx.sesi.info_pembayaran).toHaveProperty('kontak_whatsapp');
+    expect(ctx.sesi.persetujuan_versi).toBe('1.0');
+    expect(new Date(ctx.sesi.pembayaran.batas_bayar).getTime()).toBeGreaterThan(Date.now());
   });
 
   test('slot yang sama tidak bisa dipesan dua kali', async () => {
     const res = await klienLain.get(`${BASE}/klien/profil`);
-    const res2 = await klienLain.post(`${BASE}/klien/booking`).send({ id_klien: res.body.data[0].id_klien, id_layanan: 5, id_jadwal: ctx.slot.id_jadwal, tipe_sesi: 'Online' });
+    const res2 = await klienLain.post(`${BASE}/klien/booking`).send({ id_klien: res.body.data[0].id_klien, id_layanan: 5, id_jadwal: ctx.slot.id_jadwal, tipe_sesi: 'Online', setuju_persetujuan: true });
     expect([400, 409]).toContain(res2.status);
   });
 
@@ -233,11 +235,23 @@ describe('Alur layanan tes psikologi anak (end-to-end)', () => {
   });
 
   test('klien dapat membatalkan booking yang belum dibayar & slot terbuka kembali', async () => {
-    const b = await klien.post(`${BASE}/klien/booking`).send({ id_klien: ctx.anak.id_klien, id_layanan: ctx.layanan.id_layanan, id_jadwal: ctx.slot2.id_jadwal, tipe_sesi: 'Online' });
+    const b = await klien.post(`${BASE}/klien/booking`).send({ id_klien: ctx.anak.id_klien, id_layanan: ctx.layanan.id_layanan, id_jadwal: ctx.slot2.id_jadwal, tipe_sesi: 'Online', setuju_persetujuan: true });
     expect(b.status).toBe(201);
     const batal = await klien.patch(`${BASE}/klien/sesi/${b.body.data.id_sesi}/batal`).send({ alasan: 'Berhalangan' });
     expect(batal.body.data.status_asesmen).toBe('Batal');
     const [[slot]] = await sequelize.query('SELECT status_slot FROM jadwal_psikolog WHERE id_jadwal = ?', { replacements: [ctx.slot2.id_jadwal] });
     expect(slot.status_slot).toBe('Tersedia');
+  });
+
+  test('hanya admin yang dapat membuka kembali laporan Final untuk revisi', async () => {
+    const url = `${BASE}/admin/laporan/${ctx.laporan.id_laporan}/buka-kembali`;
+    expect((await psikolog.patch(url)).status).toBe(403);
+    const res = await admin.patch(url);
+    expect(res.status).toBe(200);
+    expect(res.body.data.status_laporan).toBe('Draft');
+    // laporan kembali bisa disunting psikolog, dan klien tidak dapat mengunduh selama revisi
+    expect((await psikolog.put(`${BASE}/psikolog/sesi/${ctx.sesi.id_sesi}/laporan`).send({ jawaban: [] })).status).toBe(200);
+    expect((await klien.get(`${BASE}/laporan/${ctx.laporan.id_laporan}/unduh`)).status).not.toBe(200);
+    expect((await admin.patch(url)).status).toBe(409);
   });
 });

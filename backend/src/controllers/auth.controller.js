@@ -37,6 +37,12 @@ exports.logout = async (req, res) => {
 
 exports.me = async (req, res) => ok(res, await authService.profile(req.user.id_user));
 
+exports.setujuiPrivasi = async (req, res) => {
+  const d = await authService.setujuiPrivasi(req.user.id_user);
+  await audit.log(req, 'PERSETUJUAN', 'users', req.user.id_user, `Kebijakan Privasi v${d.privasi_versi}`);
+  return ok(res, d, 'Persetujuan Kebijakan Privasi tersimpan');
+};
+
 exports.changePassword = async (req, res) => {
   await authService.changePassword(req.user.id_user, req.validated.password_lama, req.validated.password_baru);
   await audit.log(req, 'CHANGE_PASSWORD', 'users', req.user.id_user);

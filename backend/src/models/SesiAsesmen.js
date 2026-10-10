@@ -16,5 +16,8 @@ module.exports = (sequelize) => sequelize.define('SesiAsesmen', {
   lokasi_ruangan: DataTypes.STRING(255),
   catatan_klien: DataTypes.TEXT,
   alasan_batal: DataTypes.TEXT,
+  persetujuan_at: DataTypes.DATE,
+  persetujuan_versi: DataTypes.STRING(20),
+  dibuat_oleh: DataTypes.INTEGER,
   reminder_terkirim: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
 }, { tableName: 'sesi_asesmen' });

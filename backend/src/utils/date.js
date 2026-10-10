@@ -34,6 +34,11 @@ function combineDateTime(tanggal, waktu) {
   return new Date(`${String(tanggal).slice(0, 10)}T${String(waktu).slice(0, 8)}`);
 }
 
+/** Date -> '9 Oktober 2026 pukul 14.30 WIB' (waktu lokal server). */
+function formatWaktuIndo(d) {
+  return `${formatTanggalIndo(toDateString(d))} pukul ${pad(d.getHours())}.${pad(d.getMinutes())} WIB`;
+}
+
 function addHours(date, hours) { return new Date(date.getTime() + hours * 3600 * 1000); }
 
-module.exports = { toDateString, formatTanggalIndo, hitungUsia, combineDateTime, addHours, BULAN };
+module.exports = { toDateString, formatTanggalIndo, formatWaktuIndo, hitungUsia, combineDateTime, addHours, BULAN };

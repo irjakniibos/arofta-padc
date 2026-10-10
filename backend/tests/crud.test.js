@@ -50,13 +50,23 @@ describe('CRUD data master oleh Admin', () => {
     expect((await admin.delete(`${BASE}/admin/pengeluaran/${id}`)).status).toBe(404);
   });
 
-  test('ubah pengaturan rekening & link Google Form', async () => {
+  test('ubah pengaturan rekening & nomor WhatsApp konfirmasi', async () => {
     const res = await admin.put(`${BASE}/admin/pengaturan`).send({ items: [
       { kunci: 'bank_nama', nilai: 'BSI' }, { kunci: 'bank_no_rekening', nilai: '1234567890' },
-      { kunci: 'bank_atas_nama', nilai: 'AROFTA PADC' }, { kunci: 'link_form_bukti_bayar', nilai: 'https://forms.gle/contoh' },
+      { kunci: 'bank_atas_nama', nilai: 'AROFTA PADC' }, { kunci: 'kontak_whatsapp', nilai: '082228885529' },
     ] });
     expect(res.status).toBe(200);
     expect((await admin.put(`${BASE}/admin/pengaturan`).send({ items: [{ kunci: 'tidak_ada', nilai: 'x' }] })).status).toBe(400);
+    expect((await admin.put(`${BASE}/admin/pengaturan`).send({ items: [{ kunci: 'link_form_bukti_bayar', nilai: 'https://forms.gle/x' }] })).status).toBe(400);
+  });
+
+  test('aturan waktu booking divalidasi (angka bulat & batas booking > batas bayar sebelum sesi)', async () => {
+    const put = (items) => admin.put(`${BASE}/admin/pengaturan`).send({ items });
+    expect((await put([{ kunci: 'batas_booking_jam', nilai: 'tiga' }])).status).toBe(400);
+    expect((await put([{ kunci: 'maks_booking_belum_bayar', nilai: '0' }])).status).toBe(400);
+    expect((await put([{ kunci: 'batas_booking_jam', nilai: '1' }])).status).toBe(400);
+    expect((await put([{ kunci: 'kontak_whatsapp', nilai: '12345' }])).status).toBe(400);
+    expect((await put([{ kunci: 'batas_booking_jam', nilai: '3' }, { kunci: 'maks_booking_belum_bayar', nilai: '5' }])).status).toBe(200);
   });
 
   test('buat akun psikolog baru', async () => {

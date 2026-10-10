@@ -74,6 +74,7 @@ Psikolog.hasMany(SesiAsesmen, { ...fk('id_psikolog'), as: 'sesi' });
 SesiAsesmen.belongsTo(Psikolog, { ...fk('id_psikolog'), as: 'psikolog' });
 Layanan.hasMany(SesiAsesmen, fk('id_layanan'));
 SesiAsesmen.belongsTo(Layanan, { ...fk('id_layanan'), as: 'layanan' });
+SesiAsesmen.belongsTo(User, { foreignKey: 'dibuat_oleh', as: 'pembuat' });
 
 SesiAsesmen.hasOne(Pembayaran, { ...fk('id_sesi'), as: 'pembayaran' });
 Pembayaran.belongsTo(SesiAsesmen, { ...fk('id_sesi'), as: 'sesi' });

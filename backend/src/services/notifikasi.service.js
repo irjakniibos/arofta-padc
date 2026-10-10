@@ -11,6 +11,7 @@ const AppError = require('../utils/AppError');
 const logger = require('../utils/logger');
 
 async function kirim({ idUser, idSesi = null, tipe, judul, pesan, email = true, cta = null, transaction = null }) {
+  if (!idUser) return null; // profil walk-in tanpa akun login tidak menerima notifikasi
   const notif = await Notifikasi.create({ id_user: idUser, id_sesi: idSesi, tipe, judul, pesan }, { transaction });
   if (email) {
     const kirimEmail = async () => {

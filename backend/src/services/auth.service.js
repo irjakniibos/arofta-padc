@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 const env = require('../config/env');
 const { sequelize, User, Klien, Psikolog, PasswordReset } = require('../models');
-const { ROLES } = require('../config/constants');
+const { ROLES, VERSI_PERSETUJUAN } = require('../config/constants');
 const AppError = require('../utils/AppError');
 const { generateNomorRekam, generateToken, hashToken } = require('../utils/codes');
 const mail = require('./mail.service');
@@ -32,6 +32,8 @@ async function register(data) {
       email: data.email,
       password: await hashPassword(data.password),
       role: ROLES.KLIEN,
+      privasi_disetujui_at: new Date(),
+      privasi_versi: VERSI_PERSETUJUAN.PRIVASI,
     }, { transaction: t });
     const klien = await Klien.create({
       id_user: user.id_user,
@@ -75,10 +77,11 @@ async function login(email, password) {
 
 async function profile(idUser) {
   const user = await User.findByPk(idUser, {
-    attributes: ['id_user', 'email', 'role', 'last_login', 'created_at'],
+    attributes: ['id_user', 'email', 'role', 'last_login', 'created_at', 'privasi_disetujui_at', 'privasi_versi'],
   });
   if (!user) throw AppError.notFound('User tidak ditemukan');
   const data = user.toJSON();
+  data.perlu_persetujuan_privasi = user.privasi_versi !== VERSI_PERSETUJUAN.PRIVASI;
   if (user.role === ROLES.KLIEN) {
     data.profil_klien = await Klien.findAll({
       where: { id_user: idUser },
@@ -94,6 +97,12 @@ async function profile(idUser) {
   return data;
 }
 
+/** Persetujuan Kebijakan Privasi untuk akun lama, akun buatan Admin, atau setelah versi kebijakan berubah. */
+async function setujuiPrivasi(idUser) {
+  await User.update({ privasi_disetujui_at: new Date(), privasi_versi: VERSI_PERSETUJUAN.PRIVASI }, { where: { id_user: idUser } });
+  return profile(idUser);
+}
+
 async function changePassword(idUser, oldPassword, newPassword) {
   const user = await User.scope('withPassword').findByPk(idUser);
   if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
@@ -105,23 +114,44 @@ async function changePassword(idUser, oldPassword, newPassword) {
   await user.update({ password: await hashPassword(newPassword) });
 }
 
+/** Membuat token atur password (sekali pakai) dan mengembalikan URL halaman reset password. */
+async function buatTautanPassword(idUser, menit, transaction = null) {
+  await PasswordReset.update({ used_at: new Date() }, { where: { id_user: idUser, used_at: null }, transaction });
+  const token = generateToken();
+  await PasswordReset.create({
+    id_user: idUser,
+    token_hash: hashToken(token),
+    expires_at: new Date(Date.now() + menit * 60000),
+  }, { transaction });
+  return `${env.frontendUrl}/reset-password?token=${token}`;
+}
+
 async function forgotPassword(email) {
   const user = await User.findOne({ where: { email, is_active: true } });
   if (!user) return; // respons tetap sama agar email terdaftar tidak bisa ditebak
 
-  await PasswordReset.update({ used_at: new Date() }, { where: { id_user: user.id_user, used_at: null } });
-  const token = generateToken();
-  await PasswordReset.create({
-    id_user: user.id_user,
-    token_hash: hashToken(token),
-    expires_at: new Date(Date.now() + env.auth.resetTokenMinutes * 60000),
-  });
-  const url = `${env.frontendUrl}/reset-password?token=${token}`;
+  const url = await buatTautanPassword(user.id_user, env.auth.resetTokenMinutes);
   await mail.send({
     to: user.email,
     subject: 'Reset Password Akun AROFTA PADC',
-    text: `Kami menerima permintaan reset password untuk akun Anda.\nTautan berlaku ${env.auth.resetTokenMinutes} menit. Abaikan email ini jika Anda tidak memintanya.`,
+    text: `Kami menerima permintaan reset password untuk akun Anda.
+Tautan berlaku ${env.auth.resetTokenMinutes} menit. Abaikan email ini jika Anda tidak memintanya.`,
     cta: { label: 'Atur Password Baru', url },
+  });
+}
+
+const UNDANGAN_JAM = 72;
+
+/** Email undangan untuk akun klien yang dibuatkan Admin: klien mengatur password sendiri. */
+async function kirimUndangan(user, url) {
+  await mail.send({
+    to: user.email,
+    subject: 'Akun AROFTA PADC Anda sudah dibuat',
+    text: `Admin AROFTA PADC telah membuatkan akun untuk Anda dengan email ${user.email}.
+`
+      + `Silakan atur password melalui tautan berikut (berlaku ${UNDANGAN_JAM} jam). Setelah itu Anda dapat masuk untuk melihat jadwal, `
+      + 'melengkapi formulir, dan mengunduh laporan hasil.',
+    cta: { label: 'Atur Password', url },
   });
 }
 
@@ -139,4 +169,6 @@ async function resetPassword(token, newPassword) {
   });
 }
 
-module.exports = { register, login, profile, changePassword, forgotPassword, resetPassword, hashPassword };
+module.exports = {
+  register, login, profile, setujuiPrivasi, changePassword, forgotPassword, resetPassword, hashPassword, buatTautanPassword, kirimUndangan, UNDANGAN_JAM,
+};

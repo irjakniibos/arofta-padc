@@ -14,10 +14,12 @@ const PENGATURAN = [
   ['bank_nama', '-', 'Nama bank tujuan transfer', true],
   ['bank_no_rekening', '-', 'Nomor rekening tujuan transfer', true],
   ['bank_atas_nama', '-', 'Nama pemilik rekening', true],
-  ['link_form_bukti_bayar', '-', 'Link Google Form untuk mengunggah bukti transfer', true],
   ['batas_bayar_jam', '24', 'Batas waktu pembayaran setelah booking (jam)', false],
+  ['batas_bayar_sebelum_sesi_jam', '1', 'Pembayaran paling lambat N jam sebelum sesi dimulai', false],
+  ['batas_booking_jam', '3', 'Booking online paling lambat N jam sebelum jadwal', true],
+  ['maks_booking_belum_bayar', '5', 'Maksimal booking belum dibayar per akun klien', false],
   ['reminder_jam_sebelum', '24', 'Pengingat jadwal dikirim N jam sebelum sesi', false],
-  ['kontak_whatsapp', '082228885529', 'Nomor WhatsApp customer service', true],
+  ['kontak_whatsapp', '082228885529', 'Nomor WhatsApp admin (konfirmasi pembayaran & layanan mendesak)', true],
   ['alamat_klinik', 'Kauman RT 04/09, Ngadirejo, Kartasura, Sukoharjo', 'Alamat klinik & sesi tatap muka', true],
   ['email_lembaga', 'arofta.padc@gmail.com', 'Email resmi lembaga', true],
 ];
@@ -49,7 +51,7 @@ module.exports = {
     const now = new Date();
     const qi = queryInterface;
 
-    await qi.bulkInsert('pengaturan', PENGATURAN.map(([kunci, nilai, keterangan, isPublic]) => ({ kunci, nilai, keterangan, is_public: isPublic, updated_at: now })));
+    await qi.bulkInsert('pengaturan', PENGATURAN.map(([kunci, nilai, keterangan, isPublic]) => ({ kunci, nilai, keterangan, is_public: isPublic, updated_at: now })), { ignoreDuplicates: true });
     await qi.bulkInsert('kategori_fee', KATEGORI_FEE.map(([nama_kategori, nominal_default]) => ({ nama_kategori, nominal_default })));
 
     // Salin file template .docx default ke storage privat

@@ -14,6 +14,7 @@ const dashboard = require('../services/dashboard.service');
 const audit = require('../services/audit.service');
 const ulasan = require('../services/ulasan.service');
 const kalender = require('../services/kalender.service');
+const booking = require('../services/booking.service');
 const { ok, created } = require('../utils/response');
 
 const paged = (fn) => async (req, res) => { const r = await fn(req); return ok(res, r.rows, 'Berhasil', r.meta); };
@@ -64,6 +65,12 @@ exports.detailSesi = async (req, res) => ok(res, await sesi.detail(req.params.id
 exports.alokasiSesi = async (req, res) => { const d = await sesi.alokasi(req.params.id, req.validated); await audit.log(req, 'ALOKASI', 'sesi_asesmen', req.params.id, `slot ${req.validated.id_jadwal}`); return ok(res, d, 'Jadwal/psikolog sesi diperbarui'); };
 exports.tautanSesi = async (req, res) => { const d = await sesi.setTautan(req.params.id, req.validated); await audit.log(req, 'TAUTAN', 'sesi_asesmen', req.params.id); return ok(res, d, 'Tautan/lokasi sesi dikirim ke klien dan psikolog'); };
 exports.statusSesi = async (req, res) => { const d = await sesi.ubahStatus(req.params.id, req.body.status, {}, null); await audit.log(req, 'STATUS_SESI', 'sesi_asesmen', req.params.id, req.body.status); return ok(res, d); };
+exports.bookingAdmin = async (req, res) => {
+  const s = await booking.createOlehAdmin(req.user, req.validated);
+  const nominal = req.validated.alasan_ubah_nominal ? `, nominal diubah: ${req.validated.alasan_ubah_nominal}` : '';
+  await audit.log(req, 'BOOKING_ADMIN', 'sesi_asesmen', s.id_sesi, `${s.kode_booking} (${req.validated.metode_bayar}${nominal})`);
+  return created(res, await sesi.detail(s.id_sesi), `Booking ${s.kode_booking} dibuat dan tercatat Lunas`);
+};
 exports.batalSesi = async (req, res) => { const d = await sesi.ubahStatus(req.params.id, 'Batal', {}, req.validated.alasan); await audit.log(req, 'CANCEL', 'sesi_asesmen', req.params.id, req.validated.alasan); return ok(res, d, 'Sesi dibatalkan'); };
 
 // Pembayaran
@@ -73,6 +80,12 @@ exports.verifikasiPembayaran = async (req, res) => {
   const d = await pembayaran.verifikasi(req.params.id, req.validated, req.user);
   await audit.log(req, 'VERIFY_PAYMENT', 'pembayaran', req.params.id, req.validated.status);
   return ok(res, d, `Pembayaran ditandai ${req.validated.status}`);
+};
+
+exports.ubahNominalPembayaran = async (req, res) => {
+  const d = await pembayaran.ubahNominal(req.params.id, req.validated);
+  await audit.log(req, 'UBAH_NOMINAL', 'pembayaran', req.params.id, `${req.validated.total_bayar} (${req.validated.alasan_ubah_nominal})`);
+  return ok(res, d, 'Nominal tagihan diperbarui');
 };
 
 // Fee psikolog

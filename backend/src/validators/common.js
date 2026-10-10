@@ -3,15 +3,18 @@ const { body, param, query } = require('express-validator');
 const fieldDefs = require('../models/fields');
 
 const NAMA_REGEX = /^[A-Za-zÀ-ɏ .,'’-]+$/;
-const HP_REGEX = /^(\+62|62|0)8[0-9]{7,12}$/;
+const { POLA_NO_HP: HP_REGEX } = require('../config/constants');
 /** 'nama_lengkap' -> 'Nama lengkap' untuk pesan error yang ramah pengguna */
 const label = (f) => { const t = String(f).replace(/\[\d+\]|\.\*|\./g, ' ').replace(/_/g, ' ').trim(); return t.charAt(0).toUpperCase() + t.slice(1); };
 
 const PASSWORD_MSG = 'Password minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka';
 
+/** body(field), opsional hanya divalidasi bila kondisi `when` (validation chain) terpenuhi. */
+const field = (name, when) => (when ? body(name).if(when) : body(name));
+
 const idParam = (name = 'id') => param(name).isInt({ min: 1 }).withMessage('ID tidak valid').toInt();
 
-const email = (field = 'email') => body(field).trim().notEmpty().withMessage('Email wajib diisi')
+const email = (f = 'email', { when } = {}) => field(f, when).trim().notEmpty().withMessage('Email wajib diisi')
   .isEmail().withMessage('Format email tidak valid').isLength({ max: 255 }).normalizeEmail({ gmail_remove_dots: false });
 
 const password = (field = 'password') => body(field).isString().withMessage(PASSWORD_MSG)
@@ -20,11 +23,11 @@ const password = (field = 'password') => body(field).isString().withMessage(PASS
   .matches(/[A-Z]/).withMessage(PASSWORD_MSG)
   .matches(/[0-9]/).withMessage(PASSWORD_MSG);
 
-const nama = (field, { optional = false, max = 150 } = {}) => {
-  let chain = body(field);
-  chain = optional ? chain.optional({ values: 'falsy' }) : chain.notEmpty().withMessage(`${label(field)} wajib diisi`);
-  return chain.isString().isLength({ max }).withMessage(`${label(field)} maksimal ${max} karakter`)
-    .matches(NAMA_REGEX).withMessage(`${label(field)} hanya boleh berisi huruf dan tanda baca nama`);
+const nama = (f, { optional = false, max = 150, when } = {}) => {
+  let chain = field(f, when);
+  chain = optional ? chain.optional({ values: 'falsy' }) : chain.notEmpty().withMessage(`${label(f)} wajib diisi`);
+  return chain.isString().isLength({ max }).withMessage(`${label(f)} maksimal ${max} karakter`)
+    .matches(NAMA_REGEX).withMessage(`${label(f)} hanya boleh berisi huruf dan tanda baca nama`);
 };
 
 const noHp = (field = 'no_hp', optional = true) => {
@@ -39,14 +42,14 @@ const text = (field, max = 5000) => body(field).optional({ values: 'null' }).isS
 
 const str = (field, max = 255) => text(field, max);
 
-const date = (field, { optional = true } = {}) => {
-  let chain = body(field);
-  chain = optional ? chain.optional({ values: 'null' }) : chain.notEmpty().withMessage(`${label(field)} wajib diisi`);
-  return chain.isISO8601({ strict: true }).withMessage(`${label(field)} harus format YYYY-MM-DD`).isLength({ max: 10 });
+const date = (f, { optional = true, when } = {}) => {
+  let chain = field(f, when);
+  chain = optional ? chain.optional({ values: 'null' }) : chain.notEmpty().withMessage(`${label(f)} wajib diisi`);
+  return chain.isISO8601({ strict: true }).withMessage(`${label(f)} harus format YYYY-MM-DD`).isLength({ max: 10 });
 };
 
-const time = (field) => body(field).notEmpty().withMessage(`${label(field)} wajib diisi`)
-  .matches(/^([01]\d|2[0-3]):[0-5]\d(:00)?$/).withMessage(`${label(field)} harus format HH:mm`);
+const time = (f, { when } = {}) => field(f, when).notEmpty().withMessage(`${label(f)} wajib diisi`)
+  .matches(/^([01]\d|2[0-3]):[0-5]\d(:00)?$/).withMessage(`${label(f)} harus format HH:mm`);
 
 const oneOf = (field, values, { optional = true } = {}) => {
   let chain = body(field);
@@ -61,6 +64,9 @@ const money = (field, { optional = false } = {}) => {
 };
 
 const bool = (field) => body(field).optional().isBoolean().withMessage(`${label(field)} harus true/false`).toBoolean();
+
+/** Centang persetujuan wajib bernilai true. Nilainya tidak disimpan dari input (waktu & versi diisi server). */
+const setuju = (field, pesan) => body(field).custom((x) => x === true || x === 'true').withMessage(pesan).toBoolean();
 
 const pagination = [
   query('page').optional().isInt({ min: 1 }).toInt(),
@@ -80,6 +86,6 @@ function fromFieldDefs(defs) {
 }
 
 module.exports = {
-  idParam, email, password, nama, noHp, text, str, date, time, oneOf, money, bool, pagination,
+  idParam, email, password, nama, noHp, text, str, date, time, oneOf, money, bool, setuju, pagination,
   fromFieldDefs, fieldDefs, PASSWORD_MSG, label,
 };

@@ -12,7 +12,7 @@ const today = new Date();
 const tgl = (d) => { const x = new Date(today); x.setDate(x.getDate() + d); return x.toISOString().slice(0, 10); };
 
 const EXAMPLES = {
-  'POST /auth/register': { nama_lengkap: 'Budi Santoso', email: 'budi@mail.com', password: 'Rahasia123', konfirmasi_password: 'Rahasia123', no_hp: '081234567890' },
+  'POST /auth/register': { nama_lengkap: 'Budi Santoso', email: 'budi@mail.com', password: 'Rahasia123', konfirmasi_password: 'Rahasia123', no_hp: '081234567890', setuju_privasi: true },
   'POST /auth/login': { email: 'klien1@mail.com', password: 'Password123' },
   'PUT /auth/password': { password_lama: 'Password123', password_baru: 'PasswordBaru123', konfirmasi_password: 'PasswordBaru123' },
   'POST /auth/forgot-password': { email: 'klien1@mail.com' },
@@ -24,7 +24,7 @@ const EXAMPLES = {
   'POST /klien/profil/:idKlien/referensi': { nama: 'Nama Referensi', alamat_telepon: 'Solo / 0812...', jabatan: 'Manajer', hubungan: 'Atasan' },
   'PUT /klien/profil/:idKlien/intake-dewasa': { kegemaran_hobi: 'Membaca', kelebihan: 'Teliti\nDisiplin', kekurangan: 'Pemalu', keluhan_saat_ini: '...', harapan_pemeriksaan: '...', pernah_sakit_berat: false, pernah_psikotes: false, pernyataan_benar: true },
   'PUT /klien/profil/:idKlien/intake-anak': { nama_sekolah: 'SD N 1', kelas: '3', berat_badan_kg: 28, tinggi_badan_cm: 130, kelahiran: { keguguran_sebelumnya: 'Tidak', anak_diinginkan: 'Ya', kualitas_makanan: 'Baik' }, perkembangan: { duduk_bulan: '6', berjalan_bulan: '12' }, pendidikan_sosial: { masuk_sd_umur: '6', pernah_tinggal_kelas: 'Tidak' } },
-  'POST /klien/booking': { id_klien: 1, id_layanan: 5, id_jadwal: 1, tipe_sesi: 'Online', catatan_klien: '' },
+  'POST /klien/booking': { id_klien: 1, id_layanan: 5, id_jadwal: 1, tipe_sesi: 'Online', catatan_klien: '', setuju_persetujuan: true },
   'PATCH /klien/sesi/:id/batal': { alasan: 'Berhalangan hadir' },
   'POST /klien/sesi/:id/ulasan': { rating: 5, komentar: 'Psikolog sangat membantu.' },
   'PATCH /admin/ulasan/:id/tampil': { is_tampil: false },
@@ -48,11 +48,16 @@ const EXAMPLES = {
   'PATCH /admin/sesi/:id/status': { status: 'Selesai' },
   'PATCH /admin/sesi/:id/batal': { alasan: 'Psikolog berhalangan' },
   'PATCH /admin/pembayaran/:id/verifikasi': { status: 'Lunas', catatan_admin: '' },
+  'PATCH /admin/pembayaran/:id/nominal': { total_bayar: 250000, alasan_ubah_nominal: 'Diskon mahasiswa' },
+  'POST /admin/booking': {
+    id_layanan: 5, tipe_sesi: 'Offline', klien_mode: 'tanpa_akun', nama_lengkap: 'Klien Walk In', no_hp: '081234567890',
+    id_psikolog: 1, tanggal: tgl(0), jam_mulai: '14:00', jam_selesai: '15:00', metode_bayar: 'Tunai', setuju_persetujuan: true,
+  },
   'PATCH /admin/fee/bayar': { id_fee: [1, 2, 3], catatan: 'Transfer BSI' },
   'POST /admin/pengeluaran': { tanggal: tgl(0), kategori: 'Alat Tes', nominal: 150000, keterangan: 'Lembar jawaban' },
   'POST /admin/template-laporan': { kode: 'TEMPLATE_BARU', nama_template: 'Template Baru', skala_min: 1, skala_max: 5 },
   'POST /admin/template-laporan/:id/item': { kode: 'aspek_baru', kelompok: 'KEPRIBADIAN', urutan: 30, label: 'Aspek Baru', deskripsi: '...', tipe: 'skala' },
-  'PUT /admin/pengaturan': { items: [{ kunci: 'bank_nama', nilai: 'BSI' }, { kunci: 'bank_no_rekening', nilai: '1234567890' }, { kunci: 'bank_atas_nama', nilai: 'AROFTA PADC' }, { kunci: 'link_form_bukti_bayar', nilai: 'https://forms.gle/xxxx' }] },
+  'PUT /admin/pengaturan': { items: [{ kunci: 'bank_nama', nilai: 'BSI' }, { kunci: 'bank_no_rekening', nilai: '1234567890' }, { kunci: 'bank_atas_nama', nilai: 'AROFTA PADC' }, { kunci: 'kontak_whatsapp', nilai: '082228885529' }, { kunci: 'batas_booking_jam', nilai: '3' }, { kunci: 'maks_booking_belum_bayar', nilai: '5' }] },
   'POST /superadmin/users': { email: 'admin2@arofta.id', password: 'AdminDua123', role: 'Admin' },
   'PATCH /superadmin/users/:id/role': { role: 'Super Admin' },
   'PATCH /superadmin/users/:id/status': { is_active: false },

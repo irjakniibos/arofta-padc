@@ -1,6 +1,6 @@
 const { body, query } = require('express-validator');
 const v = require('./common');
-const { KATEGORI_LAYANAN, JENIS_INTAKE, STATUS_SESI, STATUS_BAYAR } = require('../config/constants');
+const { KATEGORI_LAYANAN, JENIS_INTAKE, STATUS_SESI, STATUS_BAYAR, METODE_BAYAR } = require('../config/constants');
 
 const layanan = (isCreate) => [
   isCreate ? body('nama_layanan').trim().notEmpty().withMessage('Nama layanan wajib diisi').isLength({ max: 150 }) : v.str('nama_layanan', 150),
@@ -12,6 +12,9 @@ const layanan = (isCreate) => [
   body('id_template').optional({ values: 'undefined' }).custom((x) => x === null || Number.isInteger(Number(x))).withMessage('id_template tidak valid'),
   v.bool('is_active'),
 ];
+
+// Booking Admin tanpa id_jadwal berarti membuat slot baru saat itu juga
+const slotBaru = body('id_jadwal').not().exists({ values: 'null' });
 
 module.exports = {
   layananCreate: layanan(true),
@@ -51,6 +54,32 @@ module.exports = {
   ],
   batalSesi: [body('alasan').trim().notEmpty().withMessage('Alasan pembatalan wajib diisi').isLength({ max: 500 })],
   verifikasi: [v.oneOf('status', ['Lunas', 'Ditolak'], { optional: false }), v.text('catatan_admin', 500)],
+  ubahNominal: [
+    v.money('total_bayar'),
+    body('alasan_ubah_nominal').trim().notEmpty().withMessage('Alasan perubahan nominal wajib diisi').isLength({ max: 255 }),
+  ],
+  // Booking oleh Admin (kebutuhan mendesak/walk-in)
+  bookingAdmin: [
+    body('id_layanan').isInt({ min: 1 }).withMessage('Layanan wajib dipilih').toInt(),
+    v.oneOf('tipe_sesi', ['Online', 'Offline'], { optional: false }),
+    v.oneOf('klien_mode', ['terdaftar', 'tanpa_akun', 'buat_akun'], { optional: false }),
+    body('id_klien').if(body('klien_mode').equals('terdaftar')).isInt({ min: 1 }).withMessage('Klien wajib dipilih').toInt(),
+    v.nama('nama_lengkap', { when: body('klien_mode').not().equals('terdaftar') }),
+    v.noHp('no_hp'),
+    v.oneOf('jenis_kelamin', ['Laki-laki', 'Perempuan']),
+    v.date('tanggal_lahir'),
+    v.email('email', { when: body('klien_mode').equals('buat_akun') }),
+    body('id_jadwal').optional({ values: 'null' }).isInt({ min: 1 }).withMessage('Slot jadwal tidak valid').toInt(),
+    body('id_psikolog').if(slotBaru).isInt({ min: 1 }).withMessage('Psikolog wajib dipilih').toInt(),
+    v.date('tanggal', { optional: false, when: slotBaru }),
+    v.time('jam_mulai', { when: slotBaru }),
+    v.time('jam_selesai', { when: slotBaru }),
+    v.oneOf('metode_bayar', Object.values(METODE_BAYAR), { optional: false }),
+    v.money('total_bayar', { optional: true }),
+    v.str('alasan_ubah_nominal', 255),
+    v.text('catatan_klien', 1000),
+    v.setuju('setuju_persetujuan', 'Pastikan klien atau wali sudah menyetujui informed consent'),
+  ],
   bayarFee: [body('id_fee').isArray({ min: 1, max: 200 }).withMessage('Pilih minimal satu fee'), body('id_fee.*').isInt({ min: 1 }).toInt(), v.text('catatan', 500)],
   periode: [query('bulan').optional().isInt({ min: 1, max: 12 }).toInt(), query('tahun').optional().isInt({ min: 2020, max: 2100 }).toInt()],
   pengeluaran: (isCreate) => [

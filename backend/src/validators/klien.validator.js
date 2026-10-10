@@ -46,6 +46,7 @@ module.exports = {
     body('id_jadwal').isInt({ min: 1 }).withMessage('Jadwal wajib dipilih').toInt(),
     v.oneOf('tipe_sesi', ['Online', 'Offline'], { optional: false }),
     v.text('catatan_klien', 1000),
+    v.setuju('setuju_persetujuan', 'Anda harus menyetujui Persetujuan Layanan Psikologi (informed consent) untuk booking'),
   ],
   batal: [v.text('alasan', 500)],
   ulasan: [

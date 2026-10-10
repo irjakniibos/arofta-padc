@@ -12,6 +12,7 @@ router.post('/logout', h(c.logout));
 router.post('/forgot-password', sensitiveLimiter, validate(rules.forgotPassword), h(c.forgotPassword));
 router.post('/reset-password', sensitiveLimiter, validate(rules.resetPassword), h(c.resetPassword));
 router.get('/me', authenticate, h(c.me));
+router.post('/persetujuan-privasi', authenticate, h(c.setujuiPrivasi));
 router.put('/password', authenticate, validate(rules.changePassword), h(c.changePassword));
 
 module.exports = router;

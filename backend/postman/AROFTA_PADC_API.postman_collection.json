@@ -48,7 +48,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nama_lengkap\": \"Budi Santoso\",\n  \"email\": \"budi@mail.com\",\n  \"password\": \"Rahasia123\",\n  \"konfirmasi_password\": \"Rahasia123\",\n  \"no_hp\": \"081234567890\"\n}"
+              "raw": "{\n  \"nama_lengkap\": \"Budi Santoso\",\n  \"email\": \"budi@mail.com\",\n  \"password\": \"Rahasia123\",\n  \"konfirmasi_password\": \"Rahasia123\",\n  \"no_hp\": \"081234567890\",\n  \"setuju_privasi\": true\n}"
             }
           }
         },
@@ -170,6 +170,28 @@
               "path": [
                 "auth",
                 "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /auth/persetujuan-privasi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/persetujuan-privasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "persetujuan-privasi"
               ]
             }
           }
@@ -1024,7 +1046,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_klien\": 1,\n  \"id_layanan\": 5,\n  \"id_jadwal\": 1,\n  \"tipe_sesi\": \"Online\",\n  \"catatan_klien\": \"\"\n}"
+              "raw": "{\n  \"id_klien\": 1,\n  \"id_layanan\": 5,\n  \"id_jadwal\": 1,\n  \"tipe_sesi\": \"Online\",\n  \"catatan_klien\": \"\",\n  \"setuju_persetujuan\": true\n}"
             }
           }
         },
@@ -2618,6 +2640,32 @@
           }
         },
         {
+          "name": "POST /admin/booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/booking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "booking"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_layanan\": 5,\n  \"tipe_sesi\": \"Offline\",\n  \"klien_mode\": \"tanpa_akun\",\n  \"nama_lengkap\": \"Klien Walk In\",\n  \"no_hp\": \"081234567890\",\n  \"id_psikolog\": 1,\n  \"tanggal\": \"2026-10-10\",\n  \"jam_mulai\": \"14:00\",\n  \"jam_selesai\": \"15:00\",\n  \"metode_bayar\": \"Tunai\",\n  \"setuju_persetujuan\": true\n}"
+            }
+          }
+        },
+        {
           "name": "GET /admin/pembayaran",
           "request": {
             "method": "GET",
@@ -2687,6 +2735,34 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"Lunas\",\n  \"catatan_admin\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /admin/pembayaran/:id/nominal",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pembayaran/{{id}}/nominal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "pembayaran",
+                "{{id}}",
+                "nominal"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"total_bayar\": 250000,\n  \"alasan_ubah_nominal\": \"Diskon mahasiswa\"\n}"
             }
           }
         },
@@ -3336,7 +3412,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"items\": [\n    {\n      \"kunci\": \"bank_nama\",\n      \"nilai\": \"BSI\"\n    },\n    {\n      \"kunci\": \"bank_no_rekening\",\n      \"nilai\": \"1234567890\"\n    },\n    {\n      \"kunci\": \"bank_atas_nama\",\n      \"nilai\": \"AROFTA PADC\"\n    },\n    {\n      \"kunci\": \"link_form_bukti_bayar\",\n      \"nilai\": \"https://forms.gle/xxxx\"\n    }\n  ]\n}"
+              "raw": "{\n  \"items\": [\n    {\n      \"kunci\": \"bank_nama\",\n      \"nilai\": \"BSI\"\n    },\n    {\n      \"kunci\": \"bank_no_rekening\",\n      \"nilai\": \"1234567890\"\n    },\n    {\n      \"kunci\": \"bank_atas_nama\",\n      \"nilai\": \"AROFTA PADC\"\n    },\n    {\n      \"kunci\": \"kontak_whatsapp\",\n      \"nilai\": \"082228885529\"\n    },\n    {\n      \"kunci\": \"batas_booking_jam\",\n      \"nilai\": \"3\"\n    },\n    {\n      \"kunci\": \"maks_booking_belum_bayar\",\n      \"nilai\": \"5\"\n    }\n  ]\n}"
             }
           }
         }

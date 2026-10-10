@@ -79,14 +79,24 @@ const SETTING = Object.freeze({
   BANK_NAMA: 'bank_nama',
   BANK_REKENING: 'bank_no_rekening',
   BANK_ATAS_NAMA: 'bank_atas_nama',
-  LINK_FORM_BUKTI: 'link_form_bukti_bayar',
   BATAS_BAYAR_JAM: 'batas_bayar_jam',
+  BATAS_BAYAR_SEBELUM_SESI_JAM: 'batas_bayar_sebelum_sesi_jam',
+  BATAS_BOOKING_JAM: 'batas_booking_jam',
+  MAKS_BOOKING_BELUM_BAYAR: 'maks_booking_belum_bayar',
   REMINDER_JAM: 'reminder_jam_sebelum',
   KONTAK_WA: 'kontak_whatsapp',
   ALAMAT_KLINIK: 'alamat_klinik',
   NAMA_LEMBAGA: 'nama_lembaga',
   EMAIL_LEMBAGA: 'email_lembaga',
 });
+
+// Nomor HP/WhatsApp Indonesia: 08xx, 628xx, atau +628xx
+const POLA_NO_HP = /^(\+62|62|0)8[0-9]{7,12}$/;
+
+const METODE_BAYAR = Object.freeze({ TRANSFER: 'Transfer Bank', TUNAI: 'Tunai' });
+
+// Versi dokumen persetujuan; naikkan bila isi Kebijakan Privasi / Informed Consent diubah
+const VERSI_PERSETUJUAN = Object.freeze({ PRIVASI: '1.0', INFORMED_CONSENT: '1.0' });
 
 const UPLOAD = Object.freeze({
   TEMPLATE_EXT: ['.docx'],
@@ -111,5 +121,8 @@ module.exports = {
   PILIHAN_INTERVENSI,
   PAGINATION,
   SETTING,
+  METODE_BAYAR,
+  POLA_NO_HP,
+  VERSI_PERSETUJUAN,
   UPLOAD,
 };

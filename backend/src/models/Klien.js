@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => sequelize.define('Klien', {
   id_klien: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  id_user: { type: DataTypes.INTEGER, allowNull: false },
+  id_user: { type: DataTypes.INTEGER, allowNull: true }, // NULL = profil walk-in tanpa akun login
   hubungan_akun: { type: DataTypes.ENUM('Diri Sendiri', 'Anak', 'Lainnya'), allowNull: false, defaultValue: 'Diri Sendiri' },
   nomor_rekam_psikologi: { type: DataTypes.STRING(30), unique: true },
   nama_lengkap: { type: DataTypes.STRING(150), allowNull: false },

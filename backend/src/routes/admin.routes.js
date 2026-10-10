@@ -55,11 +55,13 @@ router.patch('/sesi/:id/alokasi', validate([idParam(), ...r.alokasi]), h(c.aloka
 router.patch('/sesi/:id/tautan', validate([idParam(), ...r.tautan]), h(c.tautanSesi));
 router.patch('/sesi/:id/status', validate([idParam(), body('status').isIn(['Berjalan', 'Selesai']).withMessage('Status harus Berjalan atau Selesai')]), h(c.statusSesi));
 router.patch('/sesi/:id/batal', validate([idParam(), ...r.batalSesi]), h(c.batalSesi));
+router.post('/booking', validate(r.bookingAdmin), h(c.bookingAdmin));
 
 // Pembayaran (verifikasi transfer manual)
 router.get('/pembayaran', validate([...pagination, query('status').optional().isIn(Object.values(STATUS_BAYAR))]), h(c.listPembayaran));
 router.get('/pembayaran/:id', id, h(c.detailPembayaran));
 router.patch('/pembayaran/:id/verifikasi', validate([idParam(), ...r.verifikasi]), h(c.verifikasiPembayaran));
+router.patch('/pembayaran/:id/nominal', validate([idParam(), ...r.ubahNominal]), h(c.ubahNominalPembayaran));
 
 // Fee Psikolog
 router.get('/fee', validate(r.periode), h(c.rekapFee));

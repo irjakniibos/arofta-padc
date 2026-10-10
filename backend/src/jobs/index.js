@@ -1,6 +1,6 @@
 /**
  * Job terjadwal (node-cron, zona waktu Asia/Jakarta):
- * - tiap 15 menit : pengingat jadwal sesi & pembatalan tagihan kedaluwarsa
+ * - tiap 15 menit : pengingat jadwal sesi, peringatan pembayaran belum diverifikasi, pembatalan tagihan kedaluwarsa
  * - tiap hari 02.00: bersihkan file pratinjau sementara & notifikasi lama
  */
 const cron = require('node-cron');
@@ -29,6 +29,7 @@ function start() {
     const n = await pembayaran.batalkanKedaluwarsa();
     if (n) logger.info(`Booking dibatalkan otomatis (lewat batas bayar): ${n}`);
   }), TZ));
+  tasks.push(cron.schedule('*/15 * * * *', safe('peringatan-verifikasi', pembayaran.peringatkanBelumVerifikasi), TZ));
   tasks.push(cron.schedule('0 2 * * *', safe('pembersihan', async () => {
     laporan.bersihkanTmp(24);
     await notif.hapusLama(180);

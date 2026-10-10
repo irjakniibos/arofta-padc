@@ -8,6 +8,7 @@ module.exports = {
     v.password(),
     body('konfirmasi_password').custom((val, { req }) => val === req.body.password).withMessage('Konfirmasi password tidak sama'),
     v.noHp('no_hp'),
+    v.setuju('setuju_privasi', 'Anda harus menyetujui Kebijakan Privasi untuk mendaftar'),
   ],
   login: [
     v.email(),

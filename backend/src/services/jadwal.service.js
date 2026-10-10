@@ -1,10 +1,11 @@
 /** Slot ketersediaan jadwal psikolog (KF-02). Mencegah slot tumpang tindih. */
 const { Op } = require('sequelize');
 const { JadwalPsikolog, Psikolog, User } = require('../models');
-const { STATUS_SLOT, TIPE_SESI } = require('../config/constants');
+const { STATUS_SLOT, TIPE_SESI, SETTING } = require('../config/constants');
 const AppError = require('../utils/AppError');
 const { getPagination, buildMeta } = require('../utils/pagination');
-const { toDateString, combineDateTime } = require('../utils/date');
+const { toDateString, combineDateTime, addHours } = require('../utils/date');
+const pengaturan = require('./pengaturan.service');
 
 const MAX_BULK_HARI = 62;
 const norm = (t) => (String(t).length === 5 ? `${t}:00` : String(t));
@@ -113,7 +114,7 @@ async function remove(idPsikolog, idJadwal) {
   await j.destroy();
 }
 
-/** Slot yang bisa dipesan klien (publik). */
+/** Slot yang bisa dipesan klien (publik): hanya yang dimulai setelah batas waktu booking online. */
 async function tersedia(query) {
   const today = toDateString();
   const where = { status_slot: STATUS_SLOT.TERSEDIA, tanggal: { [Op.gte]: query.dari || today } };
@@ -131,8 +132,8 @@ async function tersedia(query) {
     order: [['tanggal', 'ASC'], ['jam_mulai', 'ASC']],
     limit: 200,
   });
-  const now = new Date();
-  return rows.filter((r) => combineDateTime(r.tanggal, r.jam_mulai) > now);
+  const palingAwal = addHours(new Date(), await pengaturan.getNumber(SETTING.BATAS_BOOKING_JAM, 3));
+  return rows.filter((r) => combineDateTime(r.tanggal, r.jam_mulai) > palingAwal);
 }
 
-module.exports = { list, create, createBulk, update, remove, tersedia, findOwned };
+module.exports = { list, create, createBulk, update, remove, tersedia, findOwned, assertNoOverlap, assertJam, norm };

@@ -6,8 +6,9 @@
  */
 const { Op } = require('sequelize');
 const { JadwalPsikolog, SesiAsesmen, Psikolog, Klien, Layanan, User, Pembayaran } = require('../models');
-const { STATUS_SLOT, TIPE_SESI } = require('../config/constants');
-const { toDateString, combineDateTime } = require('../utils/date');
+const { STATUS_SLOT, TIPE_SESI, SETTING } = require('../config/constants');
+const { toDateString, combineDateTime, addHours } = require('../utils/date');
+const pengaturan = require('./pengaturan.service');
 
 function rentangBulan(query) {
   const now = new Date();
@@ -29,10 +30,10 @@ async function ringkasanPublik(query) {
     include: [{ model: Psikolog, as: 'psikolog', attributes: [], include: [{ model: User, as: 'akun', attributes: [], where: { is_active: true } }] }],
     raw: true,
   });
-  const now = new Date();
+  const palingAwal = addHours(new Date(), await pengaturan.getNumber(SETTING.BATAS_BOOKING_JAM, 3));
   const perTanggal = new Map();
   for (const s of slots) {
-    if (combineDateTime(s.tanggal, s.jam_mulai) <= now) continue;
+    if (combineDateTime(s.tanggal, s.jam_mulai) <= palingAwal) continue;
     const t = perTanggal.get(s.tanggal) || { tanggal: s.tanggal, slot_tersedia: 0, psikolog: new Set() };
     t.slot_tersedia += 1;
     t.psikolog.add(s.id_psikolog);

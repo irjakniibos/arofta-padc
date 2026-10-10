@@ -10,6 +10,8 @@ module.exports = (sequelize) => sequelize.define('User', {
   failed_login_attempts: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
   locked_until: { type: DataTypes.DATE, allowNull: true },
   last_login: { type: DataTypes.DATE, allowNull: true },
+  privasi_disetujui_at: { type: DataTypes.DATE, allowNull: true },
+  privasi_versi: { type: DataTypes.STRING(20), allowNull: true },
 }, {
   tableName: 'users',
   defaultScope: { attributes: { exclude: ['password'] } },
