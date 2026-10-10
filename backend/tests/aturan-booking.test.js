@@ -227,6 +227,20 @@ describe('Booking oleh Admin untuk kebutuhan mendesak', () => {
     expect(selesai.body.data.total_fee).toBe(60000);
     const [[a]] = await sequelize.query('SELECT aksi FROM audit_log WHERE id_entitas = ? AND aksi = ?', { replacements: [String(s.id_sesi), 'BOOKING_ADMIN'] });
     expect(a).toBeDefined();
+    ctx.idKlienWalkIn = s.klien.id_klien;
+  });
+
+  test('admin melengkapi profil dan formulir klien walk-in; klien lain tidak bisa', async () => {
+    if (!ctx.idKlienWalkIn) return;
+    const base = `${BASE}/admin/klien/${ctx.idKlienWalkIn}`;
+    expect((await admin.put(base).send({ pekerjaan: 'Guru', alamat_rumah: 'Kartasura' })).status).toBe(200);
+    expect((await admin.put(`${base}/intake-dewasa`).send({ pernyataan_benar: true })).status).toBe(200);
+    expect((await admin.post(`${base}/keluarga`).send({ kategori: 'Pasangan', nama: 'Bapak Contoh' })).status).toBe(201);
+    const detail = await admin.get(base);
+    expect(detail.body.data.pekerjaan).toBe('Guru');
+    expect(detail.body.data.intakeDewasa.pernyataan_benar).toBe(true);
+    expect((await klien2.put(base).send({ pekerjaan: 'X' })).status).toBe(403);
+    expect((await klien2.put(`${BASE}/klien/profil/${ctx.idKlienWalkIn}`).send({ pekerjaan: 'X' })).status).toBe(404);
   });
 
   test('walk-in dengan akun baru: klien dibuatkan akun dan menerima tautan atur password', async () => {

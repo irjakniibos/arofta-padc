@@ -12,11 +12,12 @@ import KalenderBulan from '@/components/kalender/KalenderBulan';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import Spinner from '@/components/ui/Spinner';
-import { Select, Textarea } from '@/components/ui/Field';
+import { Select, Textarea, Checkbox } from '@/components/ui/Field';
 import { Loading } from '@/components/ui/DataState';
 import { useToast } from '@/components/ui/Toast';
 import { api } from '@/lib/api';
 import { rupiah, durasi, jam, tanggal } from '@/lib/format';
+import { tautanWa } from '@/lib/whatsapp';
 
 const now = new Date();
 
@@ -46,11 +47,13 @@ export default function FormBooking() {
   const [slots, setSlots] = useState(null);
   const [slot, setSlot] = useState(null);
   const [kirim, setKirim] = useState(false);
+  const [setuju, setSetuju] = useState(false);
+  const [lembaga, setLembaga] = useState({});
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    Promise.all([api.get('/layanan'), api.get('/klien/profil')]).then(([l, p]) => {
-      setLayanan(l.data); setProfil(p.data);
+    Promise.all([api.get('/layanan'), api.get('/klien/profil'), api.get('/info-lembaga')]).then(([l, p, info]) => {
+      setLayanan(l.data); setProfil(p.data); setLembaga(info.data || {});
       setPilihan((s) => ({ ...s, id_klien: s.id_klien || String(p.data[0]?.id_klien || '') }));
     }).catch((e) => setError(e.message));
   }, []);
@@ -97,14 +100,16 @@ export default function FormBooking() {
 
   if (!layanan || !profil) return error ? <Alert type="error">{error}</Alert> : <Loading />;
 
-  const siap = lay && pilihan.id_klien && intakeOk && slot;
+  const siap = lay && pilihan.id_klien && intakeOk && slot && setuju;
+  const profilDipilih = profil.find((p) => String(p.id_klien) === pilihan.id_klien);
+  const waMendesak = tautanWa(lembaga.kontak_whatsapp, 'Halo AROFTA PADC, saya membutuhkan layanan psikologi secepatnya (hari ini). Mohon informasi jadwal yang tersedia.');
 
   const submit = async () => {
     setKirim(true);
     try {
       const r = await api.post('/klien/booking', {
         id_klien: Number(pilihan.id_klien), id_layanan: Number(pilihan.id_layanan), id_jadwal: slot.id_jadwal,
-        tipe_sesi: pilihan.tipe_sesi, catatan_klien: pilihan.catatan_klien || undefined,
+        tipe_sesi: pilihan.tipe_sesi, catatan_klien: pilihan.catatan_klien || undefined, setuju_persetujuan: true,
       });
       toast('Booking berhasil. Selesaikan pembayaran sebelum batas waktu.');
       router.replace(`/klien/sesi/${r.data.id_sesi}`);
@@ -119,6 +124,11 @@ export default function FormBooking() {
   return (
     <>
       <PageHeader title="Pesan layanan" description="Pilih layanan, siapa yang diperiksa, lalu tentukan jadwal." />
+      <Alert type="info" className="mb-6" title="Butuh layanan hari ini?">
+        Booking online paling lambat {lembaga.batas_booking_jam || 3} jam sebelum jadwal.
+        {waMendesak ? <> Untuk kebutuhan mendesak, <a href={waMendesak} target="_blank" rel="noopener noreferrer" className="font-semibold underline">hubungi admin melalui WhatsApp</a> agar dijadwalkan langsung.</> : ' Untuk kebutuhan mendesak, hubungi admin AROFTA PADC.'}
+        {' '}Dalam keadaan darurat (misalnya ada keinginan menyakiti diri), segera hubungi 112 atau datang ke IGD rumah sakit terdekat.
+      </Alert>
       <div className="grid gap-6 [&>*]:min-w-0 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
           <Langkah no={1} judul="Layanan dan profil" selesai={!!lay && !!pilihan.id_klien}>
@@ -190,13 +200,17 @@ export default function FormBooking() {
           <h2 className="border-b border-line px-5 py-3.5 text-[15px] font-semibold">Ringkasan</h2>
           <dl className="space-y-3 px-5 py-4 text-sm">
             <div><dt className="text-ink-faint">Layanan</dt><dd className="font-medium">{lay?.nama_layanan || '-'}</dd></div>
-            <div><dt className="text-ink-faint">Diperiksa</dt><dd className="font-medium">{profil.find((p) => String(p.id_klien) === pilihan.id_klien)?.nama_lengkap || '-'}</dd></div>
+            <div><dt className="text-ink-faint">Diperiksa</dt><dd className="font-medium">{profilDipilih?.nama_lengkap || '-'}</dd></div>
             <div><dt className="text-ink-faint">Jadwal</dt><dd className="font-medium">{slot ? `${tanggal(slot.tanggal, { hari: true })}, ${jam(slot.jam_mulai)} WIB` : '-'}</dd></div>
             <div><dt className="text-ink-faint">Psikolog</dt><dd className="font-medium">{slot?.psikolog?.nama_lengkap || '-'}</dd></div>
             <div><dt className="text-ink-faint">Sesi</dt><dd className="font-medium">{pilihan.tipe_sesi === 'Online' ? 'Daring' : 'Tatap muka'}</dd></div>
             <div className="flex items-baseline justify-between border-t border-line pt-3"><dt>Total</dt><dd className="text-xl font-semibold tabular">{lay ? rupiah(lay.harga) : '-'}</dd></div>
           </dl>
           <div className="px-5 pb-5">
+            <Checkbox className="mb-4" checked={setuju} onChange={(e) => setSetuju(e.target.checked)}>
+              {profilDipilih && profilDipilih.hubungan_akun !== 'Diri Sendiri' ? 'Sebagai orang tua/wali, saya' : 'Saya'} telah membaca dan menyetujui{' '}
+              <Link href="/persetujuan-layanan" target="_blank" className="font-semibold text-violet-deep underline">Persetujuan Layanan Psikologi</Link>.
+            </Checkbox>
             <Button className="w-full" size="lg" disabled={!siap} loading={kirim} onClick={submit}>Pesan dan lanjut ke pembayaran</Button>
             <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">Pembayaran melalui transfer bank. Batas waktu pembayaran ditampilkan setelah pemesanan.</p>
           </div>

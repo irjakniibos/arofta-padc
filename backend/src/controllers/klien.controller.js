@@ -5,8 +5,10 @@ const dashboard = require('../services/dashboard.service');
 const audit = require('../services/audit.service');
 const ulasan = require('../services/ulasan.service');
 const { ok, created } = require('../utils/response');
+const { STAFF_ROLES } = require('../config/constants');
 
-const uid = (req) => req.user.id_user;
+// Handler profil & formulir dipakai juga di rute Admin: staf mengelola profil klien mana pun (mis. klien walk-in)
+const uid = (req) => (STAFF_ROLES.includes(req.user.role) ? klien.STAF : req.user.id_user);
 const kid = (req) => req.params.idKlien;
 
 exports.dashboard = async (req, res) => ok(res, await dashboard.klien(uid(req)));

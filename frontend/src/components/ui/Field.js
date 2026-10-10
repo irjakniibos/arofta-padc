@@ -46,3 +46,17 @@ export function Select({ label, hint, error, options = [], placeholder, classNam
     </div>
   );
 }
+
+/** Kotak centang dengan label panjang (mis. persetujuan). `children` = isi label, boleh berisi tautan. */
+export function Checkbox({ children, error, className = '', ...props }) {
+  const id = useId();
+  return (
+    <div className={className}>
+      <label htmlFor={id} className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-ink-soft">
+        <input id={id} type="checkbox" aria-invalid={!!error} className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-violet)]" {...props} />
+        <span>{children}</span>
+      </label>
+      {error && <p className="mt-1.5 pl-7 text-[13px] text-danger">{error}</p>}
+    </div>
+  );
+}

@@ -23,8 +23,12 @@ const CHILD = {
   referensi: { model: ReferensiKlien, pk: 'id_referensi', fields: ['nama', 'alamat_telepon', 'jabatan', 'hubungan'], max: 10, order: [['id_referensi', 'ASC']] },
 };
 
+/** Penanda akses staf (Admin/Super Admin): boleh mengelola profil klien mana pun, termasuk klien walk-in tanpa akun. */
+const STAF = Symbol('staf');
+
 async function assertOwner(idUser, idKlien) {
-  const k = await Klien.findOne({ where: { id_klien: idKlien, id_user: idUser } });
+  const where = idUser === STAF ? { id_klien: idKlien } : { id_klien: idKlien, id_user: idUser };
+  const k = await Klien.findOne({ where });
   if (!k) throw AppError.notFound('Profil klien tidak ditemukan');
   return k;
 }
@@ -201,7 +205,7 @@ async function riwayatSesi(idKlien) {
 }
 
 module.exports = {
-  assertOwner, listProfil, createProfil, updateProfil, deleteProfil,
+  STAF, assertOwner, listProfil, createProfil, updateProfil, deleteProfil,
   listChild, createChild, updateChild, deleteChild, CHILD,
   getIntakeDewasa, saveIntakeDewasa, getIntakeAnak, saveIntakeAnak, assertIntakeLengkap,
   getDetailLengkap, getProfilLengkapMilik, listAdmin, riwayatSesi,

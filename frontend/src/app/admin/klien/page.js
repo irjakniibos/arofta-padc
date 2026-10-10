@@ -28,7 +28,7 @@ export default function KlienAdminPage() {
           <Table rowKey="id_klien" rows={data} empty="Klien tidak ditemukan." onRowClick={(k) => router.push(`/admin/klien/${k.id_klien}`)}
             columns={[
               { key: 'nama', label: 'Nama', render: (k) => <><span className="block font-medium">{k.nama_lengkap}</span><span className="text-[13px] text-ink-faint">{k.nomor_rekam_psikologi}</span></> },
-              { key: 'profil', label: 'Profil', render: (k) => (k.hubungan_akun === 'Diri Sendiri' ? 'Pemilik akun' : k.hubungan_akun) },
+              { key: 'profil', label: 'Profil', render: (k) => (!k.akun ? 'Tanpa akun (walk-in)' : k.hubungan_akun === 'Diri Sendiri' ? 'Pemilik akun' : k.hubungan_akun) },
               { key: 'usia', label: 'Usia', render: (k) => hitungUsia(k.tanggal_lahir) || '-' },
               { key: 'kontak', label: 'Kontak', render: (k) => <><span className="block">{k.akun?.email}</span><span className="text-[13px] text-ink-soft">{k.no_hp || ''}</span></> },
               { key: 'sesi', label: 'Sesi', className: 'tabular', render: (k) => k.jumlah_sesi },

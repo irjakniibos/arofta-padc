@@ -95,6 +95,9 @@ export default function SesiDetail({ id, mode }) {
   const bayar = sesi.pembayaran?.status_pembayaran;
   const lunas = bayar === 'Lunas';
   const aktif = ['Terdaftar', 'Berjalan'].includes(sesi.status_asesmen);
+  const jenisIntake = sesi.layanan?.jenis_intake;
+  const intakeKurang = aktif && ((jenisIntake === 'Dewasa' && !sesi.klien.intakeDewasa?.pernyataan_benar) || (jenisIntake === 'Anak' && !sesi.klien.intakeAnak));
+  const namaFormulir = jenisIntake === 'Anak' ? 'Formulir Informasi Riwayat Anak' : 'Formulir Identitas Klien';
 
   const ubahStatus = async (status) => {
     try { await api.patch(`/${mode}/sesi/${id}/status`, { status }); toast(status === 'Berjalan' ? 'Sesi dimulai' : 'Sesi selesai, fee psikolog tercatat'); load(); } catch (e) { toast(e.message, 'error'); }
@@ -112,6 +115,13 @@ export default function SesiDetail({ id, mode }) {
           </div>
         )} />
 
+      {intakeKurang && (
+        <Alert type="warning" className="mb-6" title={`${namaFormulir} belum lengkap`}>
+          {isAdmin
+            ? <>Lengkapi dari formulir kertas klien melalui <Link href={`/admin/klien/${sesi.klien.id_klien}`} className="font-semibold underline">halaman klien</Link>{sesi.klien.akun ? ', atau minta klien mengisinya di akunnya' : ''}.</>
+            : 'Klien didaftarkan admin untuk kebutuhan mendesak. Formulir menyusul; sesi tetap dapat dimulai.'}
+        </Alert>
+      )}
       <div className="grid gap-6 [&>*]:min-w-0 lg:grid-cols-[1fr_320px]">
         <div className="min-w-0 rounded-panel border border-line bg-white p-5">
           <Tabs className="mb-5" value={tab} onChange={setTab} tabs={[
@@ -157,7 +167,11 @@ export default function SesiDetail({ id, mode }) {
                   : <span className="inline-flex gap-1.5"><MapPin className="mt-0.5 h-4 w-4 text-violet" />{sesi.lokasi_ruangan || 'Tatap muka, ruangan belum diatur'}</span>}
                 </dd>
               </div>
-              <div className="px-5 py-3"><dt className="text-ink-faint">Pembayaran</dt><dd className="flex items-center gap-2"><Badge status={bayar} /><span className="tabular text-ink-soft">{rupiah(sesi.pembayaran?.total_bayar)}</span></dd></div>
+              <div className="px-5 py-3"><dt className="text-ink-faint">Pembayaran</dt>
+                <dd className="flex flex-wrap items-center gap-2"><Badge status={bayar} /><span className="tabular text-ink-soft">{rupiah(sesi.pembayaran?.total_bayar)}{lunas && sesi.pembayaran?.metode_bayar ? `, ${sesi.pembayaran.metode_bayar}` : ''}</span></dd>
+                {isAdmin && sesi.pembayaran?.alasan_ubah_nominal && <dd className="mt-1 text-[13px] text-ink-faint">Nominal diubah dari {rupiah(sesi.pembayaran.harga_layanan)}: {sesi.pembayaran.alasan_ubah_nominal}</dd>}
+              </div>
+              {sesi.dibuat_oleh && <div className="px-5 py-3"><dt className="text-ink-faint">Booking</dt><dd>Dibuat admin untuk kebutuhan mendesak{sesi.klien.akun ? '' : ', klien tanpa akun'}</dd></div>}
               {sesi.catatan_klien && <div className="px-5 py-3"><dt className="text-ink-faint">Catatan dari klien</dt><dd className="whitespace-pre-line">{sesi.catatan_klien}</dd></div>}
               {sesi.alasan_batal && <div className="px-5 py-3"><dt className="text-ink-faint">Alasan batal</dt><dd>{sesi.alasan_batal}</dd></div>}
             </dl>

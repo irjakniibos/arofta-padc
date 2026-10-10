@@ -32,7 +32,18 @@ export default function SiteFooter({ info = {} }) {
         </div>
       </div>
       <div className="border-t border-line">
-        <p className="mx-auto max-w-6xl px-5 py-5 text-[13px] text-ink-faint">© {new Date().getFullYear()} AROFTA Psychological Assessment and Development Center</p>
+        <div className="mx-auto max-w-6xl space-y-3 px-5 py-5 text-[13px] text-ink-faint">
+          <p className="text-ink-soft">
+            Layanan ini bukan layanan gawat darurat. Bila Anda atau orang di sekitar Anda dalam bahaya, segera hubungi 112 atau datang ke IGD rumah sakit terdekat.
+          </p>
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+            <p>© {new Date().getFullYear()} AROFTA Psychological Assessment and Development Center</p>
+            <nav aria-label="Dokumen kebijakan" className="flex gap-5">
+              <Link className="hover:text-violet-deep" href="/kebijakan-privasi">Kebijakan Privasi</Link>
+              <Link className="hover:text-violet-deep" href="/persetujuan-layanan">Persetujuan Layanan</Link>
+            </nav>
+          </div>
+        </div>
       </div>
     </footer>
   );

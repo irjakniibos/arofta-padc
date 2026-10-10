@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { Bell, LogOut, Menu, X } from 'lucide-react';
 import Logo from '@/components/brand/Logo';
 import Spinner from '@/components/ui/Spinner';
+import PersetujuanPrivasi from '@/components/auth/PersetujuanPrivasi';
 import { useAuth } from '@/lib/auth-context';
 import { navFor } from '@/lib/nav';
 import { HOME_BY_ROLE, ROLES } from '@/lib/config';
@@ -107,6 +108,7 @@ export default function DashboardShell({ roles, children }) {
         </header>
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8">{children}</div>
       </div>
+      {user.role === ROLES.KLIEN && user.perlu_persetujuan_privasi && <PersetujuanPrivasi />}
     </div>
   );
 }

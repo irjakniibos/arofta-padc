@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Input } from '@/components/ui/Field';
+import { Input, Checkbox } from '@/components/ui/Field';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import { api } from '@/lib/api';
@@ -12,7 +12,7 @@ const PASSWORD_HINT = 'Minimal 8 karakter, berisi huruf besar, huruf kecil, dan 
 
 export default function FormDaftar() {
   const router = useRouter();
-  const [form, setForm] = useState({ nama_lengkap: '', email: '', no_hp: '', password: '', konfirmasi_password: '' });
+  const [form, setForm] = useState({ nama_lengkap: '', email: '', no_hp: '', password: '', konfirmasi_password: '', setuju_privasi: false });
   const [error, setError] = useState(null);
   const [fieldErr, setFieldErr] = useState({});
   const [loading, setLoading] = useState(false);
@@ -22,6 +22,10 @@ export default function FormDaftar() {
     e.preventDefault();
     if (form.password !== form.konfirmasi_password) {
       setFieldErr({ konfirmasi_password: 'Konfirmasi password tidak sama' });
+      return;
+    }
+    if (!form.setuju_privasi) {
+      setFieldErr({ setuju_privasi: 'Anda harus menyetujui Kebijakan Privasi untuk mendaftar' });
       return;
     }
     setLoading(true); setError(null); setFieldErr({});
@@ -54,6 +58,11 @@ export default function FormDaftar() {
           pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,72}" title={PASSWORD_HINT} value={form.password} onChange={set('password')} error={fieldErr.password} />
         <Input label="Ulangi password" type="password" required maxLength={72} autoComplete="new-password"
           value={form.konfirmasi_password} onChange={set('konfirmasi_password')} error={fieldErr.konfirmasi_password} />
+        <Checkbox checked={form.setuju_privasi} onChange={(e) => setForm({ ...form, setuju_privasi: e.target.checked })} error={fieldErr.setuju_privasi}>
+          Saya telah membaca dan menyetujui{' '}
+          <Link href="/kebijakan-privasi" target="_blank" className="font-semibold text-violet-deep underline">Kebijakan Privasi</Link>, termasuk
+          pengolahan data pribadi dan data psikologis saya untuk keperluan layanan AROFTA PADC.
+        </Checkbox>
         <Button type="submit" size="lg" className="w-full" loading={loading}>Buat akun</Button>
       </form>
     </>

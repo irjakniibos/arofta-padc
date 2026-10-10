@@ -14,8 +14,9 @@ import { pickFields } from '@/lib/form-defs';
 import { useToast } from '@/components/ui/Toast';
 import { Loading, ErrorState } from '@/components/ui/DataState';
 
-export default function ChildList({ idKlien, jenis, sections, judul, pk, ringkas, defaults = {}, tambahLabel }) {
-  const base = `/klien/profil/${idKlien}/${jenis}`;
+/** `apiBase` = alamat profil klien di API, mis. /klien/profil/12 (klien) atau /admin/klien/12 (admin). */
+export default function ChildList({ apiBase, jenis, sections, judul, pk, ringkas, defaults = {}, tambahLabel }) {
+  const base = `${apiBase}/${jenis}`;
   const { data, error, loading, reload } = useApi(base);
   const toast = useToast();
   const form = useFormSubmit();

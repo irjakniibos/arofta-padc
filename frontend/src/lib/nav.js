@@ -29,6 +29,7 @@ export const NAV = {
     { href: '/admin', label: 'Ringkasan', icon: LayoutDashboard },
     { href: '/admin/kalender', label: 'Kalender jadwal', icon: CalendarDays },
     { href: '/admin/sesi', label: 'Sesi & monitoring', icon: ClipboardList },
+    { href: '/admin/booking', label: 'Booking mendesak', icon: CalendarPlus },
     { href: '/admin/pembayaran', label: 'Verifikasi pembayaran', icon: CreditCard },
     { href: '/admin/klien', label: 'Klien', icon: Users },
     { href: '/admin/psikolog', label: 'Psikolog', icon: Stethoscope },

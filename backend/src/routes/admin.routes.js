@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const { query, body } = require('express-validator');
 const c = require('../controllers/admin.controller');
+const kc = require('../controllers/klien.controller');
+const kr = require('../validators/klien.validator');
 const r = require('../validators/admin.validator');
 const pr = require('../validators/psikolog.validator');
 const validate = require('../middlewares/validate');
@@ -47,6 +49,18 @@ router.delete('/jadwal/:id', id, h(c.deleteJadwal));
 // Manajemen klien
 router.get('/klien', validate([...pagination, ...search]), h(c.listKlien));
 router.get('/klien/:id', id, h(c.getKlien));
+// Admin melengkapi profil & formulir klien (mis. klien walk-in tanpa akun yang mengisi formulir kertas)
+router.put('/klien/:idKlien', validate([idParam('idKlien'), ...kr.updateProfil]), h(kc.updateProfil));
+for (const type of ['keluarga', 'organisasi', 'referensi']) {
+  const ctl = kc.child(type);
+  const base = `/klien/:idKlien/${type}`;
+  router.get(base, validate([idParam('idKlien')]), h(ctl.list));
+  router.post(base, validate([idParam('idKlien'), ...kr[type]]), h(ctl.create));
+  router.put(`${base}/:id`, validate([idParam('idKlien'), idParam(), ...kr[type]]), h(ctl.update));
+  router.delete(`${base}/:id`, validate([idParam('idKlien'), idParam()]), h(ctl.remove));
+}
+router.put('/klien/:idKlien/intake-dewasa', validate([idParam('idKlien'), ...kr.intakeDewasa]), h(kc.saveIntakeDewasa));
+router.put('/klien/:idKlien/intake-anak', validate([idParam('idKlien'), ...kr.intakeAnak]), h(kc.saveIntakeAnak));
 
 // Sesi: alokasi psikolog, tautan Zoom/lokasi, status
 router.get('/sesi', validate(r.listSesi), h(c.listSesi));

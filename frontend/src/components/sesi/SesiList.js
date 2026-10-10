@@ -7,6 +7,7 @@ import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
 import Tabs from '@/components/ui/Tabs';
 import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
 import Pagination from '@/components/ui/Pagination';
 import Table from '@/components/ui/Table';
 import { Input, Select } from '@/components/ui/Field';
@@ -29,7 +30,8 @@ export default function SesiList({ mode }) {
   return (
     <>
       <PageHeader title={isAdmin ? 'Sesi & monitoring' : 'Sesi klien'}
-        description={isAdmin ? 'Pantau status asesmen seluruh klien: terdaftar, berjalan, selesai, atau batal.' : 'Sesi yang Anda tangani beserta data klien dan laporannya.'} />
+        description={isAdmin ? 'Pantau status asesmen seluruh klien: terdaftar, berjalan, selesai, atau batal.' : 'Sesi yang Anda tangani beserta data klien dan laporannya.'}
+        action={isAdmin && <Button href="/admin/booking">Booking mendesak</Button>} />
       <Tabs className="mb-4" value={f.status} onChange={(v) => set('status', v)}
         tabs={[{ value: '', label: 'Semua' }, ...STATUS.map((s) => ({ value: s, label: s, count: ring ? ring[s] : undefined }))]} />
       <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

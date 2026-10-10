@@ -85,7 +85,8 @@ async function detail(idSesi, scope = {}) {
   const s = await findSesi(idSesi, scope);
   const sesi = await SesiAsesmen.findByPk(s.id_sesi, {
     include: [
-      ...LIST_INCLUDE.filter((i) => i.as !== 'klien' && i.as !== 'pembayaran'),
+      ...LIST_INCLUDE.filter((i) => !['klien', 'pembayaran', 'layanan'].includes(i.as)),
+      { model: Layanan, as: 'layanan', attributes: ['id_layanan', 'nama_layanan', 'kategori', 'jenis_intake'] },
       { model: Pembayaran, as: 'pembayaran' },
       { model: AnamnesisSesi, as: 'anamnesis' },
       { model: ObservasiMental, as: 'observasi' },

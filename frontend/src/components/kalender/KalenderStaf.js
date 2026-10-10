@@ -12,6 +12,7 @@ import KalenderBulan, { isoTanggal } from './KalenderBulan';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import Modal from '@/components/ui/Modal';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import Spinner from '@/components/ui/Spinner';
 import Alert from '@/components/ui/Alert';
 import { Input, Select } from '@/components/ui/Field';
@@ -74,6 +75,7 @@ export default function KalenderStaf({ mode }) {
     } catch (e) { toast(e.message, 'error'); } finally { setSaving(false); }
   };
 
+  const [hapusSlot, setHapusSlot] = useState(null);
   const ubahSlot = async (s, aksi) => {
     try {
       if (aksi === 'hapus') await api.del(slotUrl(s.id_jadwal));
@@ -164,7 +166,7 @@ export default function KalenderStaf({ mode }) {
                       <>
                         <button type="button" onClick={() => ubahSlot(s, s.status_slot === 'Tersedia' ? 'Ditutup' : 'Tersedia')} className="rounded-control p-1.5 text-ink-soft hover:bg-mist"
                           aria-label={s.status_slot === 'Tersedia' ? 'Tutup slot' : 'Buka slot'}>{s.status_slot === 'Tersedia' ? <Lock className="h-4 w-4" /> : <LockOpen className="h-4 w-4" />}</button>
-                        <button type="button" onClick={() => ubahSlot(s, 'hapus')} className="rounded-control p-1.5 text-danger hover:bg-danger-tint" aria-label="Hapus slot"><Trash2 className="h-4 w-4" /></button>
+                        <button type="button" onClick={() => setHapusSlot(s)} className="rounded-control p-1.5 text-danger hover:bg-danger-tint" aria-label="Hapus slot"><Trash2 className="h-4 w-4" /></button>
                       </>
                     )}
                   </span>
@@ -227,6 +229,10 @@ export default function KalenderStaf({ mode }) {
           </div>
         )}
       </Modal>
+      <ConfirmDialog open={!!hapusSlot} onClose={() => setHapusSlot(null)} title="Hapus slot jadwal?" variant="danger" confirmLabel="Hapus slot"
+        onConfirm={async () => { await ubahSlot(hapusSlot, 'hapus'); setHapusSlot(null); }}>
+        {hapusSlot && <>Slot {tanggal(hapusSlot.tanggal, { hari: true })}, {jam(hapusSlot.jam_mulai)}–{jam(hapusSlot.jam_selesai)} WIB akan dihapus. Untuk menutup sementara, gunakan tombol kunci.</>}
+      </ConfirmDialog>
     </div>
   );
 }

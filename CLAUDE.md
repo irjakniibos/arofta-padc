@@ -83,9 +83,9 @@ Akun dummy (password `Password123`): `admin@arofta.id`, `psikolog1@arofta.id`, `
 7. Kalender (KF-27) = kalender internal, bukan sinkronisasi Google Calendar.
 8. Tema: ungu `#7C51A1` dan merah centang `#ED1B23` (merah hanya untuk centang/psikogram dan peringatan). Tampilan web psikolog profesional, tidak bergaya AI: tanpa pemisah titik tengah/em-dash dekoratif, tanpa label kapital semua, tanpa deretan kartu SaaS seragam. Font Plus Jakarta Sans + Newsreader (Fontsource), ikon lucide-react. Elemen khas beranda: psikogram dengan centang yang tergambar.
 
-## Keputusan baru hasil diskusi 10 Oktober 2026 (belum diimplementasikan)
+## Keputusan baru hasil diskusi 10 Oktober 2026
 
-Keputusan ini menggantikan poin 1 di atas bila bertentangan.
+Keputusan ini menggantikan poin 1 di atas bila bertentangan. Status: poin 3-7 sudah diimplementasikan (tahap 1, 10 Okt 2026). Poin 2 (login Google) dan email sungguhan belum, menunggu Irza membuat OAuth Client ID dan App Password. Poin 9 (revisi laporan) belum.
 
 1. Akun: Admin 1 akun (`arofta.padc@gmail.com`). Super Admin = Irza + anggota tim capstone (pemantau/maintenance), email masing-masing.
 2. Login dua cara: Google (OAuth/OpenID Connect) dan email + password. Register form tetap ada. Hanya klien yang bisa daftar sendiri (termasuk lewat Google pertama kali). Psikolog didaftarkan Admin; Admin/Super Admin didaftarkan Super Admin. Login Google: `email_verified` wajib, akun nonaktif ditolak, role dari database, akun lama dengan email sama otomatis tertaut.
@@ -131,7 +131,10 @@ Urutan kerja: (1) yang tidak butuh apa pun dari Irza: aturan booking/bayar, bata
 
 ## Status pekerjaan (per 10 Oktober 2026)
 
-- Backend: 46/46 test lolos, lint bersih (diverifikasi ulang di Claude Code 10 Okt 2026). Frontend: lint bersih, build sukses.
+- Backend: 66/66 test lolos (file baru `tests/aturan-booking.test.js`), lint bersih. Frontend: lint bersih, build sukses. Postman 146 endpoint.
+- Migration ke-3 `20261010000001-booking-pembayaran-privasi.js` (tidak menambah tabel, tetap 31): kolom persetujuan privasi di `users`, `klien.id_user` nullable (walk-in), `sesi_asesmen.persetujuan_at/persetujuan_versi/dibuat_oleh`, `pembayaran.harga_layanan/alasan_ubah_nominal/peringatan_terkirim`, pengaturan baru (`batas_booking_jam`, `batas_bayar_sebelum_sesi_jam`, `maks_booking_belum_bayar`), `link_form_bukti_bayar` dihapus. `database/arofta_padc_v3_workbench.sql` BELUM diperbarui untuk migration ini.
+- Endpoint baru: `POST /auth/persetujuan-privasi`, `POST /admin/booking`, `PATCH /admin/pembayaran/:id/nominal`, `PUT /admin/klien/:idKlien` (+ keluarga/organisasi/referensi, intake-dewasa, intake-anak). Halaman baru: `/kebijakan-privasi`, `/persetujuan-layanan`, `/admin/booking`. Komponen bersama `components/klien/ProfilEditor.js` dipakai klien dan admin.
+- Isi Kebijakan Privasi & Persetujuan Layanan ada di `frontend/src/lib/kebijakan.js` (versi harus sama dengan `VERSI_PERSETUJUAN` di backend). Masih draf, perlu ditinjau psikolog AROFTA.
 - Black-box: `Dokumen_Pengujian_BlackBox_AROFTA_PADC.docx`, 77 kasus di 12 modul (AUT, PUB, PRF, BKG, SES, LAP, ULS, KAL, ADM, TPL, SUP, KEA), belum ada kolom nomor KF.
 - Celah pengujian yang ditemukan: pengingat jadwal otomatis (KF-08/09/17), kedaluwarsa tagihan otomatis, alokasi/jadwal ulang sesi oleh Admin (KF-03), buka kembali laporan Final, email sungguhan (KF-16, SMTP kosong), KN-02/06/08 (butuh hosting).
 
@@ -141,3 +144,6 @@ Urutan kerja: (1) yang tidak butuh apa pun dari Irza: aturan booking/bayar, bata
 - Jika menambah endpoint, generate ulang koleksi Postman.
 - Jika menambah tabel/kolom: buat migration baru, perbarui model, dan beri tahu Irza bagian laporan yang perlu direvisi.
 - Jaga gaya desain: jangan menambah gradien, emoji, label kapital semua, atau kartu dekoratif seragam.
+- Saat menulis file lewat Python di Windows, pakai `open(..., newline='')` agar line ending tetap LF. Jangan menjalankan sed/konversi pada file biner (.docx, .ico).
+- Jangan menjalankan `npm run build` frontend saat `npm run dev` hidup (keduanya memakai `.next`); hentikan dev dulu atau jalankan ulang setelahnya.
+- `.claude/launch.json` berisi konfigurasi server `backend` (5000) dan `frontend` (3000) untuk pratinjau.
