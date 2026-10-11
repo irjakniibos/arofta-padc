@@ -138,6 +138,14 @@ Urutan kerja: (1) yang tidak butuh apa pun dari Irza: aturan booking/bayar, bata
 - Black-box: `Dokumen_Pengujian_BlackBox_AROFTA_PADC.docx`, 77 kasus di 12 modul (AUT, PUB, PRF, BKG, SES, LAP, ULS, KAL, ADM, TPL, SUP, KEA), belum ada kolom nomor KF.
 - Celah pengujian yang ditemukan: pengingat jadwal otomatis (KF-08/09/17), kedaluwarsa tagihan otomatis, alokasi/jadwal ulang sesi oleh Admin (KF-03), buka kembali laporan Final, email sungguhan (KF-16, SMTP kosong), KN-02/06/08 (butuh hosting).
 
+## Akun uji dengan email asli (database dev, 11 Okt 2026)
+
+- Super Admin: `salmaarifhanirayyan689@gmail.com` (sementara)
+- Admin: `irzayaumilsyahrar55@gmail.com` (juga akun pengirim SMTP)
+- Psikolog: `irzayaumilsyahrar7@gmail.com`
+- Klien: `salmaarayyan@gmail.com`
+- Semua masuk dengan Google (harus terdaftar sebagai Test users OAuth). Rencana setelah email AROFTA ada: `arofta.padc@gmail.com` = Admin, `irzayaumilsyahrar55@gmail.com` = Super Admin, `salmaarifhanirayyan689@gmail.com` dilepas (nonaktifkan).
+
 ## Daftar tugas saat deploy/hosting (setelah Irza selesai menguji aplikasi)
 
 - Google Auth Platform: Audience, Publish app (In production). Jangan unggah logo agar tidak perlu verifikasi.
