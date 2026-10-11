@@ -1,9 +1,12 @@
 'use client';
 
-/** Tab sederhana; value dikontrol oleh induk. */
+/**
+ * Tab sederhana; value dikontrol oleh induk.
+ * Di layar sempit tab turun ke baris berikutnya (tidak terpotong atau harus digeser).
+ */
 export default function Tabs({ tabs, value, onChange, className = '' }) {
   return (
-    <div role="tablist" className={`flex gap-1 overflow-x-auto border-b border-line ${className}`}>
+    <div role="tablist" className={`flex flex-wrap gap-x-1 border-b border-line ${className}`}>
       {tabs.map((t) => {
         const v = typeof t === 'string' ? t : t.value;
         const label = typeof t === 'string' ? t : t.label;
