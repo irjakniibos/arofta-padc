@@ -19,6 +19,8 @@ function addDays(n) {
 module.exports = {
   async up(queryInterface) {
     if (String(process.env.SEED_DUMMY_DATA).toLowerCase() !== 'true') return;
+    // Akun contoh memakai password yang tertulis di dokumentasi; jangan pernah dibuat di server produksi
+    if (process.env.NODE_ENV === 'production') throw new Error('SEED_DUMMY_DATA tidak boleh dipakai di production');
     const qi = queryInterface;
     const now = new Date();
     const hash = await bcrypt.hash(PASSWORD, 10);
