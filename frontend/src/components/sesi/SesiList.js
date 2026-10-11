@@ -23,7 +23,7 @@ export default function SesiList({ mode }) {
   const isAdmin = mode === 'admin';
   const [f, setF] = useState({ status: sp.get('status') || '', q: '', status_pembayaran: '', dari: '', sampai: '', page: 1 });
   const path = isAdmin ? '/admin/monitoring' : '/psikolog/sesi';
-  const { data, meta, error, loading, reload } = useApi(path, { ...f, limit: 15, urut: f.status === 'Selesai' || f.status === 'Batal' ? 'terbaru' : undefined });
+  const { data, meta, error, loading, reload } = useApi(path, { ...f, limit: 15, urut: isAdmin || f.status === 'Selesai' || f.status === 'Batal' ? 'terbaru' : undefined });
   const set = (k, v) => setF((s) => ({ ...s, [k]: v, page: 1 }));
   const ring = meta?.ringkasan_status;
 

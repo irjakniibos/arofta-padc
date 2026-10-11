@@ -114,8 +114,11 @@ async function remove(idPsikolog, idJadwal) {
   await j.destroy();
 }
 
-/** Slot yang bisa dipesan klien (publik): hanya yang dimulai setelah batas waktu booking online. */
-async function tersedia(query) {
+/**
+ * Slot kosong. Untuk klien (publik) hanya slot yang dimulai setelah batas waktu booking online;
+ * untuk staf (`staf: true`, mis. jadwal ulang oleh Admin) cukup slot yang belum dimulai.
+ */
+async function tersedia(query, { staf = false } = {}) {
   const today = toDateString();
   const where = { status_slot: STATUS_SLOT.TERSEDIA, tanggal: { [Op.gte]: query.dari || today } };
   if (query.sampai) where.tanggal[Op.lte] = query.sampai;
@@ -132,7 +135,7 @@ async function tersedia(query) {
     order: [['tanggal', 'ASC'], ['jam_mulai', 'ASC']],
     limit: 200,
   });
-  const palingAwal = addHours(new Date(), await pengaturan.getNumber(SETTING.BATAS_BOOKING_JAM, 3));
+  const palingAwal = staf ? new Date() : addHours(new Date(), await pengaturan.getNumber(SETTING.BATAS_BOOKING_JAM, 3));
   return rows.filter((r) => combineDateTime(r.tanggal, r.jam_mulai) > palingAwal);
 }
 

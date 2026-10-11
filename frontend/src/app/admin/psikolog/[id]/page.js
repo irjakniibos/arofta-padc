@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import PageHeader from '@/components/layout/PageHeader';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -19,6 +20,7 @@ import { PROFIL_PSIKOLOG } from '@/lib/form-defs-admin';
 export default function DetailPsikologAdminPage({ params }) {
   const { id } = use(params);
   const toast = useToast();
+  const router = useRouter();
   const { data, error, loading, reload } = useApi(`/admin/psikolog/${id}`);
   const f = useFormSubmit({});
   const [konfirmasi, setKonfirmasi] = useState(false);
@@ -32,7 +34,7 @@ export default function DetailPsikologAdminPage({ params }) {
       <PageHeader title={data.nama_lengkap} description={data.akun?.email}
         action={<div className="flex items-center gap-3"><Badge tone={aktif ? 'success' : 'neutral'}>{aktif ? 'Aktif' : 'Nonaktif'}</Badge><Button variant="secondary" onClick={() => setKonfirmasi(true)}>{aktif ? 'Nonaktifkan' : 'Aktifkan'}</Button></div>} />
       <form className="rounded-panel border border-line bg-white px-5 pt-6"
-        onSubmit={async (e) => { e.preventDefault(); const ok = await f.submit(() => api.put(`/admin/psikolog/${id}`, pickFields(PROFIL_PSIKOLOG, f.value)), 'Data psikolog tersimpan'); if (ok) reload(); }}>
+        onSubmit={async (e) => { e.preventDefault(); const ok = await f.submit(() => api.put(`/admin/psikolog/${id}`, pickFields(PROFIL_PSIKOLOG, f.value)), 'Data psikolog tersimpan'); if (ok) router.push('/admin/psikolog'); }}>
         <DynamicForm sections={PROFIL_PSIKOLOG} value={f.value} onChange={f.setValue} errors={f.errors} />
         <SaveBar saving={f.saving} note="Atur jadwal praktik psikolog ini di menu Kalender jadwal." />
       </form>

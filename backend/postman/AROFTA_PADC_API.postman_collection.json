@@ -101,6 +101,74 @@
           }
         },
         {
+          "name": "GET /auth/google/status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/google/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "google",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /auth/google",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/google",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "google"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /auth/google/callback",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/google/callback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "google",
+                "callback"
+              ]
+            }
+          }
+        },
+        {
           "name": "POST /auth/forgot-password",
           "request": {
             "method": "POST",
@@ -1382,7 +1450,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tanggal\": \"2026-10-13\",\n  \"jam_mulai\": \"09:00\",\n  \"jam_selesai\": \"11:00\",\n  \"tipe_sesi\": \"Keduanya\"\n}"
+              "raw": "{\n  \"tanggal\": \"2026-10-14\",\n  \"jam_mulai\": \"09:00\",\n  \"jam_selesai\": \"11:00\",\n  \"tipe_sesi\": \"Keduanya\"\n}"
             }
           }
         },
@@ -1409,7 +1477,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tanggal_mulai\": \"2026-10-11\",\n  \"tanggal_selesai\": \"2026-11-09\",\n  \"hari\": [\n    1,\n    3,\n    5\n  ],\n  \"slot\": [\n    {\n      \"jam_mulai\": \"09:00\",\n      \"jam_selesai\": \"11:00\"\n    },\n    {\n      \"jam_mulai\": \"13:00\",\n      \"jam_selesai\": \"15:00\"\n    }\n  ],\n  \"tipe_sesi\": \"Keduanya\"\n}"
+              "raw": "{\n  \"tanggal_mulai\": \"2026-10-12\",\n  \"tanggal_selesai\": \"2026-11-10\",\n  \"hari\": [\n    1,\n    3,\n    5\n  ],\n  \"slot\": [\n    {\n      \"jam_mulai\": \"09:00\",\n      \"jam_selesai\": \"11:00\"\n    },\n    {\n      \"jam_mulai\": \"13:00\",\n      \"jam_selesai\": \"15:00\"\n    }\n  ],\n  \"tipe_sesi\": \"Keduanya\"\n}"
             }
           }
         },
@@ -2392,6 +2460,29 @@
           }
         },
         {
+          "name": "GET /admin/jadwal/tersedia",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/jadwal/tersedia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "jadwal",
+                "tersedia"
+              ]
+            }
+          }
+        },
+        {
           "name": "PUT /admin/jadwal/:id",
           "request": {
             "method": "PUT",
@@ -2478,6 +2569,371 @@
                 "admin",
                 "klien",
                 "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/klien/:idKlien",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/klien/:idKlien/keluarga",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/keluarga",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "keluarga"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/klien/:idKlien/keluarga",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/keluarga",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "keluarga"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/klien/:idKlien/keluarga/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/keluarga/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "keluarga",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/klien/:idKlien/keluarga/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/keluarga/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "keluarga",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/klien/:idKlien/organisasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/organisasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "organisasi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/klien/:idKlien/organisasi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/organisasi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "organisasi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/klien/:idKlien/organisasi/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/organisasi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "organisasi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/klien/:idKlien/organisasi/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/organisasi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "organisasi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /admin/klien/:idKlien/referensi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/referensi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "referensi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /admin/klien/:idKlien/referensi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/referensi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "referensi"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/klien/:idKlien/referensi/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/referensi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "referensi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /admin/klien/:idKlien/referensi/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/referensi/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "referensi",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/klien/:idKlien/intake-dewasa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/intake-dewasa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "intake-dewasa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admin/klien/:idKlien/intake-anak",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/klien/{{idKlien}}/intake-anak",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "klien",
+                "{{idKlien}}",
+                "intake-anak"
               ]
             }
           }
@@ -2661,7 +3117,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_layanan\": 5,\n  \"tipe_sesi\": \"Offline\",\n  \"klien_mode\": \"tanpa_akun\",\n  \"nama_lengkap\": \"Klien Walk In\",\n  \"no_hp\": \"081234567890\",\n  \"id_psikolog\": 1,\n  \"tanggal\": \"2026-10-10\",\n  \"jam_mulai\": \"14:00\",\n  \"jam_selesai\": \"15:00\",\n  \"metode_bayar\": \"Tunai\",\n  \"setuju_persetujuan\": true\n}"
+              "raw": "{\n  \"id_layanan\": 5,\n  \"tipe_sesi\": \"Offline\",\n  \"klien_mode\": \"tanpa_akun\",\n  \"nama_lengkap\": \"Klien Walk In\",\n  \"no_hp\": \"081234567890\",\n  \"id_psikolog\": 1,\n  \"tanggal\": \"2026-10-11\",\n  \"jam_mulai\": \"14:00\",\n  \"jam_selesai\": \"15:00\",\n  \"metode_bayar\": \"Tunai\",\n  \"setuju_persetujuan\": true\n}"
             }
           }
         },
@@ -2883,7 +3339,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tanggal\": \"2026-10-10\",\n  \"kategori\": \"Alat Tes\",\n  \"nominal\": 150000,\n  \"keterangan\": \"Lembar jawaban\"\n}"
+              "raw": "{\n  \"tanggal\": \"2026-10-11\",\n  \"kategori\": \"Alat Tes\",\n  \"nominal\": 150000,\n  \"keterangan\": \"Lembar jawaban\"\n}"
             }
           }
         },

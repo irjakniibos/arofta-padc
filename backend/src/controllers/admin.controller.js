@@ -48,6 +48,7 @@ exports.statusPsikolog = async (req, res) => { const d = await psikolog.setActiv
 exports.listJadwalPsikolog = paged((req) => jadwal.list(req.params.id, req.query));
 exports.createJadwalPsikolog = async (req, res) => { await psikolog.getById(req.params.id); return created(res, await jadwal.create(Number(req.params.id), req.validated)); };
 exports.createJadwalBulkPsikolog = async (req, res) => { await psikolog.getById(req.params.id); return created(res, await jadwal.createBulk(Number(req.params.id), req.validated)); };
+exports.jadwalTersedia = async (req, res) => ok(res, await jadwal.tersedia(req.query, { staf: true }));
 exports.updateJadwal = async (req, res) => ok(res, await jadwal.update(null, req.params.id, req.validated), 'Slot diperbarui');
 exports.deleteJadwal = async (req, res) => { await jadwal.remove(null, req.params.id); return ok(res, null, 'Slot dihapus'); };
 

@@ -82,6 +82,10 @@ describe('Batas waktu booking dan batas bayar', () => {
     ctx.slotDekat = await buatSlot(ctx.idPsikolog2, r.tanggal, r.jam_mulai, r.jam_selesai);
     const tersedia = await klienBaru.get(`${BASE}/jadwal/tersedia?id_psikolog=${ctx.idPsikolog2}&tanggal=${r.tanggal}`);
     expect(tersedia.body.data.some((s) => s.id_jadwal === ctx.slotDekat)).toBe(false);
+    // Admin tetap melihat slot tersebut untuk jadwal ulang
+    const staf = await admin.get(`${BASE}/admin/jadwal/tersedia?tanggal=${r.tanggal}`);
+    expect(staf.body.data.some((s) => s.id_jadwal === ctx.slotDekat)).toBe(true);
+    expect((await klienBaru.get(`${BASE}/admin/jadwal/tersedia?tanggal=${r.tanggal}`)).status).toBe(403);
     const res = await pesan(klienBaru, ctx.slotDekat);
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/paling lambat 3 jam/);

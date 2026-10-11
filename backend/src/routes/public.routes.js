@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { slotTersedia } = require('../validators/common');
 const { query } = require('express-validator');
 const c = require('../controllers/public.controller');
 const validate = require('../middlewares/validate');
@@ -18,13 +19,7 @@ router.get('/jadwal/kalender', validate([
   query('id_psikolog').optional().isInt({ min: 1 }).toInt(),
   query('tipe_sesi').optional().isIn(['Online', 'Offline']),
 ]), h(c.kalender));
-router.get('/jadwal/tersedia', validate([
-  query('id_psikolog').optional().isInt({ min: 1 }).toInt(),
-  query('tanggal').optional().isISO8601({ strict: true }),
-  query('dari').optional().isISO8601({ strict: true }),
-  query('sampai').optional().isISO8601({ strict: true }),
-  query('tipe_sesi').optional().isIn(['Online', 'Offline']),
-]), h(c.jadwalTersedia));
+router.get('/jadwal/tersedia', validate(slotTersedia), h(c.jadwalTersedia));
 router.get('/info-pembayaran', h(c.infoPembayaran));
 router.get('/info-lembaga', h(c.infoLembaga));
 

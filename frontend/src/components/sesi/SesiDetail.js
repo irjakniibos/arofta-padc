@@ -53,7 +53,7 @@ function JadwalUlang({ sesi, open, onClose, onDone }) {
   useEffect(() => {
     if (!tgl) return;
     setSlots(null); setPilih(null);
-    api.get('/jadwal/tersedia', { tanggal: tgl, tipe_sesi: sesi.tipe_sesi }).then((r) => setSlots(r.data)).catch((e) => toast(e.message, 'error'));
+    api.get('/admin/jadwal/tersedia', { tanggal: tgl, tipe_sesi: sesi.tipe_sesi }).then((r) => setSlots(r.data)).catch((e) => toast(e.message, 'error'));
   }, [tgl, sesi.tipe_sesi, toast]);
   const simpan = async () => {
     setSaving(true);

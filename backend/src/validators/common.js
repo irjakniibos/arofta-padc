@@ -68,6 +68,15 @@ const bool = (field) => body(field).optional().isBoolean().withMessage(`${label(
 /** Centang persetujuan wajib bernilai true. Nilainya tidak disimpan dari input (waktu & versi diisi server). */
 const setuju = (field, pesan) => body(field).custom((x) => x === true || x === 'true').withMessage(pesan).toBoolean();
 
+/** Filter daftar slot kosong (publik & admin). */
+const slotTersedia = [
+  query('id_psikolog').optional().isInt({ min: 1 }).toInt(),
+  query('tanggal').optional().isISO8601({ strict: true }),
+  query('dari').optional().isISO8601({ strict: true }),
+  query('sampai').optional().isISO8601({ strict: true }),
+  query('tipe_sesi').optional().isIn(['Online', 'Offline']),
+];
+
 const pagination = [
   query('page').optional().isInt({ min: 1 }).toInt(),
   query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
@@ -86,6 +95,6 @@ function fromFieldDefs(defs) {
 }
 
 module.exports = {
-  idParam, email, password, nama, noHp, text, str, date, time, oneOf, money, bool, setuju, pagination,
+  idParam, email, password, nama, noHp, text, str, date, time, oneOf, money, bool, setuju, slotTersedia, pagination,
   fromFieldDefs, fieldDefs, PASSWORD_MSG, label,
 };

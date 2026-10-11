@@ -9,7 +9,7 @@ const validate = require('../middlewares/validate');
 const authorize = require('../middlewares/authorize');
 const { authenticate } = require('../middlewares/auth');
 const { uploadTemplate } = require('../middlewares/upload');
-const { idParam, pagination } = require('../validators/common');
+const { idParam, pagination, slotTersedia } = require('../validators/common');
 const { ROLES, KATEGORI_LAYANAN, STATUS_BAYAR } = require('../config/constants');
 const h = require('../utils/asyncHandler');
 
@@ -43,6 +43,8 @@ router.patch('/psikolog/:id/status', validate([idParam(), ...r.status]), h(c.sta
 router.get('/psikolog/:id/jadwal', validate([idParam(), ...pr.listJadwal]), h(c.listJadwalPsikolog));
 router.post('/psikolog/:id/jadwal', validate([idParam(), ...pr.jadwal]), h(c.createJadwalPsikolog));
 router.post('/psikolog/:id/jadwal/bulk', validate([idParam(), ...pr.jadwalBulk]), h(c.createJadwalBulkPsikolog));
+// Slot kosong untuk jadwal ulang oleh Admin (tidak terikat batas waktu booking online klien)
+router.get('/jadwal/tersedia', validate(slotTersedia), h(c.jadwalTersedia));
 router.put('/jadwal/:id', validate([idParam(), ...pr.jadwalUpdate]), h(c.updateJadwal));
 router.delete('/jadwal/:id', id, h(c.deleteJadwal));
 
