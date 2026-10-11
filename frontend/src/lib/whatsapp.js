@@ -3,6 +3,7 @@
  * Nomor diambil dari pengaturan lembaga (kontak_whatsapp), tidak ditulis di komponen.
  */
 import { rupiah } from './format';
+import { WA_URL } from './config';
 
 /** '0822-2888-5529' / '+62822...' -> '62822...' (format internasional tanpa tanda +) */
 export function nomorWa(nomor) {
@@ -16,7 +17,7 @@ export function nomorWa(nomor) {
 export function tautanWa(nomor, pesan = '') {
   const n = nomorWa(nomor);
   if (!n) return '';
-  return `https://wa.me/${n}${pesan ? `?text=${encodeURIComponent(pesan)}` : ''}`;
+  return `${WA_URL}/${n}${pesan ? `?text=${encodeURIComponent(pesan)}` : ''}`;
 }
 
 /** Pesan konfirmasi pembayaran untuk admin; klien tinggal melampirkan foto bukti transfer. */

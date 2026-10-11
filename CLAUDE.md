@@ -17,7 +17,9 @@ Konteks proyek untuk Claude Code. Baca sampai habis sebelum mengubah apa pun.
 - MySQL lewat MySQL Workbench, port 3307 (`DB_PORT=3307`), user aplikasi `arofta_app`, database `arofta_padc` dan `arofta_padc_test`.
 - Nilai `.env` yang mengandung `#` wajib diberi tanda kutip, contoh `DB_PASSWORD="..."`.
 - LibreOffice terpasang: `SOFFICE_PATH="C:\Program Files\LibreOffice\program\soffice.exe"`. Tanpa LibreOffice, laporan jatuh ke .docx (fallback).
-- SMTP masih kosong. Selama `SMTP_HOST` kosong, email dicetak di terminal backend: `[EMAIL-DEV] Ke ... | Subjek ...` lalu `Tautan: <url>`. Untuk email sungguhan: Gmail + App Password (`SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`, `SMTP_SECURE=false`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM`).
+- SMTP aktif (Gmail `irzayaumilsyahrar55@gmail.com` + App Password, 11 Okt 2026). Bila `SMTP_HOST` dikosongkan, email dicetak di terminal backend (`[EMAIL-DEV] ...`). Email dari Gmail pribadi sering masuk Spam; tautan `localhost` hanya bisa dibuka di laptop Irza.
+- Login Google aktif (`GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` di `backend/.env`), OAuth app masih status Testing: hanya email di daftar Test users yang bisa login Google.
+- Saat Irza menjalankan server sendiri, jangan menyalakan preview server di port yang sama (bentrok EADDRINUSE).
 - Jangan pernah menampilkan isi `JWT_SECRET`, `DB_PASSWORD`, atau `SEED_SUPERADMIN_PASSWORD` di chat. `.env` dan `.env.local` tidak boleh di-commit atau di-zip.
 
 ## Git
@@ -41,15 +43,15 @@ Backend (`backend/`):
 
 ```
 npm install
-npm run db:migrate      # 31 tabel
+npm run db:migrate      # 31 tabel (4 migration)
 npm run db:seed         # master data, super admin dari .env, data dummy
 npm run dev             # http://localhost:5000/api/v1
 npm run db:reset        # undo semua migration + migrate + seed
-npm test                # Jest + Supertest, 46 test, DB arofta_padc_test
+npm test                # Jest + Supertest, 74 test, DB arofta_padc_test
 npm run lint
 npm run template:check  # cek placeholder template Word
 npm run backup          # mysqldump ke storage/backup (KN-09, dijadwalkan lewat cron server)
-node scripts/generate-postman.js   # buat ulang koleksi Postman (143 endpoint)
+node scripts/generate-postman.js   # buat ulang koleksi Postman (165 endpoint)
 ```
 
 Frontend (`frontend/`):
@@ -74,7 +76,7 @@ Akun dummy (password `Password123`): `admin@arofta.id`, `psikolog1@arofta.id`, `
 
 ## Keputusan yang sudah disepakati Irza (jangan diubah tanpa bertanya)
 
-1. Pembayaran: transfer manual. Bukti transfer lewat Google Form, tidak disimpan di DB. Web menampilkan rekening + link form. Klien menekan "Saya sudah transfer", Admin memverifikasi (Lunas / Ditolak dengan alasan). Tagihan lewat batas waktu kedaluwarsa otomatis.
+1. Pembayaran: transfer manual, Admin memverifikasi (Lunas / Ditolak dengan alasan), tagihan lewat batas waktu kedaluwarsa otomatis. (Bagian Google Form sudah diganti konfirmasi WhatsApp, lihat keputusan baru poin 4.)
 2. Laporan hasil: 4 template Word (TES_ANAK, MINAT_BAKAT, REKRUTMEN, PSIKOLOGI_UMUM). Psikolog mengisi lewat form (psikogram skala + teks/pilihan). Admin bisa upload template Word baru (versi naik, file lama diarsipkan).
 3. PDF: docxtemplater mengisi .docx lalu LibreOffice headless (antrean) mengonversi ke PDF. Fallback .docx.
 4. Formulir intake dan catatan klinis detail mengikuti formulir kertas klinik.
@@ -85,7 +87,7 @@ Akun dummy (password `Password123`): `admin@arofta.id`, `psikolog1@arofta.id`, `
 
 ## Keputusan baru hasil diskusi 10 Oktober 2026
 
-Keputusan ini menggantikan poin 1 di atas bila bertentangan. Status: poin 3-7 sudah diimplementasikan (tahap 1, 10 Okt 2026). Poin 2 (login Google) dan email sungguhan belum, menunggu Irza membuat OAuth Client ID dan App Password. Poin 9 (revisi laporan) belum.
+Keputusan ini menggantikan poin 1 di atas bila bertentangan. Status: poin 1-8 sudah diimplementasikan dan diuji Irza (10-11 Okt 2026). Poin 9 (revisi laporan & dokumen black-box) belum.
 
 1. Akun: Admin 1 akun (`arofta.padc@gmail.com`). Super Admin = Irza + anggota tim capstone (pemantau/maintenance), email masing-masing.
 2. Login dua cara: Google (OAuth/OpenID Connect) dan email + password. Register form tetap ada. Hanya klien yang bisa daftar sendiri (termasuk lewat Google pertama kali). Psikolog didaftarkan Admin; Admin/Super Admin didaftarkan Super Admin. Login Google: `email_verified` wajib, akun nonaktif ditolak, role dari database, akun lama dengan email sama otomatis tertaut.
@@ -129,14 +131,12 @@ Urutan kerja: (1) yang tidak butuh apa pun dari Irza: aturan booking/bayar, bata
 - `lib/format.js`: pakai `isoLokal` untuk tanggal lokal, jangan `toISOString().slice(0,10)` (meleset di WIB).
 - Grid dua kolom memakai `[&>*]:min-w-0`, Panel memakai `min-w-0` agar tabel tidak membuat halaman bisa digeser di HP.
 
-## Status pekerjaan (per 10 Oktober 2026)
+## Status pekerjaan (per 11 Oktober 2026)
 
-- Backend: 66/66 test lolos (file baru `tests/aturan-booking.test.js`), lint bersih. Frontend: lint bersih, build sukses. Postman 146 endpoint.
-- Migration ke-3 `20261010000001-booking-pembayaran-privasi.js` (tidak menambah tabel, tetap 31): kolom persetujuan privasi di `users`, `klien.id_user` nullable (walk-in), `sesi_asesmen.persetujuan_at/persetujuan_versi/dibuat_oleh`, `pembayaran.harga_layanan/alasan_ubah_nominal/peringatan_terkirim`, pengaturan baru (`batas_booking_jam`, `batas_bayar_sebelum_sesi_jam`, `maks_booking_belum_bayar`), `link_form_bukti_bayar` dihapus. `database/arofta_padc_v3_workbench.sql` BELUM diperbarui untuk migration ini.
-- Endpoint baru: `POST /auth/persetujuan-privasi`, `POST /admin/booking`, `PATCH /admin/pembayaran/:id/nominal`, `PUT /admin/klien/:idKlien` (+ keluarga/organisasi/referensi, intake-dewasa, intake-anak). Halaman baru: `/kebijakan-privasi`, `/persetujuan-layanan`, `/admin/booking`. Komponen bersama `components/klien/ProfilEditor.js` dipakai klien dan admin.
-- Isi Kebijakan Privasi & Persetujuan Layanan ada di `frontend/src/lib/kebijakan.js` (versi harus sama dengan `VERSI_PERSETUJUAN` di backend). Masih draf, perlu ditinjau psikolog AROFTA.
-- Black-box: `Dokumen_Pengujian_BlackBox_AROFTA_PADC.docx`, 77 kasus di 12 modul (AUT, PUB, PRF, BKG, SES, LAP, ULS, KAL, ADM, TPL, SUP, KEA), belum ada kolom nomor KF.
-- Celah pengujian yang ditemukan: pengingat jadwal otomatis (KF-08/09/17), kedaluwarsa tagihan otomatis, alokasi/jadwal ulang sesi oleh Admin (KF-03), buka kembali laporan Final, email sungguhan (KF-16, SMTP kosong), KN-02/06/08 (butuh hosting).
+- Backend 74/74 test lolos (`auth`, `crud`, `alur-layanan`, `aturan-booking`, `login-google`), lint bersih. Frontend lint bersih, build sukses. Postman 165 endpoint.
+- Migration: `20261009000001-initial-schema`, `20261009000002-ulasan`, `20261010000001-booking-pembayaran-privasi`, `20261010000002-login-google` (tetap 31 tabel). `database/arofta_padc_v3_workbench.sql` sudah memuat keempatnya (diuji impor ke DB test).
+- Fitur setelah Capstone 1: konfirmasi pembayaran WhatsApp, aturan booking/bayar di Pengaturan, booking mendesak Admin (`/admin/booking`, klien walk-in tanpa akun), ubah nominal, persetujuan privasi & informed consent (`/kebijakan-privasi`, `/persetujuan-layanan`, teks di `frontend/src/lib/kebijakan.js`, masih draf untuk ditinjau psikolog AROFTA), login Google, akun staf tanpa password, kolom wajib profil/intake (`backend/src/services/formWajib.service.js` + `lib/form-defs.js`), komponen `FormSimpan` (muat ulang + banner tersimpan), notifikasi admin untuk semua aksi klien, slot jadwal ulang khusus Admin (`/admin/jadwal/tersedia`), tombol Beri ulasan di Hasil asesmen.
+- Black-box `Dokumen_Pengujian_BlackBox_AROFTA_PADC.docx` (77 kasus) belum memuat fitur di atas dan belum ada kolom nomor KF.
 
 ## Akun uji dengan email asli (database dev, 11 Okt 2026)
 

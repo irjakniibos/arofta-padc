@@ -1,6 +1,6 @@
 -- =====================================================================
 -- DATABASE SIM LAYANAN PSIKOLOGI AROFTA PADC — v3 (untuk MySQL Workbench)
--- Berisi: struktur 31 tabel + data master (layanan, kategori fee, 4 template laporan, pengaturan).
+-- Berisi: struktur 31 tabel (termasuk 4 migration s.d. login Google) + data master (layanan, kategori fee, 4 template laporan, pengaturan).
 -- TIDAK berisi akun apa pun. Setelah import, buat akun Super Admin dengan:
 --     npm run db:seed        (membaca SEED_SUPERADMIN_EMAIL & SEED_SUPERADMIN_PASSWORD dari .env)
 -- lalu salin file template:  templates/<KODE>.docx  ->  storage/template/<KODE>_v1.docx
@@ -723,7 +723,36 @@ INSERT INTO `layanan_fee` (`id_layanan_fee`, `id_layanan`, `id_kategori_fee`, `n
 (11,4,5,50000.00),
 (12,4,8,100000.00),
 (13,5,11,150000.00);
-INSERT INTO `sequelize_meta` (`name`) VALUES ('20261009000001-initial-schema.js'),('20261009000002-ulasan.js');
+-- ---------------------------------------------------------------------
+-- Migration lanjutan (sama dengan migrations/20261010000001 & 20261010000002)
+-- ---------------------------------------------------------------------
+-- 20261010000001-booking-pembayaran-privasi: persetujuan privasi, klien walk-in, booking Admin, aturan bayar
+ALTER TABLE users
+  ADD COLUMN privasi_disetujui_at DATETIME NULL AFTER last_login,
+  ADD COLUMN privasi_versi VARCHAR(20) NULL AFTER privasi_disetujui_at;
+ALTER TABLE klien MODIFY id_user INT NULL COMMENT 'NULL = profil walk-in tanpa akun login';
+ALTER TABLE sesi_asesmen
+  ADD COLUMN persetujuan_at DATETIME NULL AFTER alasan_batal,
+  ADD COLUMN persetujuan_versi VARCHAR(20) NULL AFTER persetujuan_at,
+  ADD COLUMN dibuat_oleh INT NULL COMMENT 'Admin pembuat booking; NULL = dipesan klien sendiri' AFTER persetujuan_versi,
+  ADD CONSTRAINT fk_sesi_dibuat_oleh FOREIGN KEY (dibuat_oleh) REFERENCES users(id_user) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE pembayaran
+  ADD COLUMN harga_layanan DECIMAL(12,2) NULL COMMENT 'Harga layanan saat booking' AFTER total_bayar,
+  ADD COLUMN alasan_ubah_nominal VARCHAR(255) NULL AFTER harga_layanan,
+  ADD COLUMN peringatan_terkirim BOOLEAN NOT NULL DEFAULT FALSE AFTER catatan_admin;
+INSERT IGNORE INTO `pengaturan` (`kunci`, `nilai`, `keterangan`, `is_public`, `updated_at`) VALUES
+('batas_booking_jam','3','Booking online paling lambat N jam sebelum jadwal',1,NOW()),
+('batas_bayar_sebelum_sesi_jam','1','Pembayaran paling lambat N jam sebelum sesi dimulai',0,NOW()),
+('maks_booking_belum_bayar','5','Maksimal booking belum dibayar per akun klien',0,NOW());
+DELETE FROM `pengaturan` WHERE `kunci` = 'link_form_bukti_bayar';
+
+-- 20261010000002-login-google: login dengan akun Google, password boleh kosong
+ALTER TABLE users
+  ADD COLUMN google_id VARCHAR(255) NULL UNIQUE COMMENT 'claim sub akun Google' AFTER password,
+  MODIFY password VARCHAR(255) NULL COMMENT 'hash bcrypt; NULL = hanya masuk dengan Google';
+
+INSERT INTO `sequelize_meta` (`name`) VALUES ('20261009000001-initial-schema.js'),('20261009000002-ulasan.js'),
+('20261010000001-booking-pembayaran-privasi.js'),('20261010000002-login-google.js');
 INSERT INTO `sequelize_data` (`name`) VALUES ('20261009000001-master-data.js');
 
 SET FOREIGN_KEY_CHECKS = 1;

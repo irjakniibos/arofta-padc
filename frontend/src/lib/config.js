@@ -5,6 +5,9 @@ export const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1';
 /** URL API untuk browser: lewat proxy Next.js (satu origin dengan frontend). */
 export const API_URL = `${BASE_PATH}${API_PREFIX}`;
 
+/** Layanan pesan WhatsApp untuk konfirmasi pembayaran & kebutuhan mendesak. */
+export const WA_URL = (process.env.NEXT_PUBLIC_WA_URL || 'https://wa.me').replace(/\/+$/, '');
+
 export const ROLES = Object.freeze({
   KLIEN: 'Klien',
   PSIKOLOG: 'Psikolog',

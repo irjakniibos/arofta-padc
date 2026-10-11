@@ -23,7 +23,7 @@ Dikonsumsi oleh frontend Next.js.
 backend/
 ├── database/
 │   ├── schema.sql                     # DDL 30 tabel (sumber migration awal)
-│   └── arofta_padc_v3_workbench.sql   # siap import di MySQL Workbench (31 tabel + data master)
+│   └── arofta_padc_v3_workbench.sql   # siap import di MySQL Workbench (31 tabel + data master, s.d. migration login Google)
 ├── migrations/                        # Sequelize migration (perubahan struktur DB)
 ├── seeders/                           # data master, super admin, data dummy
 │   └── data/                          # definisi 4 template laporan & psikogram
@@ -83,7 +83,7 @@ cp .env.example .env        # Windows: copy .env.example .env
 
 **Cara A — disarankan (otomatis dengan ORM):**
 ```bash
-npm run db:migrate    # membuat 31 tabel (initial-schema + ulasan)
+npm run db:migrate    # membuat 31 tabel (initial-schema, ulasan, aturan booking/privasi, login Google)
 npm run db:seed       # data master + 4 template laporan + akun Super Admin (+ data dummy jika SEED_DUMMY_DATA=true)
 ```
 
@@ -112,7 +112,7 @@ Jangan aktifkan data dummy di server production.
 ## 5. Pengujian
 
 ```bash
-npm test              # 46 skenario otomatis (database arofta_padc_test di-reset setiap kali)
+npm test              # 74 skenario otomatis (database arofta_padc_test di-reset setiap kali)
 npm run lint
 npm run template:check  # isi setiap template dengan data contoh → PDF di storage/tmp untuk dicek
 ```
@@ -133,7 +133,7 @@ Koleksi Postman: impor `postman/AROFTA_PADC_API.postman_collection.json`. Login 
 - List memakai `?page=&limit=` (maks 50).
 - Unduh laporan: `GET /laporan/:id/unduh` (PDF), staf dapat `?format=docx`.
 
-Daftar endpoint lengkap ada di koleksi Postman (142 endpoint).
+Daftar endpoint lengkap ada di koleksi Postman (165 endpoint).
 
 **Kalender Jadwal:**
 - `GET /jadwal/kalender?bulan=&tahun=&id_psikolog=&tipe_sesi=` (publik): tanggal yang masih punya slot kosong → tandai di kalender; klik tanggal → `GET /jadwal/tersedia?tanggal=YYYY-MM-DD` untuk daftar jam & psikolog.
@@ -143,8 +143,10 @@ Daftar endpoint lengkap ada di koleksi Postman (142 endpoint).
 
 ## 7. Alur Bisnis Utama
 
-1. **Booking**: klien memilih layanan → sistem cek formulir intake sesuai layanan → klien memilih slot → sesi `Terdaftar`, slot `Dipesan`, tagihan `Menunggu Pembayaran` (batas bayar dari pengaturan).
-2. **Pembayaran manual**: klien transfer ke rekening → unggah bukti di Google Form → klik *Saya Sudah Transfer* (`Menunggu Verifikasi`) → Admin cek Google Form → `Lunas` / `Ditolak` (dengan alasan). Tagihan yang lewat batas bayar dibatalkan otomatis dan slot dibuka kembali.
+0. **Akun**: klien daftar lewat formulir (centang Kebijakan Privasi) atau **Masuk dengan Google** (OpenID Connect, `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`). Akun psikolog/Admin/Super Admin dibuat staf (password boleh kosong, lalu masuk dengan Google memakai email yang sama).
+1. **Booking**: klien memilih layanan → sistem cek formulir intake sesuai layanan → klien memilih slot (paling lambat `batas_booking_jam` sebelum jadwal, maks. `maks_booking_belum_bayar` booking belum dibayar) dan menyetujui informed consent → sesi `Terdaftar`, slot `Dipesan`, tagihan `Menunggu Pembayaran`. Batas bayar = yang lebih dulu antara `batas_bayar_jam` setelah booking atau `batas_bayar_sebelum_sesi_jam` sebelum sesi.
+2. **Pembayaran manual**: klien transfer ke rekening → klik *Konfirmasi via WhatsApp* (pesan terisi kode booking, dikirim ke `kontak_whatsapp` beserta foto bukti; status `Menunggu Verifikasi`, Admin diberi tahu) → Admin cek bukti di WhatsApp & mutasi rekening → `Lunas` / `Ditolak` (dengan alasan, batas bayar baru). Tagihan yang lewat batas bayar dibatalkan otomatis dan slot dibuka kembali. Admin dapat mengubah nominal (dengan alasan; fee psikolog tetap).
+   - **Booking mendesak** (`POST /admin/booking`): Admin membuat booking untuk klien terdaftar, klien walk-in tanpa akun, atau akun baru (email undangan atur password), slot ada atau jam baru, langsung `Lunas` (Tunai/Transfer).
 3. **Tautan sesi**: setelah lunas, Admin menginput tautan Zoom (online) atau lokasi ruangan (offline) → terkirim ke klien & psikolog (dashboard + email). Pengingat otomatis dikirim N jam sebelum sesi.
 4. **Pelaksanaan**: psikolog mengubah status `Berjalan` → mengisi Anamnesis/Observasi/SOAP → `Selesai` → sistem membuat **Fee Psikolog** otomatis dari tarif fee layanan.
 5. **Laporan**: psikolog mengisi aspek psikogram & kesimpulan sesuai template → pratinjau → finalisasi → sistem mengisi file Word klinik → PDF → klien mendapat notifikasi & mengunduh.
@@ -178,7 +180,7 @@ Tabel psikogram berulang: baris berisi `{#items}{no}. {label} {deskripsi} {c1} �
 | Validasi & masking | express-validator di setiap endpoint + sanitasi global (hapus tag HTML & karakter `< >`), hanya field tervalidasi yang diteruskan (anti mass-assignment) |
 | Upload | Hanya `.docx` (cek ekstensi + MIME + isi file), maks `UPLOAD_MAX_SIZE_MB`, 1 file per request |
 | File sensitif | Laporan & template di `storage/` (bukan folder publik), diunduh lewat controller yang memeriksa hak akses |
-| No hardcode | URL, secret, credential di `.env`; role/status di `config/constants.js`; rekening & link Google Form di tabel `pengaturan` |
+| No hardcode | URL, secret, credential di `.env`; role/status di `config/constants.js`; rekening, nomor WhatsApp, dan aturan waktu booking di tabel `pengaturan` |
 | Subdirectory | Seluruh route di bawah `API_BASE_PATH` |
 | Payload | Body JSON/form maksimal 10 KB |
 | Pagination | Semua list dibatasi `limit` maks 50, atribut kolom dipilih eksplisit |

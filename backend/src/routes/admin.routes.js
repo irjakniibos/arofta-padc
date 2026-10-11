@@ -114,7 +114,7 @@ router.get('/kalender', validate([...r.periode, query('id_psikolog').optional().
 router.get('/ulasan', validate([...pagination, query('is_tampil').optional().isIn(['true', 'false']), query('id_psikolog').optional().isInt({ min: 1 }).toInt(), query('rating').optional().isInt({ min: 1, max: 5 }).toInt()]), h(c.listUlasan));
 router.patch('/ulasan/:id/tampil', validate([idParam(), body('is_tampil').isBoolean().withMessage('is_tampil harus true/false').toBoolean()]), h(c.tampilUlasan));
 
-// Pengaturan (rekening, link Google Form, dll)
+// Pengaturan (rekening, nomor WhatsApp, aturan booking, dll)
 router.get('/pengaturan', h(c.getPengaturan));
 router.put('/pengaturan', validate(r.pengaturan), h(c.updatePengaturan));
 
