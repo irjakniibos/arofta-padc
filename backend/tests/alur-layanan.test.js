@@ -210,6 +210,9 @@ describe('Alur layanan tes psikologi anak (end-to-end)', () => {
     const list = await klienLain.get(`${BASE}/psikolog`);
     expect(list.body.data.find((p) => p.id_psikolog === ctx.idPsikolog).rating.jumlah).toBe(1);
     ctx.idUlasan = res.body.data.id_ulasan;
+    // menu Hasil asesmen menampilkan ulasan yang sudah diberikan
+    const hasil = await klien.get(`${BASE}/klien/laporan`);
+    expect(hasil.body.data.find((l) => l.sesi.id_sesi === ctx.sesi.id_sesi).sesi.ulasan.rating).toBe(5);
   });
 
   test('admin dapat menyembunyikan ulasan', async () => {

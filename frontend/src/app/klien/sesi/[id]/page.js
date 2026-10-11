@@ -2,14 +2,14 @@
 
 import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Copy, Download, Star, Video, MapPin, MessageCircle } from 'lucide-react';
+import { Copy, Download, Video, MapPin, MessageCircle } from 'lucide-react';
+import FormUlasan, { Bintang } from '@/components/klien/FormUlasan';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Alert from '@/components/ui/Alert';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
-import { Textarea } from '@/components/ui/Field';
 import { Loading, ErrorState } from '@/components/ui/DataState';
 import { useToast } from '@/components/ui/Toast';
 import { api } from '@/lib/api';
@@ -94,33 +94,6 @@ function PanelPembayaran({ sesi, onKonfirmasi }) {
   );
 }
 
-function FormUlasan({ idSesi, onDone }) {
-  const toast = useToast();
-  const [rating, setRating] = useState(0);
-  const [komentar, setKomentar] = useState('');
-  const [saving, setSaving] = useState(false);
-  const kirim = async () => {
-    setSaving(true);
-    try { await api.post(`/klien/sesi/${idSesi}/ulasan`, { rating, komentar: komentar || undefined }); toast('Terima kasih atas ulasan Anda'); onDone(); } catch (e) { toast(e.message, 'error'); } finally { setSaving(false); }
-  };
-  return (
-    <div className="space-y-4 px-5 py-5">
-      <fieldset>
-        <legend className="mb-2 text-sm font-medium">Penilaian Anda</legend>
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5].map((n) => (
-            <button key={n} type="button" onClick={() => setRating(n)} aria-label={`${n} bintang`} aria-pressed={rating === n} className="rounded-control p-1">
-              <Star className={`h-7 w-7 ${n <= rating ? 'fill-violet text-violet' : 'text-violet-line'}`} />
-            </button>
-          ))}
-        </div>
-      </fieldset>
-      <Textarea label="Komentar (opsional)" maxLength={1000} rows={3} value={komentar} onChange={(e) => setKomentar(e.target.value)} hint="Nama Anda akan disamarkan saat ulasan ditampilkan." />
-      <Button disabled={!rating} loading={saving} onClick={kirim}>Kirim ulasan</Button>
-    </div>
-  );
-}
-
 export default function DetailSesiKlienPage({ params }) {
   const { id } = use(params);
   const toast = useToast();
@@ -163,7 +136,7 @@ export default function DetailSesiKlienPage({ params }) {
             <Panel title="Ulasan">
               {sesi.ulasan ? (
                 <div className="px-5 py-4 text-sm">
-                  <div className="flex">{[1, 2, 3, 4, 5].map((n) => <Star key={n} className={`h-5 w-5 ${n <= sesi.ulasan.rating ? 'fill-violet text-violet' : 'text-violet-line'}`} />)}</div>
+                  <Bintang rating={sesi.ulasan.rating} />
                   {sesi.ulasan.komentar && <p className="mt-2 text-ink-soft">{sesi.ulasan.komentar}</p>}
                 </div>
               ) : <FormUlasan idSesi={sesi.id_sesi} onDone={load} />}

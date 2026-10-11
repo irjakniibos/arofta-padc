@@ -8,7 +8,7 @@ const path = require('path');
 const env = require('../config/env');
 const {
   sequelize, SesiAsesmen, LaporanAsesmen, JawabanLaporan, TemplateLaporan, TemplateItem, Klien, Psikolog, Layanan,
-  IntakeAnak, KeluargaKlien,
+  IntakeAnak, KeluargaKlien, Ulasan,
 } = require('../models');
 const { STATUS_LAPORAN, STATUS_SESI, TIPE_NOTIF, ROLES, STAFF_ROLES } = require('../config/constants');
 const AppError = require('../utils/AppError');
@@ -240,7 +240,7 @@ async function finalisasi(idSesi, scope) {
     idUser: sesi.klien.id_user, idSesi: sesi.id_sesi, tipe: TIPE_NOTIF.LAPORAN,
     judul: `Laporan hasil pemeriksaan ${sesi.kode_booking} telah terbit`,
     pesan: `Laporan ${sesi.layanan.nama_layanan} atas nama ${sesi.klien.nama_lengkap} sudah dapat diunduh di dashboard Anda (menu Hasil Asesmen).`,
-    cta: env.frontendUrl ? { label: 'Lihat Hasil Asesmen', url: `${env.frontendUrl}/klien/hasil-asesmen` } : null,
+    cta: env.frontendUrl ? { label: 'Lihat Hasil Asesmen', url: `${env.frontendUrl}/klien/hasil` } : null,
   });
   await notif.kirimKeAdmin({ idSesi: sesi.id_sesi, tipe: TIPE_NOTIF.LAPORAN, judul: `Laporan ${sesi.kode_booking} final`, pesan: `${sesi.psikolog.nama_lengkap} memfinalisasi laporan ${sesi.klien.nama_lengkap}.` });
   return { status_laporan: STATUS_LAPORAN.FINAL, format: pdfPath ? 'pdf' : 'docx' };
@@ -286,6 +286,7 @@ async function listUntukKlien(idUser, query) {
         { model: Klien, as: 'klien', attributes: ['id_klien', 'nama_lengkap'], where: { id_user: idUser } },
         { model: Layanan, as: 'layanan', attributes: ['nama_layanan'] },
         { model: Psikolog, as: 'psikolog', attributes: ['nama_lengkap'] },
+        { model: Ulasan, as: 'ulasan', attributes: ['id_ulasan', 'rating'] },
       ],
     }],
     order: [['tanggal_final', 'DESC']],
