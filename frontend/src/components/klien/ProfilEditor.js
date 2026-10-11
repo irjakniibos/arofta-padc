@@ -5,16 +5,13 @@
  * Dipakai klien untuk profilnya sendiri dan Admin untuk melengkapi data klien (mis. klien walk-in tanpa akun).
  * `apiBase`: /klien/profil/:id (klien) atau /admin/klien/:id (admin).
  */
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Tabs from '@/components/ui/Tabs';
 import Alert from '@/components/ui/Alert';
-import DynamicForm from '@/components/form/DynamicForm';
-import SaveBar from '@/components/form/SaveBar';
 import ChildList from '@/components/klien/ChildList';
-import Spinner from '@/components/ui/Spinner';
-import { useFormSubmit } from '@/components/form/useForm';
+import FormSimpan from '@/components/form/FormSimpan';
 import { api } from '@/lib/api';
-import { PROFIL_KLIEN, INTAKE_DEWASA, INTAKE_ANAK, KELUARGA, KELUARGA_LABEL, ORGANISASI, REFERENSI, pickFields } from '@/lib/form-defs';
+import { PROFIL_KLIEN, INTAKE_DEWASA, INTAKE_ANAK, KELUARGA, KELUARGA_LABEL, ORGANISASI, REFERENSI } from '@/lib/form-defs';
 
 /** Respons API memakai `pendidikanSosial`; form riwayat anak memakai `pendidikan_sosial`. */
 export function normalisasiProfil(d) {
@@ -22,52 +19,7 @@ export function normalisasiProfil(d) {
   return d;
 }
 
-const jamSekarang = () => new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-/**
- * Satu formulir dengan umpan balik simpan yang jelas: data dimuat ulang dari server setelah tersimpan,
- * lalu tampil penanda waktu simpan. Bila ada kolom wajib kosong, halaman bergulir ke kolom tersebut.
- */
-function FormSection({ sections, initial, save, onReload, label }) {
-  const f = useFormSubmit(initial || {});
-  const ref = useRef(null);
-  const [memuat, setMemuat] = useState(false);
-  const [tersimpan, setTersimpan] = useState(null);
-  const [berubah, setBerubah] = useState(false);
-  useEffect(() => { f.setValue(initial || {}); }, [initial]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!Object.keys(f.errors).length) return;
-    const el = ref.current?.querySelector('[aria-invalid="true"]');
-    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    el?.focus({ preventScroll: true });
-  }, [f.errors]);
-
-  const kirim = async (e) => {
-    e.preventDefault();
-    const ok = await f.submit(() => save(pickFields(sections, f.value)), 'Data berhasil disimpan');
-    if (!ok) return;
-    setMemuat(true);
-    try { await onReload?.(); } finally { setMemuat(false); }
-    setTersimpan(jamSekarang()); setBerubah(false);
-    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  return (
-    <form ref={ref} onSubmit={kirim} className="relative scroll-mt-24 rounded-panel border border-line bg-white px-5 pt-6">
-      {tersimpan && !berubah && <Alert type="success" className="mb-6" title={`Data tersimpan pukul ${tersimpan}`}>Isian di bawah adalah data terbaru yang tersimpan di sistem.</Alert>}
-      {tersimpan && berubah && <Alert type="warning" className="mb-6">Ada perubahan yang belum disimpan.</Alert>}
-      {f.error && <Alert type="error" className="mb-6">{f.error}</Alert>}
-      <DynamicForm sections={sections} value={f.value} onChange={(v) => { f.setValue(v); setBerubah(true); }} errors={f.errors} />
-      <SaveBar saving={f.saving || memuat} note="Kolom bertanda * wajib diisi." label={label} />
-      {memuat && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center rounded-panel bg-white/70">
-          <Spinner label="Memuat ulang data tersimpan" />
-        </div>
-      )}
-    </form>
-  );
-}
+const FormSection = (props) => <FormSimpan {...props} className="rounded-panel border border-line bg-white px-5 pt-6" />;
 
 export default function ProfilEditor({ data, apiBase, tabAwal = 'data', onSaved, staf = false }) {
   const [tab, setTab] = useState(tabAwal);

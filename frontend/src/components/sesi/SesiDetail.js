@@ -18,6 +18,7 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import Alert from '@/components/ui/Alert';
 import { Input } from '@/components/ui/Field';
 import { Loading, ErrorState } from '@/components/ui/DataState';
+import Spinner from '@/components/ui/Spinner';
 import { useToast } from '@/components/ui/Toast';
 import DataKlien from './DataKlien';
 import CatatanKlinis from './CatatanKlinis';
@@ -78,13 +79,18 @@ function JadwalUlang({ sesi, open, onClose, onDone }) {
   );
 }
 
-export default function SesiDetail({ id, mode }) {
+const TAB_SESI = ['klien', 'klinis', 'laporan', 'riwayat'];
+const jamSekarang = () => new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+export default function SesiDetail({ id, mode, tabAwal }) {
   const toast = useToast();
   const isAdmin = mode === 'admin';
   const [sesi, setSesi] = useState(null);
   const [error, setError] = useState(null);
-  const [tab, setTab] = useState('klien');
+  const [tab, setTab] = useState(TAB_SESI.includes(tabAwal) ? tabAwal : 'klien');
   const [dialog, setDialog] = useState(null);
+  const [memuat, setMemuat] = useState(false);
+  const [info, setInfo] = useState(null);
 
   const load = () => api.get(`/${mode}/sesi/${id}`).then((r) => setSesi(r.data)).catch((e) => setError(e.message));
   useEffect(() => { load(); }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -99,9 +105,24 @@ export default function SesiDetail({ id, mode }) {
   const intakeKurang = aktif && ((jenisIntake === 'Dewasa' && !sesi.klien.intakeDewasa?.pernyataan_benar) || (jenisIntake === 'Anak' && !sesi.klien.intakeAnak));
   const namaFormulir = jenisIntake === 'Anak' ? 'Formulir Informasi Riwayat Anak' : 'Formulir Identitas Klien';
 
+  /** Ubah status lalu muat ulang halaman dengan indikator, banner langkah berikutnya, dan pindah ke tab yang relevan. */
   const ubahStatus = async (status) => {
-    try { await api.patch(`/${mode}/sesi/${id}/status`, { status }); toast(status === 'Berjalan' ? 'Sesi dimulai' : 'Sesi selesai, fee psikolog tercatat'); load(); } catch (e) { toast(e.message, 'error'); }
-    setDialog(null);
+    let r;
+    try { r = await api.patch(`/${mode}/sesi/${id}/status`, { status }); } catch (e) { toast(e.message, 'error'); setDialog(null); return; }
+    setDialog(null); setMemuat(true); setInfo(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    await Promise.all([load(), new Promise((ok) => { setTimeout(ok, 800); })]);
+    setMemuat(false);
+    const pukul = jamSekarang();
+    if (status === 'Berjalan') {
+      toast('Sesi dimulai');
+      setInfo({ judul: `Sesi dimulai pukul ${pukul}`, isi: isAdmin ? 'Status sesi menjadi Berjalan.' : 'Isi catatan klinis selama sesi berlangsung, lalu tandai sesi selesai.' });
+      if (!isAdmin) setTab('klinis');
+    } else {
+      toast('Sesi selesai, fee psikolog tercatat');
+      setInfo({ judul: `Sesi selesai pukul ${pukul}`, isi: `Fee psikolog ${rupiah(r.data?.total_fee || 0)} tercatat. ${isAdmin ? '' : 'Lanjutkan dengan menyusun laporan hasil di tab Laporan hasil.'}` });
+      if (!isAdmin) setTab('laporan');
+    }
   };
 
   return (
@@ -115,6 +136,12 @@ export default function SesiDetail({ id, mode }) {
           </div>
         )} />
 
+      {info && <Alert type="success" className="mb-6" title={info.judul}>{info.isi}</Alert>}
+      {memuat && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-white/70" role="status">
+          <Spinner label="Memperbarui status sesi" />
+        </div>
+      )}
       {intakeKurang && (
         <Alert type="warning" className="mb-6" title={`${namaFormulir} belum lengkap`}>
           {isAdmin

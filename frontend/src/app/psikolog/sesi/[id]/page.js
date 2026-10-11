@@ -3,7 +3,8 @@
 import { use } from 'react';
 import SesiDetail from '@/components/sesi/SesiDetail';
 
-export default function Page({ params }) {
+export default function Page({ params, searchParams }) {
   const { id } = use(params);
-  return <SesiDetail id={id} mode="psikolog" />;
+  const { tab } = use(searchParams);
+  return <SesiDetail id={id} mode="psikolog" tabAwal={tab} />;
 }

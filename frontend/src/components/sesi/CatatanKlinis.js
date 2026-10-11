@@ -1,27 +1,22 @@
 'use client';
 
 /** Catatan klinis internal (Anamnesis, Observasi status mental, SOAP). Admin hanya dapat membaca. */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Tabs from '@/components/ui/Tabs';
 import Alert from '@/components/ui/Alert';
-import DynamicForm from '@/components/form/DynamicForm';
-import SaveBar from '@/components/form/SaveBar';
+import FormSimpan from '@/components/form/FormSimpan';
 import DataView from './DataView';
-import { useFormSubmit } from '@/components/form/useForm';
 import { api } from '@/lib/api';
-import { ANAMNESIS, OBSERVASI, SOAP, pickFields } from '@/lib/form-defs';
+import { ANAMNESIS, OBSERVASI, SOAP } from '@/lib/form-defs';
 
 const BAGIAN = { anamnesis: ANAMNESIS, observasi: OBSERVASI, soap: SOAP };
 
 function Bagian({ bagian, data, editable, idSesi, onSaved, disabled }) {
-  const f = useFormSubmit(data || {});
-  useEffect(() => { f.setValue(data || {}); }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!editable) return <DataView sections={BAGIAN[bagian]} data={data} kosong="Belum ada catatan." />;
   return (
-    <form onSubmit={async (e) => { e.preventDefault(); const ok = await f.submit(() => api.put(`/psikolog/sesi/${idSesi}/${bagian}`, pickFields(BAGIAN[bagian], f.value)), 'Catatan tersimpan'); if (ok) onSaved(); }}>
-      <DynamicForm sections={BAGIAN[bagian]} value={f.value} onChange={f.setValue} errors={f.errors} disabled={disabled} />
-      {!disabled && <SaveBar saving={f.saving} label="Simpan catatan" note="Catatan ini hanya dapat dilihat psikolog penangani dan admin." />}
-    </form>
+    <FormSimpan sections={BAGIAN[bagian]} initial={data} disabled={disabled} label="Simpan catatan" pesanSukses="Catatan tersimpan"
+      note="Catatan ini hanya dapat dilihat psikolog penangani dan admin." onReload={onSaved}
+      save={(body) => api.put(`/psikolog/sesi/${idSesi}/${bagian}`, body)} />
   );
 }
 

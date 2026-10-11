@@ -19,14 +19,14 @@ export default function LaporanPsikologPage() {
   const { data, meta, error, loading, reload } = useApi('/psikolog/laporan', { status, page, limit: 15 });
   return (
     <>
-      <PageHeader title="Laporan hasil" description="Laporan yang sedang disusun (draft) dan yang sudah dikirim ke klien. Laporan baru dibuat dari halaman sesi." />
+      <PageHeader title="Laporan hasil" description="Laporan yang sedang disusun (draft) dan yang sudah dikirim ke klien. Klik baris untuk membuka dan melanjutkan pengisian laporan." />
       <Tabs className="mb-4" value={status} onChange={(v) => { setStatus(v); setPage(1); }} tabs={[{ value: 'Draft', label: 'Draft' }, { value: 'Final', label: 'Final' }]} />
       {loading && !data && <Loading />}
       {error && <ErrorState message={error} onRetry={reload} />}
       {data && (
         <Panel>
           <Table rowKey="id_laporan" rows={data} empty={status === 'Draft' ? 'Tidak ada laporan draft.' : 'Belum ada laporan final.'}
-            onRowClick={(l) => router.push(`/psikolog/sesi/${l.sesi.id_sesi}`)}
+            onRowClick={(l) => router.push(`/psikolog/sesi/${l.sesi.id_sesi}?tab=laporan`)}
             columns={[
               { key: 'klien', label: 'Klien', render: (l) => <><span className="block font-medium">{l.sesi.klien?.nama_lengkap}</span><span className="text-[13px] text-ink-faint">{l.sesi.kode_booking}</span></> },
               { key: 'layanan', label: 'Layanan', render: (l) => l.sesi.layanan?.nama_layanan },
