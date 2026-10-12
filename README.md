@@ -20,8 +20,6 @@ Panduan di bawah untuk anggota tim yang ingin menjalankan dan mencoba aplikasi d
 
 ## 2. Ambil kode
 
-Repository ini privat. Minta Irza menambahkan akun GitHub kamu sebagai *collaborator*, terima undangan di email, lalu:
-
 ```bash
 git clone <alamat-repository>
 cd arofta-padc
@@ -140,7 +138,3 @@ cd ../frontend && npm install
 ```
 
 Lalu jalankan ulang backend dan frontend.
-
-## 10. Melaporkan temuan
-
-Tulis: halaman, langkah yang dilakukan, yang terjadi, dan yang seharusnya terjadi, beserta screenshot. Kirim ke Irza atau buat *Issue* di repository GitHub ini.
