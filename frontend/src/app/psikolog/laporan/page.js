@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link'; // Tambahkan import Link
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
 import Tabs from '@/components/ui/Tabs';
@@ -17,22 +18,40 @@ export default function LaporanPsikologPage() {
   const [status, setStatus] = useState('Draft');
   const [page, setPage] = useState(1);
   const { data, meta, error, loading, reload } = useApi('/psikolog/laporan', { status, page, limit: 15 });
+  
   return (
     <>
-      <PageHeader title="Laporan hasil" description="Laporan yang sedang disusun (draft) dan yang sudah dikirim ke klien. Klik baris untuk membuka dan melanjutkan pengisian laporan." />
+      <PageHeader 
+        title="Laporan hasil" 
+        description="Laporan yang sedang disusun (draft) dan yang sudah dikirim ke klien. Klik tombol Lihat detail untuk membuka dan melanjutkan pengisian laporan." 
+      />
       <Tabs className="mb-4" value={status} onChange={(v) => { setStatus(v); setPage(1); }} tabs={[{ value: 'Draft', label: 'Draft' }, { value: 'Final', label: 'Final' }]} />
       {loading && !data && <Loading />}
       {error && <ErrorState message={error} onRetry={reload} />}
       {data && (
         <Panel>
+          {/* onRowClick dihapus dari Table agar baris tidak merespons klik ganda */}
           <Table rowKey="id_laporan" rows={data} empty={status === 'Draft' ? 'Tidak ada laporan draft.' : 'Belum ada laporan final.'}
-            onRowClick={(l) => router.push(`/psikolog/sesi/${l.sesi.id_sesi}?tab=laporan`)}
             columns={[
               { key: 'klien', label: 'Klien', render: (l) => <><span className="block font-medium">{l.sesi.klien?.nama_lengkap}</span><span className="text-[13px] text-ink-faint">{l.sesi.kode_booking}</span></> },
               { key: 'layanan', label: 'Layanan', render: (l) => l.sesi.layanan?.nama_layanan },
               { key: 'template', label: 'Template', render: (l) => l.template?.nama_template },
               { key: 'tgl', label: 'Tanggal sesi', render: (l) => tanggal(l.sesi.tanggal) },
               { key: 'status', label: 'Status', render: (l) => <Badge status={l.status_laporan} /> },
+              { 
+                key: 'aksi', 
+                label: 'Aksi', 
+                render: (l) => (
+                  <Link
+                    href={`/psikolog/sesi/${l.sesi.id_sesi}?tab=laporan`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-mist"
+                  >
+                    Lihat detail
+                    <span aria-hidden="true">›</span>
+                  </Link>
+                ) 
+              },
             ]} />
           <Pagination meta={meta} onPage={setPage} />
         </Panel>

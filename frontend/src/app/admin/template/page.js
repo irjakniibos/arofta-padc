@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
@@ -22,11 +23,13 @@ export default function TemplateListPage() {
   const { data, error, loading, reload } = useApi('/admin/template-laporan');
   const [baru, setBaru] = useState(false);
   const f = useFormSubmit({ skala_min: 1, skala_max: 5, is_active: true });
+  
   const simpan = async (e) => {
     e.preventDefault();
     const r = await f.submit(() => api.post('/admin/template-laporan', pickFields(TEMPLATE_META(true), f.value)), 'Template dibuat');
     if (r) router.push(`/admin/template/${r.data.id_template}`);
   };
+  
   return (
     <>
       <PageHeader title="Template laporan" description="Template menentukan aspek yang diisi psikolog dan file Word yang dipakai untuk membuat laporan PDF."
@@ -35,13 +38,28 @@ export default function TemplateListPage() {
       {error && <ErrorState message={error} onRetry={reload} />}
       {data && (
         <Panel>
-          <Table rowKey="id_template" rows={data} onRowClick={(t) => router.push(`/admin/template/${t.id_template}`)}
+          {/* onRowClick telah dihapus agar baris tidak merespons klik */}
+          <Table rowKey="id_template" rows={data} 
             columns={[
               { key: 'nama', label: 'Template', render: (t) => <><span className="block font-medium">{t.nama_template}</span><span className="text-[13px] text-ink-faint">{t.kode}</span></> },
               { key: 'item', label: 'Aspek aktif', className: 'tabular', render: (t) => t.jumlah_item },
               { key: 'skala', label: 'Skala', className: 'tabular', render: (t) => `${t.skala_min} sampai ${t.skala_max}` },
               { key: 'file', label: 'File Word', render: (t) => (t.file_docx ? <span>Versi {t.versi}</span> : <span className="text-warning">Belum ada file</span>) },
               { key: 'status', label: 'Status', render: (t) => <Badge tone={t.is_active ? 'success' : 'neutral'}>{t.is_active ? 'Aktif' : 'Nonaktif'}</Badge> },
+              { 
+                key: 'aksi', 
+                label: 'Aksi', 
+                render: (t) => (
+                  <Link
+                    href={`/admin/template/${t.id_template}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-mist"
+                  >
+                    Lihat detail
+                    <span aria-hidden="true">›</span>
+                  </Link>
+                ) 
+              },
             ]} />
         </Panel>
       )}

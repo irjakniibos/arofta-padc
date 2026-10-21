@@ -2,6 +2,7 @@
 
 /** Daftar sesi dengan filter (psikolog & admin/monitoring). */
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
@@ -44,7 +45,8 @@ export default function SesiList({ mode }) {
       {error && <ErrorState message={error} onRetry={reload} />}
       {data && (
         <Panel>
-          <Table rowKey="id_sesi" rows={data} empty="Tidak ada sesi sesuai filter." onRowClick={(s) => router.push(`/${mode}/sesi/${s.id_sesi}`)}
+          {/* Properti onRowClick dihapus dari Table agar baris tidak merespons klik ganda */}
+          <Table rowKey="id_sesi" rows={data} empty="Tidak ada sesi sesuai filter."
             columns={[
               { key: 'jadwal', label: 'Jadwal', render: (s) => <><span className="block font-medium">{tanggal(s.tanggal)}</span><span className="text-[13px] text-ink-soft tabular">{jam(s.waktu)} WIB, {s.tipe_sesi === 'Online' ? 'daring' : 'tatap muka'}</span></> },
               { key: 'klien', label: 'Klien', render: (s) => <><span className="block font-medium">{s.klien?.nama_lengkap}</span><span className="text-[13px] text-ink-faint">{s.kode_booking}</span></> },
@@ -53,6 +55,20 @@ export default function SesiList({ mode }) {
               { key: 'bayar', label: 'Pembayaran', render: (s) => <Badge status={s.pembayaran?.status_pembayaran} /> },
               { key: 'laporan', label: 'Laporan', render: (s) => (s.laporan ? <Badge status={s.laporan.status_laporan} /> : <span className="text-ink-faint">-</span>) },
               { key: 'status', label: 'Status', render: (s) => <Badge status={s.status_asesmen} /> },
+              { 
+                key: 'aksi', 
+                label: 'Aksi', 
+                render: (s) => (
+                  <Link
+                    href={`/${mode}/sesi/${s.id_sesi}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-mist"
+                  >
+                    Lihat detail
+                    <span aria-hidden="true">›</span>
+                  </Link>
+                ) 
+              },
             ]} />
           <Pagination meta={meta} onPage={(p) => setF((s) => ({ ...s, page: p }))} />
         </Panel>

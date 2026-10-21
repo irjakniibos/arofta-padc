@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
@@ -41,13 +42,23 @@ export default function PsikologAdminPage() {
       {error && <ErrorState message={error} onRetry={reload} />}
       {data && (
         <Panel>
-          <Table rowKey="id_psikolog" rows={data} empty="Belum ada psikolog." onRowClick={(p) => router.push(`/admin/psikolog/${p.id_psikolog}`)}
+          <Table rowKey="id_psikolog" rows={data} empty="Belum ada psikolog."
             columns={[
               { key: 'nama', label: 'Nama', render: (p) => <><span className="block font-medium">{p.nama_lengkap}</span><span className="text-[13px] text-ink-faint">{p.akun?.email}</span></> },
               { key: 'sipp', label: 'SIPP', render: (p) => p.sipp || '-' },
               { key: 'spes', label: 'Spesialisasi', render: (p) => p.spesialisasi || '-' },
               { key: 'sesi', label: 'Jumlah sesi', className: 'tabular', render: (p) => p.jumlah_sesi },
               { key: 'status', label: 'Status', render: (p) => <Badge tone={p.akun?.is_active ? 'success' : 'neutral'}>{p.akun?.is_active ? 'Aktif' : 'Nonaktif'}</Badge> },
+              { key: 'aksi', label: 'Aksi', render: (p) => (
+                <Link
+                  href={`/admin/psikolog/${p.id_psikolog}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-mist"
+                >
+                  Lihat detail
+                  <span aria-hidden="true">›</span>
+                </Link>
+              ) },
             ]} />
           <Pagination meta={meta} onPage={setPage} />
         </Panel>

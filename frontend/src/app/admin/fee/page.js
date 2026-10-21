@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
 import StatStrip from '@/components/dashboard/StatStrip';
@@ -17,6 +18,7 @@ export default function RekapFeePage() {
   const router = useRouter();
   const [p, setP] = useState({ bulan: now.getMonth() + 1, tahun: now.getFullYear() });
   const { data, error, loading, reload } = useApi('/admin/fee', p);
+  
   return (
     <>
       <PageHeader title="Fee psikolog" description="Rekap fee per psikolog per bulan. Buka salah satu psikolog untuk mencatat pencairan setelah transfer."
@@ -31,14 +33,28 @@ export default function RekapFeePage() {
             { label: 'Sudah dicairkan', value: rupiah(data.ringkasan.sudah_dibayar) },
           ]} />
           <Panel>
+            {/* onRowClick dihapus agar baris tabel tidak bisa diklik secara keseluruhan */}
             <Table rowKey="id_psikolog" rows={data.psikolog} empty="Belum ada psikolog."
-              onRowClick={(r) => router.push(`/admin/fee/${r.id_psikolog}?bulan=${p.bulan}&tahun=${p.tahun}`)}
               columns={[
                 { key: 'nama', label: 'Psikolog', render: (r) => <span className="font-medium">{r.nama_lengkap}</span> },
                 { key: 'sesi', label: 'Sesi selesai', className: 'tabular', render: (r) => Number(r.jumlah_sesi) },
                 { key: 'total', label: 'Total fee', className: 'tabular', render: (r) => rupiah(r.total_fee) },
                 { key: 'belum', label: 'Belum dicairkan', className: 'tabular', render: (r) => (Number(r.belum_dibayar) > 0 ? <span className="font-medium text-warning">{rupiah(r.belum_dibayar)}</span> : <span className="text-ink-faint">Rp0</span>) },
                 { key: 'sudah', label: 'Sudah dicairkan', className: 'tabular', render: (r) => rupiah(r.sudah_dibayar) },
+                { 
+                  key: 'aksi', 
+                  label: 'Aksi', 
+                  render: (r) => (
+                    <Link
+                      href={`/admin/fee/${r.id_psikolog}?bulan=${p.bulan}&tahun=${p.tahun}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-mist"
+                    >
+                      Lihat detail
+                      <span aria-hidden="true">›</span>
+                    </Link>
+                  ) 
+                },
               ]} />
           </Panel>
         </div>

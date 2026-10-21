@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Plus, Pencil } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
@@ -24,15 +25,22 @@ function KategoriFeeTab() {
   const { data, error, loading, reload } = useApi('/admin/kategori-fee');
   const f = useFormSubmit({});
   const [edit, setEdit] = useState(null);
-  const buka = (row) => { f.setValue(row === 'baru' ? { is_active: true } : { ...row, nominal_default: Number(row.nominal_default) }); setEdit(row); };
+  
+  const buka = (row) => { 
+    f.setValue(row === 'baru' ? { is_active: true } : { ...row, nominal_default: Number(row.nominal_default) }); 
+    setEdit(row); 
+  };
+  
   const simpan = async (e) => {
     e.preventDefault();
     const body = pickFields(KATEGORI_FEE, f.value);
     const ok = await f.submit(() => (edit === 'baru' ? api.post('/admin/kategori-fee', body) : api.put(`/admin/kategori-fee/${edit.id_kategori_fee}`, body)), 'Kategori fee tersimpan');
     if (ok) { setEdit(null); reload(); }
   };
+  
   if (loading && !data) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
+  
   return (
     <Panel title="Kategori fee psikolog" action={<Button size="sm" onClick={() => buka('baru')}><Plus className="h-4 w-4" />Tambah kategori</Button>}>
       <Table rowKey="id_kategori_fee" rows={data} columns={[
@@ -56,6 +64,7 @@ export default function LayananAdminPage() {
   const [tab, setTab] = useState('layanan');
   const [page, setPage] = useState(1);
   const { data, meta, error, loading, reload } = useApi(tab === 'layanan' ? '/admin/layanan' : null, { page, limit: 20 });
+  
   return (
     <>
       <PageHeader title="Layanan & harga" description="Atur layanan, harga, template laporan, dan tarif fee psikolog untuk setiap layanan."
@@ -67,13 +76,28 @@ export default function LayananAdminPage() {
           {error && <ErrorState message={error} onRetry={reload} />}
           {data && (
             <Panel>
-              <Table rowKey="id_layanan" rows={data} empty="Belum ada layanan." onRowClick={(l) => router.push(`/admin/layanan/${l.id_layanan}`)}
+              {/* onRowClick telah dihapus di sini */}
+              <Table rowKey="id_layanan" rows={data} empty="Belum ada layanan." 
                 columns={[
                   { key: 'nama', label: 'Layanan', render: (l) => <><span className="block font-medium">{l.nama_layanan}</span><span className="text-[13px] text-ink-faint">{l.kategori}</span></> },
                   { key: 'harga', label: 'Harga', className: 'tabular', render: (l) => rupiah(l.harga) },
                   { key: 'durasi', label: 'Durasi', render: (l) => durasi(l.durasi_menit) },
                   { key: 'template', label: 'Template laporan', render: (l) => l.template?.nama_template || <span className="text-ink-faint">Tanpa laporan</span> },
                   { key: 'status', label: 'Status', render: (l) => <Badge tone={l.is_active ? 'success' : 'neutral'}>{l.is_active ? 'Aktif' : 'Nonaktif'}</Badge> },
+                  { 
+                    key: 'aksi', 
+                    label: 'Aksi', 
+                    render: (l) => (
+                      <Link
+                        href={`/admin/layanan/${l.id_layanan}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-mist"
+                      >
+                        Lihat detail
+                        <span aria-hidden="true">›</span>
+                      </Link>
+                    ) 
+                  },
                 ]} />
               <Pagination meta={meta} onPage={setPage} />
             </Panel>
