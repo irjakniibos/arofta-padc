@@ -38,6 +38,16 @@ export default function SesiKlienPage() {
               { key: 'psikolog', label: 'Psikolog', render: (s) => s.psikolog?.nama_lengkap },
               { key: 'bayar', label: 'Pembayaran', render: (s) => s.pembayaran ? <><Badge status={s.pembayaran.status_pembayaran} /><span className="mt-1 block text-[13px] tabular text-ink-soft">{rupiah(s.pembayaran.total_bayar)}</span></> : '-' },
               { key: 'status', label: 'Status sesi', render: (s) => <Badge status={s.status_asesmen} /> },
+              { key: 'aksi', label: 'Aksi', render: (s) => (
+                <Link
+                  href={`/klien/sesi/${s.id_sesi}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-mist"
+                >
+                  Lihat detail
+                  <span aria-hidden="true">›</span>
+                </Link>
+              ) },
             ]} />
           <Pagination meta={meta} onPage={setPage} />
         </Panel>
