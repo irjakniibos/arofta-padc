@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
@@ -33,6 +34,16 @@ export default function KlienAdminPage() {
               { key: 'kontak', label: 'Kontak', render: (k) => <><span className="block">{k.akun?.email}</span><span className="text-[13px] text-ink-soft">{k.no_hp || ''}</span></> },
               { key: 'sesi', label: 'Sesi', className: 'tabular', render: (k) => k.jumlah_sesi },
               { key: 'daftar', label: 'Terdaftar', render: (k) => tanggal(k.created_at) },
+              { key: 'aksi', label: 'Aksi', render: (k) => (
+                <Link
+                  href={`/admin/klien/${k.id_klien}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-mist"
+                >
+                  Lihat detail
+                  <span aria-hidden="true">›</span>
+                </Link>
+              ) },
             ]} />
           <Pagination meta={meta} onPage={setPage} />
         </Panel>
