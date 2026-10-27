@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Star } from 'lucide-react';
 import { serverGet, serverGetFull } from '@/lib/server-api';
 import { inisial, tanggal } from '@/lib/format';
+import { API_URL } from '@/lib/config';
 import Button from '@/components/ui/Button';
 
 export async function generateMetadata({ params }) {
@@ -30,7 +31,17 @@ export default async function ProfilPsikologPage({ params }) {
     <div className="mx-auto max-w-4xl px-5 py-14">
       <Link href="/tim-psikolog" className="text-sm text-ink-soft hover:text-ink">Tim psikolog</Link>
       <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-center">
-        <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-violet-tint font-serif text-3xl text-violet-deep">{inisial(p.nama_lengkap)}</span>
+        
+        {p.punya_foto || p.foto_updated_at ? (
+          <img
+            src={p.foto_url || `${API_URL}/public/psikolog/${p.id_psikolog}/foto?v=${p.foto_versi || new Date(p.foto_updated_at).getTime()}`}
+            alt={p.nama_lengkap}
+            className="h-24 w-24 shrink-0 rounded-full object-cover border border-line"
+          />
+        ) : (
+          <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-violet-tint font-serif text-3xl text-violet-deep">{inisial(p.nama_lengkap)}</span>
+        )}
+
         <div className="flex-1">
           <h1 className="font-serif text-3xl font-medium md:text-4xl">{p.nama_lengkap}</h1>
           <p className="mt-1 text-ink-soft">{[p.spesialisasi, p.pengalaman_tahun ? `${p.pengalaman_tahun} tahun pengalaman` : null].filter(Boolean).join(', ')}</p>

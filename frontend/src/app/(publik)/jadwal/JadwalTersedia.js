@@ -9,7 +9,8 @@ import Spinner from '@/components/ui/Spinner';
 import Alert from '@/components/ui/Alert';
 import Badge from '@/components/ui/Badge';
 import { api } from '@/lib/api';
-import { jam, tanggal } from '@/lib/format';
+// Tambahkan inisial dari lib/format
+import { jam, tanggal, inisial } from '@/lib/format';
 
 const now = new Date();
 
@@ -47,7 +48,16 @@ export default function JadwalTersedia() {
     const m = new Map();
     (slot || []).forEach((s) => {
       const k = s.id_psikolog;
-      if (!m.has(k)) m.set(k, { nama: s.psikolog.nama_lengkap, spesialisasi: s.psikolog.spesialisasi, slot: [] });
+      if (!m.has(k)) {
+        // Simpan data foto yang dikirim dari backend
+        m.set(k, { 
+          nama: s.psikolog.nama_lengkap, 
+          spesialisasi: s.psikolog.spesialisasi, 
+          punya_foto: s.psikolog.punya_foto,
+          foto_url: s.psikolog.foto_url,
+          slot: [] 
+        });
+      }
       m.get(k).slot.push(s);
     });
     return Array.from(m.values());
@@ -93,17 +103,30 @@ export default function JadwalTersedia() {
             {!slot ? <div className="p-5"><Spinner label="Memuat jam" /></div> : (
               <ul className="divide-y divide-line">
                 {perPsikolog.map((p) => (
-                  <li key={p.nama} className="px-5 py-4">
-                    <p className="font-medium">{p.nama}</p>
-                    {p.spesialisasi && <p className="text-[13px] text-ink-faint">{p.spesialisasi}</p>}
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {p.slot.map((s) => (
-                        <Link key={s.id_jadwal} href={`/klien/booking?jadwal=${s.id_jadwal}`}
-                          className="rounded-control border border-violet-line px-3 py-1.5 text-sm text-violet-deep hover:bg-violet-tint">
-                          <span className="tabular">{jam(s.jam_mulai)}–{jam(s.jam_selesai)}</span>
-                          {s.tipe_sesi !== 'Keduanya' && <Badge tone="neutral" className="ml-2">{s.tipe_sesi === 'Online' ? 'Daring' : 'Tatap muka'}</Badge>}
-                        </Link>
-                      ))}
+                  // Tambahkan flex dan gap-4 untuk merapikan layout foto dan nama
+                  <li key={p.nama} className="flex gap-4 px-5 py-4">
+                    
+                    {/* Render Foto Psikolog atau Inisial */}
+                    {p.punya_foto && p.foto_url ? (
+                      <img src={p.foto_url} alt={p.nama} className="h-12 w-12 shrink-0 rounded-full object-cover" />
+                    ) : (
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-violet-tint font-serif text-lg text-violet-deep">
+                        {inisial(p.nama)}
+                      </span>
+                    )}
+
+                    <div className="flex-1">
+                      <p className="font-medium">{p.nama}</p>
+                      {p.spesialisasi && <p className="text-[13px] text-ink-faint">{p.spesialisasi}</p>}
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {p.slot.map((s) => (
+                          <Link key={s.id_jadwal} href={`/klien/booking?jadwal=${s.id_jadwal}`}
+                            className="rounded-control border border-violet-line px-3 py-1.5 text-sm text-violet-deep hover:bg-violet-tint">
+                            <span className="tabular">{jam(s.jam_mulai)}–{jam(s.jam_selesai)}</span>
+                            {s.tipe_sesi !== 'Keduanya' && <Badge tone="neutral" className="ml-2">{s.tipe_sesi === 'Online' ? 'Daring' : 'Tatap muka'}</Badge>}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   </li>
                 ))}

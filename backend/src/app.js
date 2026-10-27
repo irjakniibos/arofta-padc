@@ -1,6 +1,7 @@
 /**
  * Konfigurasi aplikasi Express: keamanan, parsing, routing, dan error handling.
  */
+const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -19,7 +20,9 @@ const app = express();
 app.disable('x-powered-by');
 if (env.trustProxy) app.set('trust proxy', env.trustProxy);
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
 app.use(cors({
   origin(origin, cb) {
     // Request tanpa Origin (server-to-server, Postman) tetap diizinkan
@@ -37,6 +40,10 @@ app.use(express.urlencoded({ extended: false, limit: '10kb', parameterLimit: 100
 app.use(cookieParser());
 app.use(hpp());
 app.use(sanitize);
+
+// Access static file serving untuk foto profil dan file unggahan
+app.use('/uploads', express.static(path.join(__dirname, '../storage/uploads')));
+app.use('/storage', express.static(path.join(__dirname, '../storage')));
 
 if (!env.isTest) app.use(morgan(env.isProduction ? 'combined' : 'dev'));
 

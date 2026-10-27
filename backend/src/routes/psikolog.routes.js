@@ -5,6 +5,7 @@ const rules = require('../validators/psikolog.validator');
 const adminRules = require('../validators/admin.validator');
 const validate = require('../middlewares/validate');
 const authorize = require('../middlewares/authorize');
+const uploadFoto = require('../middlewares/uploadFoto');
 const { authenticate } = require('../middlewares/auth');
 const { idParam, pagination } = require('../validators/common');
 const { ROLES } = require('../config/constants');
@@ -15,6 +16,8 @@ router.use(authenticate, authorize(ROLES.PSIKOLOG));
 router.get('/dashboard', h(c.dashboard));
 router.get('/profil', h(c.getProfil));
 router.put('/profil', validate(rules.profil), h(c.updateProfil));
+router.put('/profil/foto', uploadFoto, h(c.uploadFoto));
+router.delete('/profil/foto', h(c.deleteFoto));
 
 router.get('/jadwal', validate(rules.listJadwal), h(c.listJadwal));
 router.post('/jadwal', validate(rules.jadwal), h(c.createJadwal));

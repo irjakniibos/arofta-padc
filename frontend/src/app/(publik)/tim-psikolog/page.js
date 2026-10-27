@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Star } from 'lucide-react';
 import { serverGet } from '@/lib/server-api';
 import { inisial } from '@/lib/format';
+import { API_URL } from '@/lib/config';
 
 export const metadata = { title: 'Tim psikolog' };
 
@@ -15,7 +16,20 @@ export default async function TimPsikologPage() {
         {psikolog.length === 0 && <li className="py-6 text-sm text-ink-faint">Data psikolog belum tersedia.</li>}
         {psikolog.map((p) => (
           <li key={p.id_psikolog} className="grid gap-4 py-6 sm:grid-cols-[64px_1fr_auto] sm:items-start">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-tint font-serif text-xl text-violet-deep">{inisial(p.nama_lengkap)}</span>
+            
+            {/* BAGIAN YANG DIPERBAIKI: Menampilkan foto jika ada, atau inisial jika kosong */}
+            {p.punya_foto || p.foto_updated_at ? (
+              <img
+                src={p.foto_url || `${API_URL}/public/psikolog/${p.id_psikolog}/foto?v=${p.foto_versi || new Date(p.foto_updated_at).getTime()}`}
+                alt={p.nama_lengkap}
+                className="h-16 w-16 rounded-full object-cover"
+              />
+            ) : (
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-tint font-serif text-xl text-violet-deep">
+                {inisial(p.nama_lengkap)}
+              </span>
+            )}
+
             <div>
               <Link href={`/tim-psikolog/${p.id_psikolog}`} className="text-lg font-semibold hover:text-violet-deep">{p.nama_lengkap}</Link>
               <p className="text-sm text-ink-soft">{[p.spesialisasi, p.pengalaman_tahun ? `${p.pengalaman_tahun} tahun pengalaman` : null].filter(Boolean).join(', ')}</p>

@@ -10,9 +10,14 @@ const h = require('../utils/asyncHandler');
 router.get('/layanan', validate([query('kategori').optional().isIn(KATEGORI_LAYANAN)]), h(c.listLayanan));
 router.get('/layanan/:id', validate([idParam()]), h(c.getLayanan));
 router.get('/psikolog', h(c.listPsikolog));
-// (\\d+) agar tidak bentrok dengan route /psikolog/dashboard dsb. milik role Psikolog
+
+// Endpoint detail psikolog publik
 router.get('/psikolog/:id(\\d+)', validate([idParam()]), h(c.getPsikolog));
-router.get('/psikolog/:id(\\d+)/ulasan', validate([idParam(), query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 50 }).toInt()]), h(c.ulasanPsikolog));
+
+// Endpoint ulasan & foto (disederhanakan parameternya agar tidak mismatch regex)
+router.get('/psikolog/:id/ulasan', validate([idParam(), query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 50 }).toInt()]), h(c.ulasanPsikolog));
+router.get('/psikolog/:id/foto', validate([idParam()]), h(c.fotoPsikolog));
+
 router.get('/jadwal/kalender', validate([
   query('bulan').optional().isInt({ min: 1, max: 12 }).toInt(),
   query('tahun').optional().isInt({ min: 2020, max: 2100 }).toInt(),

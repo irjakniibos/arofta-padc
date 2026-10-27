@@ -1,3 +1,4 @@
+const path = require('path');
 const layanan = require('../services/layanan.service');
 const psikolog = require('../services/psikolog.service');
 const jadwal = require('../services/jadwal.service');
@@ -12,11 +13,42 @@ exports.getLayanan = async (req, res) => ok(res, await layanan.getPublic(req.par
 exports.listPsikolog = async (req, res) => {
   const list = (await psikolog.listPublic()).map((p) => p.toJSON());
   const rating = await ulasan.ratingBanyak(list.map((p) => p.id_psikolog));
-  return ok(res, list.map((p) => ({ ...p, rating: rating[p.id_psikolog] || { rata_rata: null, jumlah: 0 } })));
+  return ok(res, list.map((p) => {
+    const punyaFoto = Boolean(p.foto_path);
+    const fotoVersi = p.foto_updated_at ? new Date(p.foto_updated_at).getTime() : null;
+    return {
+      ...p,
+      punya_foto: punyaFoto,
+      foto_versi: fotoVersi,
+      foto_url: punyaFoto ? `/api/v1/public/psikolog/${p.id_psikolog}/foto?v=${fotoVersi}` : null,
+      rating: rating[p.id_psikolog] || { rata_rata: null, jumlah: 0 },
+    };
+  }));
 };
 exports.getPsikolog = async (req, res) => {
   const p = await psikolog.getPublic(req.params.id);
-  return ok(res, { ...p.toJSON(), rating: await ulasan.ringkasanRating(p.id_psikolog) });
+  const json = p.toJSON();
+  const punyaFoto = Boolean(json.foto_path);
+  const fotoVersi = json.foto_updated_at ? new Date(json.foto_updated_at).getTime() : null;
+
+  return ok(res, {
+    ...json,
+    punya_foto: punyaFoto,
+    foto_versi: fotoVersi,
+    foto_url: punyaFoto ? `/api/v1/public/psikolog/${json.id_psikolog}/foto?v=${fotoVersi}` : null,
+    rating: await ulasan.ringkasanRating(p.id_psikolog),
+  });
+};
+exports.fotoPsikolog = async (req, res) => {
+  const f = await psikolog.getFotoFile(req.params.id);
+  res.set({
+    'Content-Type': f.mime,
+    'Cache-Control': 'public, max-age=300',
+    'X-Content-Type-Options': 'nosniff',
+    'Cross-Origin-Resource-Policy': 'cross-origin', // frontend (port 3000) memuat gambar dari backend
+  });
+  const absolutePath = path.isAbsolute(f.path) ? f.path : path.resolve(f.path);
+  return res.sendFile(absolutePath, { cacheControl: false });
 };
 exports.ulasanPsikolog = async (req, res) => {
   const r = await ulasan.listPublik(req.params.id, req.query);

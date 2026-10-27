@@ -17,6 +17,8 @@ const scope = (req) => ({ id_psikolog: req.user.id_psikolog });
 exports.dashboard = async (req, res) => ok(res, await dashboard.psikolog(pid(req)));
 exports.getProfil = async (req, res) => ok(res, await psikolog.getOwnProfile(pid(req)));
 exports.updateProfil = async (req, res) => ok(res, await psikolog.updateOwnProfile(pid(req), req.validated), 'Profil diperbarui');
+exports.uploadFoto = async (req, res) => ok(res, await psikolog.uploadFoto(pid(req), req.file), 'Foto profil tersimpan');
+exports.deleteFoto = async (req, res) => ok(res, await psikolog.deleteFoto(pid(req)), 'Foto profil dihapus');
 
 exports.listJadwal = async (req, res) => { const r = await jadwal.list(pid(req), req.query); return ok(res, r.rows, 'Berhasil', r.meta); };
 exports.createJadwal = async (req, res) => created(res, await jadwal.create(pid(req), req.validated), 'Slot jadwal ditambahkan');

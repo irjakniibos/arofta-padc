@@ -16,7 +16,8 @@ import { Select, Textarea, Checkbox } from '@/components/ui/Field';
 import { Loading } from '@/components/ui/DataState';
 import { useToast } from '@/components/ui/Toast';
 import { api } from '@/lib/api';
-import { rupiah, durasi, jam, tanggal } from '@/lib/format';
+// Tambahkan inisial pada import format
+import { rupiah, durasi, jam, tanggal, inisial } from '@/lib/format';
 import { tautanWa } from '@/lib/whatsapp';
 
 const now = new Date();
@@ -178,8 +179,22 @@ export default function FormBooking() {
                       return (
                         <button key={s.id_jadwal} type="button" role="radio" aria-checked={aktif} onClick={() => setSlot(s)}
                           className={`rounded-control border px-4 py-3 text-left text-sm ${aktif ? 'border-violet bg-violet-tint' : 'border-line hover:border-violet-line'}`}>
-                          <span className="block font-semibold tabular">{jam(s.jam_mulai)}–{jam(s.jam_selesai)} WIB</span>
-                          <span className="text-ink-soft">{s.psikolog.nama_lengkap}</span>
+                          
+                          {/* BAGIAN YANG DIPERBAIKI: Struktur Flex untuk Foto dan Teks */}
+                          <div className="flex items-center gap-3">
+                            {s.psikolog.punya_foto && s.psikolog.foto_url ? (
+                              <img src={s.psikolog.foto_url} alt={s.psikolog.nama_lengkap} className="h-10 w-10 shrink-0 rounded-full object-cover border border-line" />
+                            ) : (
+                              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white border border-line font-serif text-sm text-violet-deep">
+                                {inisial(s.psikolog.nama_lengkap)}
+                              </span>
+                            )}
+                            <div>
+                              <span className="block font-semibold tabular">{jam(s.jam_mulai)}–{jam(s.jam_selesai)} WIB</span>
+                              <span className="text-ink-soft">{s.psikolog.nama_lengkap}</span>
+                            </div>
+                          </div>
+
                         </button>
                       );
                     })}
@@ -202,7 +217,26 @@ export default function FormBooking() {
             <div><dt className="text-ink-faint">Layanan</dt><dd className="font-medium">{lay?.nama_layanan || '-'}</dd></div>
             <div><dt className="text-ink-faint">Diperiksa</dt><dd className="font-medium">{profilDipilih?.nama_lengkap || '-'}</dd></div>
             <div><dt className="text-ink-faint">Jadwal</dt><dd className="font-medium">{slot ? `${tanggal(slot.tanggal, { hari: true })}, ${jam(slot.jam_mulai)} WIB` : '-'}</dd></div>
-            <div><dt className="text-ink-faint">Psikolog</dt><dd className="font-medium">{slot?.psikolog?.nama_lengkap || '-'}</dd></div>
+            
+            {/* BAGIAN YANG DIPERBAIKI: Foto Psikolog di Sidebar Ringkasan */}
+            <div>
+              <dt className="text-ink-faint">Psikolog</dt>
+              <dd className="font-medium mt-1 flex items-center gap-2">
+                {slot?.psikolog ? (
+                  <>
+                    {slot.psikolog.punya_foto && slot.psikolog.foto_url ? (
+                      <img src={slot.psikolog.foto_url} alt={slot.psikolog.nama_lengkap} className="h-6 w-6 rounded-full object-cover" />
+                    ) : (
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-violet-tint font-serif text-[10px] text-violet-deep">
+                        {inisial(slot.psikolog.nama_lengkap)}
+                      </span>
+                    )}
+                    <span>{slot.psikolog.nama_lengkap}</span>
+                  </>
+                ) : '-'}
+              </dd>
+            </div>
+
             <div><dt className="text-ink-faint">Sesi</dt><dd className="font-medium">{pilihan.tipe_sesi === 'Online' ? 'Daring' : 'Tatap muka'}</dd></div>
             <div className="flex items-baseline justify-between border-t border-line pt-3"><dt>Total</dt><dd className="text-xl font-semibold tabular">{lay ? rupiah(lay.harga) : '-'}</dd></div>
           </dl>

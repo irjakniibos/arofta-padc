@@ -10,4 +10,7 @@ module.exports = (sequelize) => sequelize.define('Psikolog', {
   pengalaman_tahun: DataTypes.TINYINT.UNSIGNED,
   profil_singkat: DataTypes.TEXT,
   no_hp: DataTypes.STRING(20),
+  foto_path: DataTypes.STRING(255),
+  foto_mime: DataTypes.STRING(100),
+  foto_updated_at: DataTypes.DATE,
 }, { tableName: 'psikolog' });

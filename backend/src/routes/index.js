@@ -8,7 +8,10 @@ router.get('/health', h(async (req, res) => {
 }));
 
 router.use('/auth', require('./auth.routes'));
+// Daftarkan ke /public dan / agar mendukung pemanggilan dengan atau tanpa prefix /public
+router.use('/public', require('./public.routes'));
 router.use('/', require('./public.routes'));
+
 router.use('/klien', require('./klien.routes'));
 router.use('/psikolog', require('./psikolog.routes'));
 router.use('/admin', require('./admin.routes'));

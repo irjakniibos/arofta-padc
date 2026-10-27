@@ -129,14 +129,29 @@ async function tersedia(query, { staf = false } = {}) {
     where,
     attributes: ['id_jadwal', 'id_psikolog', 'tanggal', 'jam_mulai', 'jam_selesai', 'tipe_sesi'],
     include: [{
-      model: Psikolog, as: 'psikolog', attributes: ['nama_lengkap', 'spesialisasi'],
+      model: Psikolog, as: 'psikolog', attributes: ['id_psikolog', 'nama_lengkap', 'spesialisasi', 'foto_path', 'foto_updated_at'],
       include: [{ model: User, as: 'akun', attributes: [], where: { is_active: true } }],
     }],
     order: [['tanggal', 'ASC'], ['jam_mulai', 'ASC']],
     limit: 200,
   });
   const palingAwal = staf ? new Date() : addHours(new Date(), await pengaturan.getNumber(SETTING.BATAS_BOOKING_JAM, 3));
-  return rows.filter((r) => combineDateTime(r.tanggal, r.jam_mulai) > palingAwal);
+  const filtered = rows.filter((r) => combineDateTime(r.tanggal, r.jam_mulai) > palingAwal);
+
+  return filtered.map((r) => {
+    const item = r.toJSON();
+    if (item.psikolog) {
+      const punyaFoto = Boolean(item.psikolog.foto_path);
+      const fotoVersi = item.psikolog.foto_updated_at ? new Date(item.psikolog.foto_updated_at).getTime() : null;
+      item.psikolog = {
+        ...item.psikolog,
+        punya_foto: punyaFoto,
+        foto_versi: fotoVersi,
+        foto_url: punyaFoto ? `/api/v1/public/psikolog/${item.psikolog.id_psikolog}/foto?v=${fotoVersi}` : null,
+      };
+    }
+    return item;
+  });
 }
 
 module.exports = { list, create, createBulk, update, remove, tersedia, findOwned, assertNoOverlap, assertJam, norm };

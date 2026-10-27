@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import PsikogramContoh from '@/components/public/PsikogramContoh';
 import { serverGet } from '@/lib/server-api';
-import { KATEGORI_LAYANAN } from '@/lib/config';
+import { KATEGORI_LAYANAN, API_URL } from '@/lib/config';
 import { rupiah, durasi, inisial } from '@/lib/format';
 import { Star } from 'lucide-react';
 
@@ -112,7 +112,16 @@ export default async function BerandaPage() {
           {psikolog.slice(0, 6).map((p) => (
             <li key={p.id_psikolog}>
               <Link href={`/tim-psikolog/${p.id_psikolog}`} className="group flex gap-4">
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-violet-tint font-serif text-lg text-violet-deep">{inisial(p.nama_lengkap)}</span>
+                {p.foto_updated_at ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={`${API_URL}/public/psikolog/${p.id_psikolog}/foto?v=${new Date(p.foto_updated_at).getTime()}`}
+                    alt={p.nama_lengkap}
+                    className="h-14 w-14 shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-violet-tint font-serif text-lg text-violet-deep">{inisial(p.nama_lengkap)}</span>
+                )}
                 <span>
                   <span className="block font-semibold text-ink group-hover:text-violet-deep">{p.nama_lengkap}</span>
                   <span className="mt-0.5 block text-sm text-ink-soft">{p.spesialisasi || 'Psikolog'}</span>
