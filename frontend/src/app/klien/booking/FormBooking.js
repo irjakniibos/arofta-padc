@@ -154,7 +154,7 @@ export default function FormBooking() {
             <fieldset className="mb-5">
               <legend className="mb-2 text-sm font-medium">Jenis sesi</legend>
               <div className="flex flex-wrap gap-2">
-                {[['Online', 'Daring (online)'], ['Offline', 'Tatap muka di klinik']].map(([v, l]) => (
+                {[['Online', 'Online'], ['Offline', 'Offline']].map(([v, l]) => (
                   <label key={v} className={`cursor-pointer rounded-control border px-4 py-2 text-sm ${pilihan.tipe_sesi === v ? 'border-violet bg-violet-tint font-semibold text-violet-deep' : 'border-line'}`}>
                     <input type="radio" name="tipe" value={v} className="sr-only" checked={pilihan.tipe_sesi === v}
                       onChange={() => { setPilihan({ ...pilihan, tipe_sesi: v }); setSlot(null); }} />{l}
