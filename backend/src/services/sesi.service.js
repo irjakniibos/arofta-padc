@@ -54,7 +54,8 @@ async function list(query, scope = {}) {
     where,
     attributes: ['id_sesi', 'kode_booking', 'tanggal', 'waktu', 'tipe_sesi', 'status_asesmen', 'tautan_zoom', 'lokasi_ruangan', 'created_at'],
     include,
-    order: query.urut === 'terbaru' ? [['created_at', 'DESC']] : [['tanggal', 'ASC'], ['waktu', 'ASC']],
+    /* PERBAIKAN: Diurutkan secara DESC (terbaru di paling atas) berdasarkan tanggal dan waktu */
+    order: query.urut === 'terbaru' ? [['created_at', 'DESC']] : [['tanggal', 'DESC'], ['waktu', 'DESC']],
     limit: pg.limit,
     offset: pg.offset,
     distinct: true,
