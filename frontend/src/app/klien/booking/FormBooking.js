@@ -237,7 +237,7 @@ export default function FormBooking() {
               </dd>
             </div>
 
-            <div><dt className="text-ink-faint">Sesi</dt><dd className="font-medium">{pilihan.tipe_sesi === 'Online' ? 'Daring' : 'Tatap muka'}</dd></div>
+            <div><dt className="text-ink-faint">Sesi</dt><dd className="font-medium">{pilihan.tipe_sesi === 'Online' ? 'Online' : 'Offline'}</dd></div>
             <div className="flex items-baseline justify-between border-t border-line pt-3"><dt>Total</dt><dd className="text-xl font-semibold tabular">{lay ? rupiah(lay.harga) : '-'}</dd></div>
           </dl>
           <div className="px-5 pb-5">
