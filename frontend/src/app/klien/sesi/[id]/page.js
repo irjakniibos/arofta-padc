@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Copy, Download, Video, MapPin, MessageCircle } from 'lucide-react';
+import { Copy, Download, Video, MapPin, MessageCircle, Lock } from 'lucide-react';
 import FormUlasan, { Bintang } from '@/components/klien/FormUlasan';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
@@ -20,7 +20,14 @@ const ada = (v) => v && v !== '-';
 
 function waktuLengkap(dt) {
   if (!dt) return '-';
-  return new Date(String(dt).replace(' ', 'T')).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return new Date(String(dt).replace(' ', 'T')).toLocaleString('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 function PanelPembayaran({ sesi, onKonfirmasi }) {
@@ -28,23 +35,43 @@ function PanelPembayaran({ sesi, onKonfirmasi }) {
   const b = sesi.pembayaran;
   const info = sesi.info_pembayaran || {};
   if (!b) return null;
-  const salin = (t) => { navigator.clipboard?.writeText(t); toast('Disalin'); };
+  const salin = (t) => {
+    navigator.clipboard?.writeText(t);
+    toast('Disalin');
+  };
 
   if (b.status_pembayaran === 'Lunas') {
-    return <Panel title="Pembayaran"><div className="px-5 py-4"><Alert type="success" title="Pembayaran terverifikasi">{rupiah(b.total_bayar)} diterima. Sesi Anda sudah terkonfirmasi.</Alert></div></Panel>;
+    return (
+      <Panel title="Pembayaran">
+        <div className="px-5 py-4">
+          <Alert type="success" title="Pembayaran terverifikasi">
+            {rupiah(b.total_bayar)} diterima. Sesi Anda sudah terkonfirmasi.
+          </Alert>
+        </div>
+      </Panel>
+    );
   }
   if (b.status_pembayaran === 'Batal') {
-    return <Panel title="Pembayaran"><p className="px-5 py-4 text-sm text-ink-soft">Tagihan dibatalkan.</p></Panel>;
+    return (
+      <Panel title="Pembayaran">
+        <p className="px-5 py-4 text-sm text-ink-soft">Tagihan dibatalkan.</p>
+      </Panel>
+    );
   }
   const waKonfirmasi = tautanWa(info.kontak_whatsapp, pesanKonfirmasiBayar(sesi));
   if (b.status_pembayaran === 'Menunggu Verifikasi') {
     return (
       <Panel title="Pembayaran">
         <div className="space-y-3 px-5 py-4">
-          <Alert type="info" title="Menunggu verifikasi admin">Konfirmasi Anda sudah diterima. Admin akan mencocokkan bukti transfer di WhatsApp dengan mutasi rekening, lalu mengonfirmasi pembayaran.</Alert>
+          <Alert type="info" title="Menunggu verifikasi admin">
+            Konfirmasi Anda sudah diterima. Admin akan mencocokkan bukti transfer di WhatsApp dengan mutasi rekening, lalu mengonfirmasi pembayaran.
+          </Alert>
           {waKonfirmasi && (
-            <p className="text-sm text-ink-soft">Belum sempat mengirim foto bukti transfer?{' '}
-              <a href={waKonfirmasi} target="_blank" rel="noopener noreferrer" className="font-semibold text-violet-deep hover:underline">Buka WhatsApp admin lagi</a>
+            <p className="text-sm text-ink-soft">
+              Belum sempat mengirim foto bukti transfer?{' '}
+              <a href={waKonfirmasi} target="_blank" rel="noopener noreferrer" className="font-semibold text-violet-deep hover:underline">
+                Buka WhatsApp admin lagi
+              </a>
             </p>
           )}
         </div>
@@ -54,10 +81,20 @@ function PanelPembayaran({ sesi, onKonfirmasi }) {
   return (
     <Panel title="Selesaikan pembayaran">
       <div className="space-y-5 px-5 py-5">
-        {b.status_pembayaran === 'Ditolak' && <Alert type="error" title="Pembayaran belum dapat diverifikasi">{b.catatan_admin || 'Periksa kembali pembayaran Anda.'} Setelah diperbaiki, konfirmasi ulang melalui WhatsApp di bawah.</Alert>}
+        {b.status_pembayaran === 'Ditolak' && (
+          <Alert type="error" title="Pembayaran belum dapat diverifikasi">
+            {b.catatan_admin || 'Periksa kembali pembayaran Anda.'} Setelah diperbaiki, konfirmasi ulang melalui WhatsApp di bawah.
+          </Alert>
+        )}
         <dl className="grid gap-4 text-sm sm:grid-cols-2">
-          <div><dt className="text-ink-faint">Total</dt><dd className="text-2xl font-semibold tabular">{rupiah(b.total_bayar)}</dd></div>
-          <div><dt className="text-ink-faint">Bayar sebelum</dt><dd className="font-semibold">{waktuLengkap(b.batas_bayar)}</dd></div>
+          <div>
+            <dt className="text-ink-faint">Total</dt>
+            <dd className="text-2xl font-semibold tabular">{rupiah(b.total_bayar)}</dd>
+          </div>
+          <div>
+            <dt className="text-ink-faint">Bayar sebelum</dt>
+            <dd className="font-semibold">{waktuLengkap(b.batas_bayar)}</dd>
+          </div>
         </dl>
         <ol className="space-y-4 text-sm">
           <li className="flex gap-3">
@@ -70,9 +107,13 @@ function PanelPembayaran({ sesi, onKonfirmasi }) {
                     <p className="text-ink-soft">{info.bank_nama}, a.n. {info.bank_atas_nama}</p>
                     <p className="text-lg font-semibold tracking-wide tabular">{info.bank_no_rekening}</p>
                   </div>
-                  <button type="button" onClick={() => salin(info.bank_no_rekening)} className="ml-auto inline-flex items-center gap-1.5 text-[13px] font-semibold text-violet-deep"><Copy className="h-4 w-4" />Salin</button>
+                  <button type="button" onClick={() => salin(info.bank_no_rekening)} className="ml-auto inline-flex items-center gap-1.5 text-[13px] font-semibold text-violet-deep">
+                    <Copy className="h-4 w-4" />Salin
+                  </button>
                 </div>
-              ) : <p className="mt-1 text-ink-soft">Nomor rekening belum diatur. Hubungi admin{ada(info.kontak_whatsapp) ? ` melalui WhatsApp ${info.kontak_whatsapp}` : ''}.</p>}
+              ) : (
+                <p className="mt-1 text-ink-soft">Nomor rekening belum diatur. Hubungi admin{ada(info.kontak_whatsapp) ? ` melalui WhatsApp ${info.kontak_whatsapp}` : ''}.</p>
+              )}
             </div>
           </li>
           <li className="flex gap-3">
@@ -83,9 +124,13 @@ function PanelPembayaran({ sesi, onKonfirmasi }) {
                 Setelah transfer, tekan tombol di bawah. WhatsApp admin akan terbuka dengan pesan berisi kode booking{' '}
                 <span className="font-semibold text-ink">{sesi.kode_booking}</span>. Lampirkan foto bukti transfer, lalu kirim.
               </p>
-              {waKonfirmasi
-                ? <Button className="mt-3" onClick={onKonfirmasi}><MessageCircle className="h-4 w-4" />Konfirmasi via WhatsApp</Button>
-                : <p className="mt-2 text-ink-soft">Nomor WhatsApp admin belum diatur. Silakan hubungi AROFTA PADC.</p>}
+              {waKonfirmasi ? (
+                <Button className="mt-3" onClick={onKonfirmasi}>
+                  <MessageCircle className="h-4 w-4" />Konfirmasi via WhatsApp
+                </Button>
+              ) : (
+                <p className="mt-2 text-ink-soft">Nomor WhatsApp admin belum diatur. Silakan hubungi AROFTA PADC.</p>
+              )}
             </div>
           </li>
         </ol>
@@ -109,6 +154,7 @@ export default function DetailSesiKlienPage({ params }) {
 
   const bisaBatal = sesi.status_asesmen === 'Terdaftar' && ['Menunggu Pembayaran', 'Ditolak'].includes(sesi.pembayaran?.status_pembayaran);
   const lunas = sesi.pembayaran?.status_pembayaran === 'Lunas';
+  const sesiSudahDimulai = sesi.status_asesmen !== 'Terdaftar';
 
   return (
     <>
@@ -124,7 +170,9 @@ export default function DetailSesiKlienPage({ params }) {
             <Panel title="Laporan hasil pemeriksaan">
               <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
                 <p className="text-sm text-ink-soft">Laporan terbit {tanggal(sesi.laporan.tanggal_final)}.</p>
-                <a href={api.fileUrl(`/laporan/${sesi.laporan.id_laporan}/unduh`)} target="_blank" rel="noopener" className="inline-flex h-10 items-center gap-2 rounded-control bg-violet px-4 text-sm font-semibold text-white hover:bg-violet-deep"><Download className="h-4 w-4" />Unduh laporan</a>
+                <a href={api.fileUrl(`/laporan/${sesi.laporan.id_laporan}/unduh`)} target="_blank" rel="noopener" className="inline-flex h-10 items-center gap-2 rounded-control bg-violet px-4 text-sm font-semibold text-white hover:bg-violet-deep">
+                  <Download className="h-4 w-4" />Unduh laporan
+                </a>
               </div>
             </Panel>
           )}
@@ -152,12 +200,40 @@ export default function DetailSesiKlienPage({ params }) {
               <div className="px-5 py-3"><dt className="text-ink-faint">Psikolog</dt><dd className="font-medium">{sesi.psikolog?.nama_lengkap}</dd></div>
               <div className="px-5 py-3">
                 <dt className="text-ink-faint">{sesi.tipe_sesi === 'Online' ? 'Sesi daring' : 'Sesi tatap muka'}</dt>
-                <dd className="mt-1">
+                <dd className="mt-1.5">
                   {sesi.tipe_sesi === 'Online' ? (
-                    sesi.tautan_zoom ? <a href={sesi.tautan_zoom} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-semibold text-violet-deep hover:underline"><Video className="h-4 w-4" />Buka tautan sesi</a>
-                      : <span className="text-ink-soft">{lunas ? 'Tautan dikirim admin sebelum jadwal.' : 'Tautan tersedia setelah pembayaran terverifikasi.'}</span>
+                    sesi.tautan_zoom ? (
+                      sesiSudahDimulai ? (
+                        <a
+                          href={sesi.tautan_zoom}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-control bg-violet-deep px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-violet-700"
+                        >
+                          <Video className="h-4 w-4" />
+                          Buka Tautan Zoom
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-control border border-line bg-mist px-4 py-2.5 text-sm font-medium text-ink-soft opacity-70"
+                          title="Tautan Zoom akan aktif setelah psikolog memulainya"
+                        >
+                          <Lock className="h-4 w-4 text-ink-faint" />
+                          Tautan Zoom (Belum Dimulai)
+                        </button>
+                      )
+                    ) : (
+                      <span className="text-sm text-ink-soft">
+                        {lunas ? 'Tautan dikirim admin sebelum jadwal.' : 'Tautan tersedia setelah pembayaran terverifikasi.'}
+                      </span>
+                    )
                   ) : (
-                    <span className="inline-flex items-start gap-1.5"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-violet" />{sesi.lokasi_ruangan || sesi.info_pembayaran?.alamat_klinik || 'Lokasi dikirim sebelum jadwal.'}</span>
+                    <span className="inline-flex items-start gap-1.5">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-violet" />
+                      {sesi.lokasi_ruangan || sesi.info_pembayaran?.alamat_klinik || 'Lokasi dikirim sebelum jadwal.'}
+                    </span>
                   )}
                 </dd>
               </div>
@@ -171,7 +247,6 @@ export default function DetailSesiKlienPage({ params }) {
 
       <ConfirmDialog open={dialog === 'bayar'} onClose={() => setDialog(null)} title="Konfirmasi pembayaran" confirmLabel="Ya, buka WhatsApp"
         onConfirm={async () => {
-          // Dibuka sebelum await agar tidak diblokir peramban (masih dalam aksi klik pengguna)
           window.open(tautanWa(sesi.info_pembayaran?.kontak_whatsapp, pesanKonfirmasiBayar(sesi)), '_blank', 'noopener');
           try { const r = await api.patch(`/klien/sesi/${id}/konfirmasi-pembayaran`); setSesi(r.data); toast('Konfirmasi tercatat. Kirim pesan WhatsApp beserta foto bukti transfer.'); } catch (e) { toast(e.message, 'error'); }
           setDialog(null);

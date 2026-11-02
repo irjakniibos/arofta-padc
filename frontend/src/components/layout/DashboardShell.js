@@ -38,7 +38,9 @@ export default function DashboardShell({ roles, children }) {
 
   useEffect(() => {
     if (!allowed) return;
-    api.get('/notifikasi', { limit: 1, belum_dibaca: 'true' }).then((r) => setBelumDibaca(r.meta?.belum_dibaca || 0)).catch(() => {});
+    api.get('/notifikasi', { limit: 1, belum_dibaca: 'true' })
+      .then((r) => setBelumDibaca(r.meta?.belum_dibaca || 0))
+      .catch(() => {});
   }, [allowed, pathname]);
 
   useEffect(() => { setMenuOpen(false); }, [pathname]);
@@ -54,12 +56,34 @@ export default function DashboardShell({ roles, children }) {
 
   const sidebar = (
     <nav aria-label="Menu dashboard" className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
-      {items.map(({ href, label, icon: Icon }) => (
-        <Link key={href} href={href} aria-current={isActive(href) ? 'page' : undefined}
-          className={`flex items-center gap-3 rounded-control px-3 py-2 text-sm transition-colors ${isActive(href) ? 'bg-violet-tint font-semibold text-violet-deep' : 'text-ink-soft hover:bg-mist hover:text-ink'}`}>
-          <Icon className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />{label}
-        </Link>
-      ))}
+      {items.map(({ href, label, icon: Icon }) => {
+        const isNotif = href === notifHref;
+
+        return (
+          <Link
+            key={href}
+            href={href}
+            aria-current={isActive(href) ? 'page' : undefined}
+            className={`flex items-center justify-between rounded-control px-3 py-2 text-sm transition-colors ${
+              isActive(href)
+                ? 'bg-violet-tint font-semibold text-violet-deep'
+                : 'text-ink-soft hover:bg-mist hover:text-ink'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <Icon className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
+              <span>{label}</span>
+            </div>
+
+            {/* Badge angka belum dibaca khusus untuk menu Notifikasi */}
+            {isNotif && belumDibaca > 0 && (
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-check px-1.5 text-[10px] font-bold text-white tabular">
+                {belumDibaca > 99 ? '99+' : belumDibaca}
+              </span>
+            )}
+          </Link>
+        );
+      })}
     </nav>
   );
 
