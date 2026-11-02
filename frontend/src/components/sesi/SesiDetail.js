@@ -7,7 +7,7 @@
  */
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Download, Video, MapPin } from 'lucide-react';
+import { Download, Video, MapPin, Lock } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import Panel from '@/components/dashboard/Panel';
 import Badge from '@/components/ui/Badge';
@@ -31,16 +31,39 @@ function TautanForm({ sesi, onDone }) {
   const online = sesi.tipe_sesi === 'Online';
   const [v, setV] = useState(online ? sesi.tautan_zoom || '' : sesi.lokasi_ruangan || '');
   const [saving, setSaving] = useState(false);
+
   const kirim = async (e) => {
-    e.preventDefault(); setSaving(true);
-    try { await api.patch(`/admin/sesi/${sesi.id_sesi}/tautan`, online ? { tautan_zoom: v.trim() } : { lokasi_ruangan: v.trim() }); toast('Terkirim ke klien dan psikolog'); onDone(); } catch (err) { toast(err.message, 'error'); } finally { setSaving(false); }
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await api.patch(
+        `/admin/sesi/${sesi.id_sesi}/tautan`,
+        online ? { tautan_zoom: v.trim() } : { lokasi_ruangan: v.trim() }
+      );
+      toast('Terkirim ke klien dan psikolog');
+      onDone();
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      setSaving(false);
+    }
   };
+
   return (
     <form onSubmit={kirim} className="space-y-3 px-5 py-4">
-      <Input label={online ? 'Tautan Zoom / Google Meet' : 'Lokasi ruangan'} required type={online ? 'url' : 'text'} maxLength={online ? 512 : 255}
-        placeholder={online ? 'https://zoom.us/j/...' : 'Ruang konseling 1, lantai 1'} value={v} onChange={(e) => setV(e.target.value)}
-        hint={online ? 'Harus diawali https://' : undefined} />
-      <Button type="submit" size="sm" loading={saving}>{(online ? sesi.tautan_zoom : sesi.lokasi_ruangan) ? 'Perbarui & kirim ulang' : 'Simpan & kirim'}</Button>
+      <Input
+        label={online ? 'Tautan Zoom / Google Meet' : 'Lokasi ruangan'}
+        required
+        type={online ? 'url' : 'text'}
+        maxLength={online ? 512 : 255}
+        placeholder={online ? 'https://zoom.us/j/...' : 'Ruang konseling 1, lantai 1'}
+        value={v}
+        onChange={(e) => setV(e.target.value)}
+        hint={online ? 'Harus diawali https://' : undefined}
+      />
+      <Button type="submit" size="sm" loading={saving}>
+        {(online ? sesi.tautan_zoom : sesi.lokasi_ruangan) ? 'Perbarui & kirim ulang' : 'Simpan & kirim'}
+      </Button>
     </form>
   );
 }
@@ -51,30 +74,81 @@ function JadwalUlang({ sesi, open, onClose, onDone }) {
   const [slots, setSlots] = useState(null);
   const [pilih, setPilih] = useState(null);
   const [saving, setSaving] = useState(false);
+
   useEffect(() => {
     if (!tgl) return;
-    setSlots(null); setPilih(null);
-    api.get('/admin/jadwal/tersedia', { tanggal: tgl, tipe_sesi: sesi.tipe_sesi }).then((r) => setSlots(r.data)).catch((e) => toast(e.message, 'error'));
+    setSlots(null);
+    setPilih(null);
+    api
+      .get('/admin/jadwal/tersedia', { tanggal: tgl, tipe_sesi: sesi.tipe_sesi })
+      .then((r) => setSlots(r.data))
+      .catch((e) => toast(e.message, 'error'));
   }, [tgl, sesi.tipe_sesi, toast]);
+
   const simpan = async () => {
     setSaving(true);
-    try { await api.patch(`/admin/sesi/${sesi.id_sesi}/alokasi`, { id_jadwal: pilih }); toast('Jadwal diperbarui, klien dan psikolog diberi tahu'); onDone(); onClose(); } catch (e) { toast(e.message, 'error'); } finally { setSaving(false); }
+    try {
+      await api.patch(`/admin/sesi/${sesi.id_sesi}/alokasi`, { id_jadwal: pilih });
+      toast('Jadwal diperbarui, klien dan psikolog diberi tahu');
+      onDone();
+      onClose();
+    } catch (e) {
+      toast(e.message, 'error');
+    } finally {
+      setSaving(false);
+    }
   };
+
   return (
-    <Modal open={open} onClose={onClose} title="Jadwal ulang / ganti psikolog" size="lg"
-      footer={<><Button variant="secondary" onClick={onClose}>Batal</Button><Button disabled={!pilih} loading={saving} onClick={simpan}>Pindahkan sesi</Button></>}>
-      <Input label="Tanggal baru" type="date" min={isoLokal()} value={tgl} onChange={(e) => setTgl(e.target.value)} />
-      {tgl && (!slots ? <Loading label="Memuat slot" /> : slots.length === 0 ? <p className="mt-4 text-sm text-ink-faint">Tidak ada slot kosong pada tanggal ini.</p> : (
-        <div role="radiogroup" className="mt-4 grid gap-2 sm:grid-cols-2">
-          {slots.map((s) => (
-            <button key={s.id_jadwal} type="button" role="radio" aria-checked={pilih === s.id_jadwal} onClick={() => setPilih(s.id_jadwal)}
-              className={`rounded-control border px-4 py-3 text-left text-sm ${pilih === s.id_jadwal ? 'border-violet bg-violet-tint' : 'border-line'}`}>
-              <span className="block font-semibold tabular">{jam(s.jam_mulai)}–{jam(s.jam_selesai)} WIB</span>
-              <span className="text-ink-soft">{s.psikolog.nama_lengkap}</span>
-            </button>
-          ))}
-        </div>
-      ))}
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Jadwal ulang / ganti psikolog"
+      size="lg"
+      footer={
+        <>
+          <Button variant="secondary" onClick={onClose}>
+            Batal
+          </Button>
+          <Button disabled={!pilih} loading={saving} onClick={simpan}>
+            Pindahkan sesi
+          </Button>
+        </>
+      }
+    >
+      <Input
+        label="Tanggal baru"
+        type="date"
+        min={isoLokal()}
+        value={tgl}
+        onChange={(e) => setTgl(e.target.value)}
+      />
+      {tgl &&
+        (!slots ? (
+          <Loading label="Memuat slot" />
+        ) : slots.length === 0 ? (
+          <p className="mt-4 text-sm text-ink-faint">Tidak ada slot kosong pada tanggal ini.</p>
+        ) : (
+          <div role="radiogroup" className="mt-4 grid gap-2 sm:grid-cols-2">
+            {slots.map((s) => (
+              <button
+                key={s.id_jadwal}
+                type="button"
+                role="radio"
+                aria-checked={pilih === s.id_jadwal}
+                onClick={() => setPilih(s.id_jadwal)}
+                className={`rounded-control border px-4 py-3 text-left text-sm ${
+                  pilih === s.id_jadwal ? 'border-violet bg-violet-tint' : 'border-line'
+                }`}
+              >
+                <span className="block font-semibold tabular">
+                  {jam(s.jam_mulai)}–{jam(s.jam_selesai)} WIB
+                </span>
+                <span className="text-ink-soft">{s.psikolog.nama_lengkap}</span>
+              </button>
+            ))}
+          </div>
+        ))}
     </Modal>
   );
 }
@@ -101,6 +175,7 @@ export default function SesiDetail({ id, mode, tabAwal }) {
   const bayar = sesi.pembayaran?.status_pembayaran;
   const lunas = bayar === 'Lunas';
   const aktif = ['Terdaftar', 'Berjalan'].includes(sesi.status_asesmen);
+  const sesiSudahDimulai = sesi.status_asesmen !== 'Terdaftar'; // Memeriksa apakah psikolog sudah menekan tombol "Mulai Sesi"
   const jenisIntake = sesi.layanan?.jenis_intake;
   const intakeKurang = aktif && ((jenisIntake === 'Dewasa' && !sesi.klien.intakeDewasa?.pernyataan_benar) || (jenisIntake === 'Anak' && !sesi.klien.intakeAnak));
   const namaFormulir = jenisIntake === 'Anak' ? 'Formulir Informasi Riwayat Anak' : 'Formulir Identitas Klien';
@@ -188,10 +263,41 @@ export default function SesiDetail({ id, mode, tabAwal }) {
             <dl className="divide-y divide-line text-sm">
               <div className="px-5 py-3"><dt className="text-ink-faint">Jadwal</dt><dd className="font-medium">{tanggal(sesi.tanggal, { hari: true })}, {jam(sesi.waktu)} WIB</dd></div>
               {isAdmin && <div className="px-5 py-3"><dt className="text-ink-faint">Psikolog</dt><dd className="font-medium">{sesi.psikolog?.nama_lengkap}</dd></div>}
-              <div className="px-5 py-3"><dt className="text-ink-faint">Pelaksanaan</dt>
-                <dd className="mt-0.5">{sesi.tipe_sesi === 'Online'
-                  ? (sesi.tautan_zoom ? <a href={sesi.tautan_zoom} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-semibold text-violet-deep"><Video className="h-4 w-4" />Buka tautan sesi</a> : 'Daring, tautan belum diisi')
-                  : <span className="inline-flex gap-1.5"><MapPin className="mt-0.5 h-4 w-4 text-violet" />{sesi.lokasi_ruangan || 'Tatap muka, ruangan belum diatur'}</span>}
+              <div className="px-5 py-3">
+                <dt className="text-ink-faint">Pelaksanaan</dt>
+                <dd className="mt-1.5">
+                  {sesi.tipe_sesi === 'Online' ? (
+                    sesi.tautan_zoom ? (
+                      sesiSudahDimulai ? (
+                        <a
+                          href={sesi.tautan_zoom}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-control bg-violet-deep px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-violet-700"
+                        >
+                          <Video className="h-4 w-4" />
+                          Buka Tautan Zoom
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-control border border-line bg-mist px-4 py-2.5 text-sm font-medium text-ink-soft opacity-70"
+                          title="Tautan Zoom akan aktif setelah psikolog menekan tombol Mulai Sesi"
+                        >
+                          <Lock className="h-4 w-4 text-ink-faint" />
+                          Tautan Zoom (Belum Dimulai)
+                        </button>
+                      )
+                    ) : (
+                      <span className="text-sm text-ink-faint">Daring, tautan belum diisi</span>
+                    )
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 font-medium">
+                      <MapPin className="h-4 w-4 text-violet shrink-0" />
+                      {sesi.lokasi_ruangan || 'Tatap muka, ruangan belum diatur'}
+                    </span>
+                  )}
                 </dd>
               </div>
               <div className="px-5 py-3"><dt className="text-ink-faint">Pembayaran</dt>
